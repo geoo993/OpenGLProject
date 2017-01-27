@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C70CAC601E3BD45C006B7104 /* libGLEW.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C70CAC5F1E3BD45C006B7104 /* libGLEW.2.0.0.dylib */; };
+		C70CAC621E3BD4F2006B7104 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C70CAC611E3BD4F2006B7104 /* libglfw.3.2.dylib */; };
+		C70CAC641E3BD56E006B7104 /* libGLESv2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C70CAC631E3BD56E006B7104 /* libGLESv2.2.dylib */; };
+		C70CAC671E3BD9A6006B7104 /* libglut.3.10.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C70CAC651E3BD6EA006B7104 /* libglut.3.10.0.dylib */; };
+		C70CAC691E3BD9A6006B7104 /* libglib-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C70CAC681E3BD9A6006B7104 /* libglib-2.0.0.dylib */; };
 		C7CC4BB61E3A6D6400CE969C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7CC4BB51E3A6D6400CE969C /* main.cpp */; };
 		C7CC4BBE1E3A6DDA00CE969C /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CC4BBD1E3A6DDA00CE969C /* GLUT.framework */; };
 		C7CC4BC01E3A6DE200CE969C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CC4BBF1E3A6DE200CE969C /* OpenGL.framework */; };
@@ -25,6 +30,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C70CAC5F1E3BD45C006B7104 /* libGLEW.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.0.0.dylib; path = ../../../../../../opt/local/lib/libGLEW.2.0.0.dylib; sourceTree = "<group>"; };
+		C70CAC611E3BD4F2006B7104 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../../../opt/local/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
+		C70CAC631E3BD56E006B7104 /* libGLESv2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLESv2.2.dylib; path = ../../../../../../opt/local/lib/libGLESv2.2.dylib; sourceTree = "<group>"; };
+		C70CAC651E3BD6EA006B7104 /* libglut.3.10.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglut.3.10.0.dylib; path = ../../../../../../opt/local/lib/libglut.3.10.0.dylib; sourceTree = "<group>"; };
+		C70CAC681E3BD9A6006B7104 /* libglib-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.0.dylib"; path = "../../../../../../opt/local/lib/libglib-2.0.0.dylib"; sourceTree = "<group>"; };
+		C78741691E3AD9B8004DF2A0 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../../../../System/Library/Frameworks/GLUT.framework; sourceTree = "<group>"; };
+		C787416C1E3ADA65004DF2A0 /* glfw3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glfw3.h; sourceTree = "<group>"; };
+		C787416D1E3ADA65004DF2A0 /* glfw3native.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glfw3native.h; sourceTree = "<group>"; };
 		C7CC4BB21E3A6D6400CE969C /* OpenGLProject */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OpenGLProject; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7CC4BB51E3A6D6400CE969C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C7CC4BBD1E3A6DDA00CE969C /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
@@ -36,6 +49,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C70CAC691E3BD9A6006B7104 /* libglib-2.0.0.dylib in Frameworks */,
+				C70CAC671E3BD9A6006B7104 /* libglut.3.10.0.dylib in Frameworks */,
+				C70CAC641E3BD56E006B7104 /* libGLESv2.2.dylib in Frameworks */,
+				C70CAC621E3BD4F2006B7104 /* libglfw.3.2.dylib in Frameworks */,
+				C70CAC601E3BD45C006B7104 /* libGLEW.2.0.0.dylib in Frameworks */,
 				C7CC4BC01E3A6DE200CE969C /* OpenGL.framework in Frameworks */,
 				C7CC4BBE1E3A6DDA00CE969C /* GLUT.framework in Frameworks */,
 			);
@@ -44,6 +62,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C787416B1E3ADA65004DF2A0 /* GLFW */ = {
+			isa = PBXGroup;
+			children = (
+				C787416C1E3ADA65004DF2A0 /* glfw3.h */,
+				C787416D1E3ADA65004DF2A0 /* glfw3native.h */,
+			);
+			name = GLFW;
+			path = ../../glfw/include/GLFW;
+			sourceTree = "<group>";
+		};
 		C7CC4BA91E3A6D6300CE969C = {
 			isa = PBXGroup;
 			children = (
@@ -72,6 +100,13 @@
 		C7CC4BBC1E3A6DDA00CE969C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C70CAC681E3BD9A6006B7104 /* libglib-2.0.0.dylib */,
+				C70CAC651E3BD6EA006B7104 /* libglut.3.10.0.dylib */,
+				C70CAC631E3BD56E006B7104 /* libGLESv2.2.dylib */,
+				C70CAC611E3BD4F2006B7104 /* libglfw.3.2.dylib */,
+				C70CAC5F1E3BD45C006B7104 /* libGLEW.2.0.0.dylib */,
+				C787416B1E3ADA65004DF2A0 /* GLFW */,
+				C78741691E3AD9B8004DF2A0 /* GLUT.framework */,
 				C7CC4BBF1E3A6DE200CE969C /* OpenGL.framework */,
 				C7CC4BBD1E3A6DDA00CE969C /* GLUT.framework */,
 			);
@@ -182,6 +217,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /opt/local/include;
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -223,6 +259,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /opt/local/include;
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
@@ -232,6 +269,10 @@
 		C7CC4BBA1E3A6D6400CE969C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -239,6 +280,10 @@
 		C7CC4BBB1E3A6D6400CE969C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -262,6 +307,7 @@
 				C7CC4BBB1E3A6D6400CE969C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
