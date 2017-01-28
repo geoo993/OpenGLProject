@@ -23,10 +23,19 @@
 //#include <GL/freeglut.h>
 
 //GLM
-//#include <glm/vec3.hpp>
+#include <glm/glm.hpp>
+
+//Freestyle
+//#include <freetype2/freetype/freetype.h>
+
+//FreeImage
+//#include <FreeImage.h>
 
 //GLFW
 #include <GLFW/glfw3.h>
+
+//Assimp
+//#include <assimp/scene.h>
 
 //#include <stdlib.h>
 //#include <stdio.h>
