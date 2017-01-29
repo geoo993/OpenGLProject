@@ -16,6 +16,7 @@
 		C7492E1D1E3BED6B00134B94 /* libfreeimageplus.3.17.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7492E1A1E3BED6B00134B94 /* libfreeimageplus.3.17.0.dylib */; };
 		C7492E1E1E3BED6B00134B94 /* libfreetype.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7492E1B1E3BED6B00134B94 /* libfreetype.6.dylib */; };
 		C7492E201E3BF1A000134B94 /* libassimp.3.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7492E1F1E3BF1A000134B94 /* libassimp.3.0.0.dylib */; };
+		C775370A1E3E36D900F3926A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C77537091E3E36D900F3926A /* Cocoa.framework */; };
 		C7CC4BB61E3A6D6400CE969C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7CC4BB51E3A6D6400CE969C /* main.cpp */; };
 		C7CC4BBE1E3A6DDA00CE969C /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CC4BBD1E3A6DDA00CE969C /* GLUT.framework */; };
 		C7CC4BC01E3A6DE200CE969C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CC4BBF1E3A6DE200CE969C /* OpenGL.framework */; };
@@ -43,6 +44,7 @@
 		C7492E1A1E3BED6B00134B94 /* libfreeimageplus.3.17.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreeimageplus.3.17.0.dylib; path = ../../../../../../opt/local/lib/libfreeimageplus.3.17.0.dylib; sourceTree = "<group>"; };
 		C7492E1B1E3BED6B00134B94 /* libfreetype.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreetype.6.dylib; path = ../../../../../../opt/local/lib/libfreetype.6.dylib; sourceTree = "<group>"; };
 		C7492E1F1E3BF1A000134B94 /* libassimp.3.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.3.0.0.dylib; path = ../../../../../../opt/local/lib/libassimp.3.0.0.dylib; sourceTree = "<group>"; };
+		C77537091E3E36D900F3926A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C78741691E3AD9B8004DF2A0 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../../../../System/Library/Frameworks/GLUT.framework; sourceTree = "<group>"; };
 		C787416C1E3ADA65004DF2A0 /* glfw3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glfw3.h; sourceTree = "<group>"; };
 		C787416D1E3ADA65004DF2A0 /* glfw3native.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glfw3native.h; sourceTree = "<group>"; };
@@ -57,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C775370A1E3E36D900F3926A /* Cocoa.framework in Frameworks */,
 				C7492E201E3BF1A000134B94 /* libassimp.3.0.0.dylib in Frameworks */,
 				C7492E1C1E3BED6B00134B94 /* libfreeimage.3.17.0.dylib in Frameworks */,
 				C7492E1D1E3BED6B00134B94 /* libfreeimageplus.3.17.0.dylib in Frameworks */,
@@ -112,6 +115,7 @@
 		C7CC4BBC1E3A6DDA00CE969C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C77537091E3E36D900F3926A /* Cocoa.framework */,
 				C7492E1F1E3BF1A000134B94 /* libassimp.3.0.0.dylib */,
 				C7492E191E3BED6B00134B94 /* libfreeimage.3.17.0.dylib */,
 				C7492E1A1E3BED6B00134B94 /* libfreeimageplus.3.17.0.dylib */,
