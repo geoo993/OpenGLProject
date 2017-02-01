@@ -51,6 +51,81 @@
 int width = 1024;
 int height = 768;
 
+GLuint triangleVAO = 0;
+GLuint shaderProgram;
+
+void addShaders(){
+    
+    const char* vertexShaderSource =
+    "#version 400\n"
+    "in vec3 vp;"
+    "void main() {"
+    "  gl_Position = vec4 (vp, 1.0);"
+    "}";
+    
+    const char* fragmentShaderSource =
+    "#version 400\n"
+    "out vec4 frag_colour;"
+    "void main() {"
+    "  frag_colour = vec4(1.0, 1.0, 1.0, 1.0);"
+    "}";
+    
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    
+    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
+    
+    glCompileShader(vertexShader);
+    
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
+    
+    glCompileShader(fragmentShader);
+    
+    
+    shaderProgram = glCreateProgram();
+    
+    glAttachShader(shaderProgram, fragmentShader);
+    
+    glAttachShader(shaderProgram, vertexShader);
+    
+    glLinkProgram(shaderProgram);
+    
+}
+
+void drawTriangle(){
+    
+    float points[] = {
+        0.0f, 0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f
+    };
+    
+    GLuint triangleVBO = 0;
+    
+    glGenBuffers(1, &triangleVBO);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
+    
+    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
+    
+    glGenVertexArrays(1, &triangleVAO);
+    
+    glBindVertexArray(triangleVAO);
+    
+    glEnableVertexAttribArray(0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    
+    
+    addShaders();
+    
+}
+
+
+
 static void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
@@ -99,6 +174,8 @@ int main(int argc, char **argv)
     printf("Renderer: %s\n", renderer);
     printf("OpenGL version supported %s\n", version);
     
+    drawTriangle();
+    
     // tell GL to only draw onto a pixel if the shape is closer to the viewer
     glEnable(GL_DEPTH_TEST); // enable depth-testing
     glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
@@ -110,6 +187,12 @@ int main(int argc, char **argv)
         glViewport(0,0,width,height);
         glClearColor(.2,.8,.8,1);                  ////<-- CLEAR WINDOW CONTENTS
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        // Bind the VAO
+        glBindVertexArray(triangleVAO);
+        
+        //use shader program
+        glUseProgram(shaderProgram);
         
         glfwSwapBuffers(window);
         
