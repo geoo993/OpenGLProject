@@ -9,21 +9,25 @@
 
 #include <iostream>
 
+#define GLEW_STATIC
+
 //Mac OpenGL
 //#include <OpenGL/gl.h>
 //#include <OpenGl/glu.h>
+//#include <OpenGL/OpenGL.h>
+//#include <OpenGL/gl3.h>
 
 //Mac GLUT
 //#include <GLUT/glut.h>
 
 //GLEW
-#include <GL/glew.h>
+#include <GL/glew.h>//include GLEW and new version of GL on Windows
 
 //freeglut
 //#include <GL/freeglut.h>
 
 //GLM
-#include <glm/glm.hpp>
+//#include <glm/glm.hpp>
 
 //Freestyle
 //#include <freetype2/freetype/freetype.h>
@@ -32,7 +36,7 @@
 //#include <FreeImage.h>
 
 //GLFW
-#include <GLFW/glfw3.h>
+#include <GLFW/glfw3.h>// GLFW helper library
 
 //Assimp
 //#include <assimp/scene.h>
@@ -40,116 +44,85 @@
 //#include <stdlib.h>
 //#include <stdio.h>
 
+//#include "sys/time.h"
+//#include <thread>
 
-//void render(void){
-//    
-//    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-//    glClear(GL_COLOR_BUFFER_BIT);
-//    
-//    glBegin(GL_TRIANGLES);
-//    {
-//        glColor3f(1.0, 0.0, 0.0);
-//        glVertex2f(0, 0.5f);
-//        glColor3f(0.0, 1.0, 0.0);
-//        glVertex2f(-0.05f, -0.5f);
-//        glColor3f(0.0, 0.0, 1.0);
-//        glVertex2f(0.5f, -0.5f);
-//    }
-//    glEnd();
-//}
-//
-//int main(int argc, const char * argv[]) {
-//    
-//    GLFWwindow * window;
-//    
-//    if(glfwInit()){
-//        return -1;
-//    }
-//    
-//    window = glfwCreateWindow(800, 600, "OpenGL Project", NULL, NULL);
-//    if(!window){
-//        glfwTerminate();
-//        exit(EXIT_FAILURE);
-//    }
-//    
-//    if(!glewInit()){
-//        return -1;
-//    }
-//    
-//    glfwMakeContextCurrent(window);
-//    
-//    while (!glfwWindowShouldClose(window)) {
-//        render();
-//        
-//        glfwSwapBuffers(window);
-//        glfwPollEvents();
-//    }
-//    
-//    glfwDestroyWindow(window);
-//    glfwTerminate();
-//    exit(EXIT_SUCCESS);
-//    
-//    return 0;
-//}
 
+int width = 1024;
+int height = 768;
 
 static void error_callback(int error, const char* description)
 {
-    fputs(description, stderr);
-}
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
+    fprintf(stderr, "Error: %s\n", description);
 }
 
-//int main(void)
-int main(int argc, const char * argv[]) {
-    //    std::cout << "Hello, World!\n";
+int main(int argc, char **argv)
+{
+    // start GL context and O/S window using the GLFW helper library
+    if (!glfwInit()) {
+        fprintf(stderr, "ERROR: could not start GLFW3\n");
+        exit(EXIT_FAILURE);
+        return -1;
+    } 
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     
-    GLFWwindow* window;
-    glfwSetErrorCallback(error_callback);
-    if (!glfwInit())
-        exit(EXIT_FAILURE);
-    window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
-    if (!window)
-    {
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    
+    GLFWwindow* window = glfwCreateWindow(height, height, "OpenGL Window", nullptr, nullptr); // Windowed
+    //GLFWwindow* window = glfwCreateWindow(height, height, "OpenGL", glfwGetPrimaryMonitor(), nullptr); // Fullscreen
+   
+    if (!window) {
+        fprintf(stderr, "ERROR: could not open window with GLFW3\n");
         glfwTerminate();
-        exit(EXIT_FAILURE);
+        return -1;
     }
+    
+    glfwSetErrorCallback(error_callback);
+    
     glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
-    glfwSetKeyCallback(window, key_callback);
-    while (!glfwWindowShouldClose(window))
+    
+    // start GLEW extension handler
+    glewExperimental = GL_TRUE;
+    if(glewInit() != GLEW_OK)
+        throw std::runtime_error("glewInit failed");
+    
+    if(!GLEW_VERSION_3_2)
+        throw std::runtime_error("OpenGL 3.2 API is not available.");
+    
+    // get version info
+    const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
+    const GLubyte* version = glGetString(GL_VERSION); // version as a string
+    printf("Renderer: %s\n", renderer);
+    printf("OpenGL version supported %s\n", version);
+    
+    // tell GL to only draw onto a pixel if the shape is closer to the viewer
+    glEnable(GL_DEPTH_TEST); // enable depth-testing
+    glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
+    
+    
+    while(!glfwWindowShouldClose(window))
     {
-        float ratio;
-        int width, height;
         glfwGetFramebufferSize(window, &width, &height);
-        ratio = width / (float) height;
-        glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        glRotatef((float) glfwGetTime() * 50.f, 0.f, 0.f, 1.f);
-        glBegin(GL_TRIANGLES);
-        glColor3f(1.f, 0.f, 0.f);
-        glVertex3f(-0.6f, -0.4f, 0.f);
-        glColor3f(0.f, 1.f, 0.f);
-        glVertex3f(0.6f, -0.4f, 0.f);
-        glColor3f(0.f, 0.f, 1.f);
-        glVertex3f(0.f, 0.6f, 0.f);
-        glEnd();
+        glViewport(0,0,width,height);
+        glClearColor(.2,.8,.8,1);                  ////<-- CLEAR WINDOW CONTENTS
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
         glfwSwapBuffers(window);
+        
+        //if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        //    glfwSetWindowShouldClose(window, GL_TRUE);
         glfwPollEvents();
     }
+    
+    // close GL context and any other GLFW resources
     glfwDestroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);
     
+    
     return 0;
 }
- 
- 
