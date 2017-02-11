@@ -1,11 +1,10 @@
 //
 //  main.cpp
-//  OpenGLProject
+//  OpenGL_Project
 //
-//  Created by GEORGE QUENTIN on 26/01/2017.
-//  Copyright © 2017 GEORGE QUENTIN. All rights reserved.
+//  Created by GEORGE QUENTIN on 11/02/2017.
+//  Copyright © 2017 LEXI LABS. All rights reserved.
 //
-
 
 #include <iostream>
 
@@ -29,17 +28,9 @@
 //GLM
 //#include <glm/glm.hpp>
 
-//Freestyle
-//#include <freetype2/freetype/freetype.h>
-
-//FreeImage
-//#include <FreeImage.h>
-
 //GLFW
 #include <GLFW/glfw3.h>// GLFW helper library
 
-//Assimp
-//#include <assimp/scene.h>
 
 //#include <stdlib.h>
 //#include <stdio.h>
@@ -51,11 +42,55 @@
 int width = 1024;
 int height = 768;
 
-GLuint triangleVAO = 0;
+GLuint triangleVAO;
 GLuint shaderProgram;
 
-void addShaders(){
+void drawTriangle(){
     
+    GLuint triangleVBO[2];
+    
+    glGenVertexArrays(1, &triangleVAO);
+    
+    glGenBuffers(2, &triangleVBO[0]);
+    
+    glBindVertexArray(triangleVAO);
+    
+    
+    //triangle points
+    float points[] = {
+        -1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f
+    };
+    
+    // Create a VBO for the triangle vertices
+    glBindBuffer(GL_ARRAY_BUFFER, triangleVBO[0]);
+    
+    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
+    
+    glEnableVertexAttribArray(0);
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    
+    
+    //triangle colours
+    float colors[] = {
+        0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 0.0f
+    };
+    // Create a VBO for the triangle colours
+    glBindBuffer(GL_ARRAY_BUFFER, triangleVBO[1]);
+    
+    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), colors, GL_STATIC_DRAW);
+    
+    glEnableVertexAttribArray(1);
+    
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    
+    
+    
+    //add shaders
     const char* vertexShaderSource =
     "#version 400\n"
     "in vec3 vp;"
@@ -93,37 +128,6 @@ void addShaders(){
     
 }
 
-void drawTriangle(){
-    
-    float points[] = {
-        0.0f, 0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f
-    };
-    
-    GLuint triangleVBO = 0;
-    
-    glGenBuffers(1, &triangleVBO);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
-    
-    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
-    
-    glGenVertexArrays(1, &triangleVAO);
-    
-    glBindVertexArray(triangleVAO);
-    
-    glEnableVertexAttribArray(0);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    
-    
-    addShaders();
-    
-}
-
 
 
 static void error_callback(int error, const char* description)
@@ -131,25 +135,26 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, const char * argv[]) {
+    // insert code here...
+    std::cout << "Hello, World!\n";
+
     // start GL context and O/S window using the GLFW helper library
     if (!glfwInit()) {
         fprintf(stderr, "ERROR: could not start GLFW3\n");
         exit(EXIT_FAILURE);
         return -1;
     } 
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     
+    glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);//We don't want the old OpenGL and want the core profile
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     
-    GLFWwindow* window = glfwCreateWindow(height, height, "OpenGL Window", nullptr, nullptr); // Windowed
-    //GLFWwindow* window = glfwCreateWindow(height, height, "OpenGL", glfwGetPrimaryMonitor(), nullptr); // Fullscreen
-   
+    GLFWwindow* window = glfwCreateWindow(height, height, "OpenGL Window", nullptr, nullptr);
+    
     if (!window) {
         fprintf(stderr, "ERROR: could not open window with GLFW3\n");
         glfwTerminate();
@@ -174,25 +179,30 @@ int main(int argc, char **argv)
     printf("Renderer: %s\n", renderer);
     printf("OpenGL version supported %s\n", version);
     
+      
+    
     drawTriangle();
     
-    // tell GL to only draw onto a pixel if the shape is closer to the viewer
     glEnable(GL_DEPTH_TEST); // enable depth-testing
     glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
-    
     
     while(!glfwWindowShouldClose(window))
     {
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0,0,width,height);
-        glClearColor(.2,.8,.8,1);                  ////<-- CLEAR WINDOW CONTENTS
+        glClearColor(.4,.4,.4,1); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+        // tell GL to only draw onto a pixel if the shape is closer to the viewer
+    
+        glLoadIdentity();	
+ 
         // Bind the VAO
         glBindVertexArray(triangleVAO);
         
         //use shader program
         glUseProgram(shaderProgram);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         
         glfwSwapBuffers(window);
         
