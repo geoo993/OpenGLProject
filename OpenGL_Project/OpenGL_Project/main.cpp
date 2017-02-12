@@ -5,129 +5,24 @@
 //  Created by GEORGE QUENTIN on 11/02/2017.
 //  Copyright © 2017 LEXI LABS. All rights reserved.
 //
+#include "Common.h"
+#include "QuickTriangle.hpp"
+#include "QuickSquare.hpp"
+#include "QuickCube.hpp"
+#include "QuickTetrahedron.hpp"
 
-#include <iostream>
+int keyCode = -1; 
 
-#define GLEW_STATIC
+//degrees per seconds
+float xRotation = 0.0f;
+float yRotation = 0.0f;
+float depth = - 5.0f;
 
-//Mac OpenGL
-//#include <OpenGL/gl.h>
-//#include <OpenGl/glu.h>
-//#include <OpenGL/OpenGL.h>
-//#include <OpenGL/gl3.h>
+bool autoRotate = false;
 
-//Mac GLUT
-//#include <GLUT/glut.h>
+float size = 1.0f;
 
-//GLEW
-#include <GL/glew.h>//include GLEW and new version of GL on Windows
-
-//freeglut
-//#include <GL/freeglut.h>
-
-//GLM
-//#include <glm/glm.hpp>
-
-//GLFW
-#include <GLFW/glfw3.h>// GLFW helper library
-
-
-//#include <stdlib.h>
-//#include <stdio.h>
-
-//#include "sys/time.h"
-//#include <thread>
-
-
-int width = 1024;
-int height = 768;
-
-GLuint triangleVAO;
-GLuint shaderProgram;
-
-void drawTriangle(){
-    
-    GLuint triangleVBO[2];
-    
-    glGenVertexArrays(1, &triangleVAO);
-    
-    glGenBuffers(2, &triangleVBO[0]);
-    
-    glBindVertexArray(triangleVAO);
-    
-    
-    //triangle points
-    float points[] = {
-        -1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f
-    };
-    
-    // Create a VBO for the triangle vertices
-    glBindBuffer(GL_ARRAY_BUFFER, triangleVBO[0]);
-    
-    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
-    
-    glEnableVertexAttribArray(0);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    
-    
-    //triangle colours
-    float colors[] = {
-        0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 0.0f
-    };
-    // Create a VBO for the triangle colours
-    glBindBuffer(GL_ARRAY_BUFFER, triangleVBO[1]);
-    
-    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), colors, GL_STATIC_DRAW);
-    
-    glEnableVertexAttribArray(1);
-    
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    
-    
-    
-    //add shaders
-    const char* vertexShaderSource =
-    "#version 400\n"
-    "in vec3 vp;"
-    "void main() {"
-    "  gl_Position = vec4 (vp, 1.0);"
-    "}";
-    
-    const char* fragmentShaderSource =
-    "#version 400\n"
-    "out vec4 frag_colour;"
-    "void main() {"
-    "  frag_colour = vec4(1.0, 1.0, 1.0, 1.0);"
-    "}";
-    
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    
-    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-    
-    glCompileShader(vertexShader);
-    
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-    
-    glCompileShader(fragmentShader);
-    
-    
-    shaderProgram = glCreateProgram();
-    
-    glAttachShader(shaderProgram, fragmentShader);
-    
-    glAttachShader(shaderProgram, vertexShader);
-    
-    glLinkProgram(shaderProgram);
-    
-}
-
+std::string shape = "tetrahedron";
 
 
 static void error_callback(int error, const char* description)
@@ -135,35 +30,80 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+   
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
+    
+    if (key == GLFW_KEY_UP && action == GLFW_PRESS){
+        depth += 1.0f;
+    }
+    
+    if (key == GLFW_KEY_DOWN && action == GLFW_PRESS){
+        depth -= 1.0f;
+    }
+    
+    //std::cout << "Key pressed with key: " << key << " and with action: " << action << std::endl;
+    
+}
 
+int px = 0;
+int py = 0;
+
+void cursor_callback(GLFWwindow *window, double xpos, double ypos)
+{
+    
+    int x = xpos - px;
+    int y = ypos - py;
+    
+    xRotation += x;
+    yRotation += y;
+    
+    px = xpos;
+    py = ypos;
+    
+    
+    //std::cout << "Mouse cursor   x: " << xRotate << " y: " << yRotate << std::endl;
+}
+
+
+GLFWwindow* initialiseWindow(const int width, const int height)
+{
     // start GL context and O/S window using the GLFW helper library
     if (!glfwInit()) {
         fprintf(stderr, "ERROR: could not start GLFW3\n");
         exit(EXIT_FAILURE);
-        return -1;
+        return nullptr;
     } 
     
-    glfwWindowHint(GLFW_SAMPLES, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);//We don't want the old OpenGL and want the core profile
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     
-    GLFWwindow* window = glfwCreateWindow(height, height, "OpenGL Window", nullptr, nullptr);
+    glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
+    if(shape == "triangle" || shape == "square"){
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);//We don't want the old OpenGL and want the core profile
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    }
     
-    if (!window) {
+    // Open a window and create its OpenGL context
+    GLFWwindow* window = glfwCreateWindow(width, height, "OpenGL Window", nullptr, nullptr);
+    
+    if(window == nullptr)
+    {
         fprintf(stderr, "ERROR: could not open window with GLFW3\n");
         glfwTerminate();
-        return -1;
+        return nullptr;
     }
     
     glfwSetErrorCallback(error_callback);
     
     glfwMakeContextCurrent(window);
+    glfwSetKeyCallback(window, keyboard_callback);
+    glfwSetCursorPosCallback(window, cursor_callback);
+
     
     // start GLEW extension handler
     glewExperimental = GL_TRUE;
@@ -179,36 +119,125 @@ int main(int argc, const char * argv[]) {
     printf("Renderer: %s\n", renderer);
     printf("OpenGL version supported %s\n", version);
     
-      
+    glEnable(GL_DEPTH_TEST); // enable depth-testing, //enables you to draw things in correct order
+    glEnable(GL_CULL_FACE);//only front facinf poligons are rendered, forn facing have a clock wise or counter clock wise order
+    //glDisable(GL_CULL_FACE);
     
-    drawTriangle();
+    //glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
+    glDepthFunc(GL_LEQUAL);
     
-    glEnable(GL_DEPTH_TEST); // enable depth-testing
-    glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
+    //glCullFace(GL_BACK);
+    
+    return window;
+}
+
+void screenProjection( const int &width, const int &height){
+    
+    // compute the aspect ratio
+    // this is used to prevent the picture from distorting when
+    // the window is resized
+    float aspect = (GLfloat)width / (GLfloat)height;
+    
+    // Draw stuff
+    glMatrixMode(GL_PROJECTION_MATRIX);
+    glLoadIdentity();//sets the model view matrix back to its initial state, which puts the camera directly in front of the world.
+    
+//    if (windowWidth >= windowHeight) {
+//        // aspect >= 1, set the height from -1 to 1, with larger width
+//        //gluOrtho2D(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0);
+//        glOrtho(-1.0f * aspect, 1.0f * aspect, -1.0f, 1.0f, 1.0f, -1.0f);
+//    } else {
+//        // aspect < 1, set the width to -1 to 1, with larger height
+//        //gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
+//        glOrtho(-1.0f, 1.0f, -1.0 / aspect, 1.0 / aspect, 1.0f, -1.0f);
+//    }
+
+    gluPerspective( 45, aspect, 0.2f, 100.0f );
+    
+    glMatrixMode(GL_MODELVIEW_MATRIX);
+    
+}
+
+void controlShape(){
+    
+    glTranslatef( 0.0f, 0.0f, depth);// move the rest of the world back away from the camera
+    
+    if (autoRotate == true){
+        //continously to rotate cube
+        static float rotation = 0;
+        glRotatef(rotation, 0.0f, 1.0f, 0.0f);
+        rotation += 1;
+    }else{
+        glRotatef(xRotation, 0.0, 1.0f, 0.0f);
+        glRotatef(yRotation, 1.0f, 0.0f, 0.0f);
+    }
+}
+
+void displayWindow( GLFWwindow* window )
+{
+    QuickTriangle triang;
+    QuickSquare square(false);
+    QuickCube cube;
+    QuickTetrahedron tetrahedron;
+    
+    if(shape == "triangle"){
+        triang.createTriangle();
+        std::cout << "Triangle";
+    }else if (shape == "square"){
+        square.createSquare();
+        std::cout << "Square";
+    }else if (shape == "cube"){
+        cube.drawVertices(size);
+        std::cout << "Cube";
+    }else if (shape == "tetrahedron"){
+        tetrahedron.drawVertices(size);
+        std::cout << "Tetrahedron";
+    }
+    
     
     while(!glfwWindowShouldClose(window))
     {
-        glfwGetFramebufferSize(window, &width, &height);
-        glViewport(0,0,width,height);
-        glClearColor(.4,.4,.4,1); 
+        // Scale to window size
+        GLint windowWidth, windowHeight;
+        glfwGetWindowSize(window, &windowWidth, &windowHeight);
+        glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
+        
+        if (windowHeight == 0) windowHeight = 1;                // To prevent divide by 0
+        glViewport(0, 0, windowWidth, windowHeight);
+        
+        // Clear the screen
+        glClearColor(0.4f, 0.4f, 0.4f, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // tell GL to only draw onto a pixel if the shape is closer to the viewer
-    
-        glLoadIdentity();	
- 
-        // Bind the VAO
-        glBindVertexArray(triangleVAO);
         
-        //use shader program
-        glUseProgram(shaderProgram);
+        screenProjection(windowWidth, windowHeight);
         
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        controlShape();
         
+        if(shape == "triangle"){
+            triang.drawTriangle();
+        }else if (shape == "square"){
+            square.drawSquare();
+        }else if (shape == "cube"){
+            cube.drawCube();
+        }else if (shape == "tetrahedron"){
+            tetrahedron.drawTetrahedron();
+        }
+        
+        // Update Screen
         glfwSwapBuffers(window);
         
-        //if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        //    glfwSetWindowShouldClose(window, GL_TRUE);
+        // Check for any input, or window movement
         glfwPollEvents();
+    }
+  
+}
+
+int main(int argc, const char * argv[]) {
+    
+    GLFWwindow* window = initialiseWindow(760, 620);
+    if( window != nullptr )
+    {
+        displayWindow( window );
     }
     
     // close GL context and any other GLFW resources
@@ -216,6 +245,6 @@ int main(int argc, const char * argv[]) {
     glfwTerminate();
     exit(EXIT_SUCCESS);
     
-    
     return 0;
 }
+

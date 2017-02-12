@@ -13,6 +13,10 @@
 		C7C4978D1E4F3AA60059BAB9 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C497891E4F3AA60059BAB9 /* libglfw.3.2.dylib */; };
 		C7C4978E1E4F3AA60059BAB9 /* libglib-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C4978A1E4F3AA60059BAB9 /* libglib-2.0.0.dylib */; };
 		C7C4978F1E4F3AA60059BAB9 /* libglut.3.10.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C4978B1E4F3AA60059BAB9 /* libglut.3.10.0.dylib */; };
+		C7C497921E4F67510059BAB9 /* QuickTriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7C497901E4F67510059BAB9 /* QuickTriangle.cpp */; };
+		C7C497961E4F6D290059BAB9 /* QuickSquare.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7C497941E4F6D290059BAB9 /* QuickSquare.cpp */; };
+		C7C497991E4FCC7F0059BAB9 /* QuickCube.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7C497971E4FCC7F0059BAB9 /* QuickCube.cpp */; };
+		C7C4979C1E4FEBC40059BAB9 /* QuickTetrahedron.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7C4979A1E4FEBC40059BAB9 /* QuickTetrahedron.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +39,15 @@
 		C7C497891E4F3AA60059BAB9 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../../../opt/local/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
 		C7C4978A1E4F3AA60059BAB9 /* libglib-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.0.dylib"; path = "../../../../../../opt/local/lib/libglib-2.0.0.dylib"; sourceTree = "<group>"; };
 		C7C4978B1E4F3AA60059BAB9 /* libglut.3.10.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglut.3.10.0.dylib; path = ../../../../../../opt/local/lib/libglut.3.10.0.dylib; sourceTree = "<group>"; };
+		C7C497901E4F67510059BAB9 /* QuickTriangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuickTriangle.cpp; sourceTree = "<group>"; };
+		C7C497911E4F67510059BAB9 /* QuickTriangle.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuickTriangle.hpp; sourceTree = "<group>"; };
+		C7C497931E4F6A190059BAB9 /* Common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
+		C7C497941E4F6D290059BAB9 /* QuickSquare.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuickSquare.cpp; sourceTree = "<group>"; };
+		C7C497951E4F6D290059BAB9 /* QuickSquare.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuickSquare.hpp; sourceTree = "<group>"; };
+		C7C497971E4FCC7F0059BAB9 /* QuickCube.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuickCube.cpp; sourceTree = "<group>"; };
+		C7C497981E4FCC7F0059BAB9 /* QuickCube.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuickCube.hpp; sourceTree = "<group>"; };
+		C7C4979A1E4FEBC40059BAB9 /* QuickTetrahedron.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuickTetrahedron.cpp; sourceTree = "<group>"; };
+		C7C4979B1E4FEBC40059BAB9 /* QuickTetrahedron.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuickTetrahedron.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,7 +86,16 @@
 		C7C4977D1E4F39F50059BAB9 /* OpenGL_Project */ = {
 			isa = PBXGroup;
 			children = (
+				C7C497931E4F6A190059BAB9 /* Common.h */,
 				C7C4977E1E4F39F50059BAB9 /* main.cpp */,
+				C7C497901E4F67510059BAB9 /* QuickTriangle.cpp */,
+				C7C497911E4F67510059BAB9 /* QuickTriangle.hpp */,
+				C7C497941E4F6D290059BAB9 /* QuickSquare.cpp */,
+				C7C497951E4F6D290059BAB9 /* QuickSquare.hpp */,
+				C7C497971E4FCC7F0059BAB9 /* QuickCube.cpp */,
+				C7C497981E4FCC7F0059BAB9 /* QuickCube.hpp */,
+				C7C4979A1E4FEBC40059BAB9 /* QuickTetrahedron.cpp */,
+				C7C4979B1E4FEBC40059BAB9 /* QuickTetrahedron.hpp */,
 			);
 			path = OpenGL_Project;
 			sourceTree = "<group>";
@@ -148,7 +170,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7C4979C1E4FEBC40059BAB9 /* QuickTetrahedron.cpp in Sources */,
 				C7C4977F1E4F39F50059BAB9 /* main.cpp in Sources */,
+				C7C497921E4F67510059BAB9 /* QuickTriangle.cpp in Sources */,
+				C7C497991E4FCC7F0059BAB9 /* QuickCube.cpp in Sources */,
+				C7C497961E4F6D290059BAB9 /* QuickSquare.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
