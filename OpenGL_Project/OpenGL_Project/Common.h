@@ -32,6 +32,10 @@
 //Mac GLUT
 #include <GLUT/glut.h>
 
+// Include GLM
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <vector>
 #include <stdlib.h>
 #include <stdio.h>

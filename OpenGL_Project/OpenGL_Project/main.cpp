@@ -10,6 +10,8 @@
 #include "QuickSquare.hpp"
 #include "QuickCube.hpp"
 #include "QuickTetrahedron.hpp"
+#include "QuickTrianglesGube.hpp"
+
 
 int keyCode = -1; 
 
@@ -18,12 +20,13 @@ float xRotation = 0.0f;
 float yRotation = 0.0f;
 float depth = - 5.0f;
 
-bool autoRotate = false;
+bool autoRotate = true;
 
 float size = 1.0f;
 
-std::string shape = "tetrahedron";
+std::string shape = "cube";
 
+bool modernOpenGL = false;
 
 static void error_callback(int error, const char* description)
 {
@@ -80,7 +83,7 @@ GLFWwindow* initialiseWindow(const int width, const int height)
     
     
     glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
-    if(shape == "triangle" || shape == "square"){
+    if(modernOpenGL == true){
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);//We don't want the old OpenGL and want the core profile
@@ -120,43 +123,103 @@ GLFWwindow* initialiseWindow(const int width, const int height)
     printf("OpenGL version supported %s\n", version);
     
     glEnable(GL_DEPTH_TEST); // enable depth-testing, //enables you to draw things in correct order
-    glEnable(GL_CULL_FACE);//only front facinf poligons are rendered, forn facing have a clock wise or counter clock wise order
-    //glDisable(GL_CULL_FACE);
+   
+    if(shape == "triangle" || shape == "cube" || shape == "tetrahedron" || shape == "trianglesCube"){
+        glEnable(GL_CULL_FACE);//only front facinf poligons are rendered, forn facing have a clock wise or counter clock wise order
+    }else if (shape == "square"){
+        glDisable(GL_CULL_FACE);
+    }
     
     //glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
-    glDepthFunc(GL_LEQUAL);
+    //glDepthFunc(GL_LEQUAL);
     
     //glCullFace(GL_BACK);
+    
     
     return window;
 }
 
-void screenProjection( const int &width, const int &height){
+GLuint addShader(){
     
-    // compute the aspect ratio
-    // this is used to prevent the picture from distorting when
-    // the window is resized
-    float aspect = (GLfloat)width / (GLfloat)height;
+    const char* vertexShaderSource =
+    "#version 400\n"
+    "layout(location = 0) in vec3 vert_position;"
+    "layout(location = 1) in vec3 color;"
+    "out vec3 frag_color;"//from frag shader
+    "uniform mat4 MVP;\n"
+    "void main() {"
+    "  gl_Position = vec4 (vert_position, 1.0);"
+    "  frag_color = color;"
+    "}";
+    //MVP *
+    const char* fragmentShaderSource =
+    "#version 400\n"
+    //"uniform vec3 uni_color;"
+    "in vec3 frag_color;"
+    "out vec4 out_color;"
+    "void main() {"
+    "  out_color = vec4(frag_color, 1.0);"
+    "}";
     
-    // Draw stuff
-    glMatrixMode(GL_PROJECTION_MATRIX);
-    glLoadIdentity();//sets the model view matrix back to its initial state, which puts the camera directly in front of the world.
+    // Create and compile the vertex shader
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
+    glCompileShader(vertexShader);
     
-//    if (windowWidth >= windowHeight) {
-//        // aspect >= 1, set the height from -1 to 1, with larger width
-//        //gluOrtho2D(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0);
-//        glOrtho(-1.0f * aspect, 1.0f * aspect, -1.0f, 1.0f, 1.0f, -1.0f);
-//    } else {
-//        // aspect < 1, set the width to -1 to 1, with larger height
-//        //gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
-//        glOrtho(-1.0f, 1.0f, -1.0 / aspect, 1.0 / aspect, 1.0f, -1.0f);
-//    }
-
-    gluPerspective( 45, aspect, 0.2f, 100.0f );
+    // Check Vertex Shader
+    GLint status = GL_FALSE;
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
     
-    glMatrixMode(GL_MODELVIEW_MATRIX);
+    int infoLogLength;
+    glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &infoLogLength);
     
+    if ( infoLogLength > 0 ){
+        std::vector<char> vertexShaderErrorMessage(infoLogLength+1);
+        glGetShaderInfoLog(vertexShader, infoLogLength, nullptr, &vertexShaderErrorMessage[0]);
+        printf("%s\n", &vertexShaderErrorMessage[0]);
+    }
+    
+    // Create and compile the fragment shader
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
+    glCompileShader(fragmentShader);
+    
+    // Check Fragment Shader
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &status);
+    glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &infoLogLength);
+    if ( infoLogLength > 0 ){
+        std::vector<char> fragmentShaderErrorMessage(infoLogLength+1);
+        glGetShaderInfoLog(fragmentShader, infoLogLength, nullptr, &fragmentShaderErrorMessage[0]);
+        printf("%s\n", &fragmentShaderErrorMessage[0]);
+    }
+    
+    //Link the vertex and fragment shader into a shader program
+    GLuint shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glBindFragDataLocation(shaderProgram, 0, "out_color");
+    glLinkProgram(shaderProgram);
+    
+    // Check the shader program
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &status);
+    glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
+    if ( infoLogLength > 0 ){
+        std::vector<char> shaderProgramErrorMessage(infoLogLength+1);
+        glGetProgramInfoLog(shaderProgram, infoLogLength, nullptr, &shaderProgramErrorMessage[0]);
+        printf("%s\n", &shaderProgramErrorMessage[0]);
+    }
+    
+    glDetachShader(shaderProgram, vertexShader);
+    glDetachShader(shaderProgram, fragmentShader);
+    
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+   
+    
+    return shaderProgram;
 }
+
+
 
 void controlShape(){
     
@@ -173,27 +236,87 @@ void controlShape(){
     }
 }
 
-void displayWindow( GLFWwindow* window )
-{
-    QuickTriangle triang;
-    QuickSquare square(false);
-    QuickCube cube;
-    QuickTetrahedron tetrahedron;
+
+void mvp(const float &w, const float &h, const GLuint &programID){
     
-    if(shape == "triangle"){
-        triang.createTriangle();
-        std::cout << "Triangle";
-    }else if (shape == "square"){
-        square.createSquare();
-        std::cout << "Square";
-    }else if (shape == "cube"){
-        cube.drawVertices(size);
-        std::cout << "Cube";
-    }else if (shape == "tetrahedron"){
-        tetrahedron.drawVertices(size);
-        std::cout << "Tetrahedron";
+    // compute the aspect ratio
+    // this is used to prevent the picture from distorting when
+    // the window is resized
+    float aspect = (float)w / (float)h;
+    
+    if (modernOpenGL == true){
+        
+        // Get a handle for our "MVP" uniform
+        GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+        
+        // Projection matrix : 45∞ Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+        glm::mat4 Projection = glm::perspective(glm::radians(45.0f), aspect, 0.2f, 100.0f);
+        // Or, for an ortho camera :
+        //glm::mat4 Projection = glm::ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f); // In world coordinates
+        
+        // Camera matrix
+        glm::mat4 View       = glm::lookAt(
+                                           glm::vec3(4,3,-3), // Camera is at (4,3,-3), in World Space
+                                           glm::vec3(0,0,0), // and looks at the origin
+                                           glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
+                                           );
+        // Model matrix : an identity matrix (model will be at the origin)
+        glm::mat4 Model      = glm::mat4(1.0f);
+        // Our ModelViewProjection : multiplication of our 3 matrices
+        glm::mat4 MVP        = Projection * View * Model; // Remember, matrix multiplication is the other way around
+        
+        // Send our transformation to the currently bound shader, 
+        // in the "MVP" uniform
+        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+        
+        
+    }else{
+        
+        // Draw stuff
+        glMatrixMode(GL_PROJECTION_MATRIX);
+        glLoadIdentity();//sets the model view matrix back to its initial state, which puts the camera directly in front of the world.
+        
+        //    if (windowWidth >= windowHeight) {
+        //        // aspect >= 1, set the height from -1 to 1, with larger width
+        //        //gluOrtho2D(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0);
+        //        glOrtho(-1.0f * aspect, 1.0f * aspect, -1.0f, 1.0f, 1.0f, -1.0f);
+        //    } else {
+        //        // aspect < 1, set the width to -1 to 1, with larger height
+        //        //gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
+        //        glOrtho(-1.0f, 1.0f, -1.0 / aspect, 1.0 / aspect, 1.0f, -1.0f);
+        //    }
+        
+        gluPerspective( 45, aspect, 0.2f, 100.0f );
+        
+        glMatrixMode(GL_MODELVIEW_MATRIX);
     }
     
+    
+}
+void displayWindow( GLFWwindow* window )
+{
+    
+    QuickTriangle triang;
+    QuickSquare square(true);
+    QuickCube cube(size);
+    QuickTetrahedron tetrahedron(size);
+    QuickTrianglesGube trianglesCube(size);
+    
+    GLuint programID;
+    if (modernOpenGL == true){
+        programID = addShader();
+        std::cout << "adding shader with modern open gl." << std::endl;
+    }
+    
+    if(shape == "triangle"){
+        triang.createTriangle(programID);
+        std::cout << "Triangle";
+    }else if (shape == "square"){
+        square.createSquare(programID);
+        std::cout << "Square";
+    }
+    
+            
     
     while(!glfwWindowShouldClose(window))
     {
@@ -209,9 +332,10 @@ void displayWindow( GLFWwindow* window )
         glClearColor(0.4f, 0.4f, 0.4f, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        screenProjection(windowWidth, windowHeight);
+        mvp(windowWidth,windowHeight, programID);
         
         controlShape();
+        
         
         if(shape == "triangle"){
             triang.drawTriangle();
@@ -221,6 +345,8 @@ void displayWindow( GLFWwindow* window )
             cube.drawCube();
         }else if (shape == "tetrahedron"){
             tetrahedron.drawTetrahedron();
+        }else if (shape == "trianglesCube"){
+            trianglesCube.drawCube(programID);
         }
         
         // Update Screen

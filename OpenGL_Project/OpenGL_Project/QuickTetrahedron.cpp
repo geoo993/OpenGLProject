@@ -44,7 +44,10 @@ void QuickTetrahedron::drawVertices(float size){
     
 }
 
+
+
 void QuickTetrahedron::drawTetrahedron(){
+    
     // We have a color array and a vertex array 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);

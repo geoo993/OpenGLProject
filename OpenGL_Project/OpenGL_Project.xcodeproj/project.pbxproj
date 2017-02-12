@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C7B202B81E509109007CEE38 /* QuickTrianglesGube.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7B202B61E509109007CEE38 /* QuickTrianglesGube.cpp */; };
 		C7C4977F1E4F39F50059BAB9 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7C4977E1E4F39F50059BAB9 /* main.cpp */; };
 		C7C497871E4F3A500059BAB9 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C497861E4F3A500059BAB9 /* OpenGL.framework */; };
 		C7C4978C1E4F3AA60059BAB9 /* libGLEW.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C497881E4F3AA60059BAB9 /* libGLEW.2.0.0.dylib */; };
@@ -32,6 +33,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C7B202B61E509109007CEE38 /* QuickTrianglesGube.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuickTrianglesGube.cpp; sourceTree = "<group>"; };
+		C7B202B71E509109007CEE38 /* QuickTrianglesGube.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuickTrianglesGube.hpp; sourceTree = "<group>"; };
 		C7C4977B1E4F39F50059BAB9 /* OpenGL_Project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OpenGL_Project; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7C4977E1E4F39F50059BAB9 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C7C497861E4F3A500059BAB9 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -96,6 +99,8 @@
 				C7C497981E4FCC7F0059BAB9 /* QuickCube.hpp */,
 				C7C4979A1E4FEBC40059BAB9 /* QuickTetrahedron.cpp */,
 				C7C4979B1E4FEBC40059BAB9 /* QuickTetrahedron.hpp */,
+				C7B202B61E509109007CEE38 /* QuickTrianglesGube.cpp */,
+				C7B202B71E509109007CEE38 /* QuickTrianglesGube.hpp */,
 			);
 			path = OpenGL_Project;
 			sourceTree = "<group>";
@@ -172,6 +177,7 @@
 			files = (
 				C7C4979C1E4FEBC40059BAB9 /* QuickTetrahedron.cpp in Sources */,
 				C7C4977F1E4F39F50059BAB9 /* main.cpp in Sources */,
+				C7B202B81E509109007CEE38 /* QuickTrianglesGube.cpp in Sources */,
 				C7C497921E4F67510059BAB9 /* QuickTriangle.cpp in Sources */,
 				C7C497991E4FCC7F0059BAB9 /* QuickCube.cpp in Sources */,
 				C7C497961E4F6D290059BAB9 /* QuickSquare.cpp in Sources */,
@@ -313,6 +319,7 @@
 				C7C497841E4F39F50059BAB9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

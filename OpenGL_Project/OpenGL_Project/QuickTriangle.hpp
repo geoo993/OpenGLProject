@@ -17,15 +17,12 @@ public :
     QuickTriangle();
     ~QuickTriangle();
     
-    void createTriangle();
+    void createTriangle(const GLuint &shaderProgram);
     void drawTriangle();
     
 private:
     GLuint triangleVAO;
     GLuint triangleVBO;
-    GLuint vertexShader;
-    GLuint fragmentShader;
-    GLuint shaderProgram;
 };
 
 #endif /* QuickTriangle_hpp */

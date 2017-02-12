@@ -18,9 +18,6 @@ QuickSquare::QuickSquare(bool withSix): withSix(withSix){
 }
 
 QuickSquare::~QuickSquare(){
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-    glDeleteProgram(shaderProgram);
     
     glDeleteVertexArrays(1, &squareVAO);
     
@@ -55,28 +52,8 @@ void QuickSquare::bufferOfSixVertices(){
     glBufferData(GL_ARRAY_BUFFER, sizeof(verticesOfSix), verticesOfSix, GL_STATIC_DRAW);
 }
 
-void QuickSquare::createSquare(){
+void QuickSquare::createSquare(const GLuint &shaderProgram){
 
-    const char* vertexShaderSource =
-    "#version 400\n"
-    "in vec3 vert_position;"
-    "in vec3 color;"
-    "out vec3 frag_color;"//from frag shader
-    "void main() {"
-    "  frag_color = color;"
-    "  gl_Position = vec4 (vert_position, 1.0);"
-    "}";
-    
-    const char* fragmentShaderSource =
-    "#version 400\n"
-    //"uniform vec3 uni_color;"
-    "in vec3 frag_color;"
-    "out vec4 out_color;"
-    "void main() {"
-    "  out_color = vec4(frag_color, 1.0);"
-    "}";
-    
-    
     // Create Vertex Array Object
     glGenVertexArrays(1, &squareVAO);
     glBindVertexArray(squareVAO);
@@ -94,31 +71,6 @@ void QuickSquare::createSquare(){
         std::cout << "Using four vertices." << std::endl;
     }
 
-    
-    // Create and compile the vertex shader
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-    glCompileShader(vertexShader);
-    
-    GLint status;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
-    
-    char buffer[512];
-    glGetShaderInfoLog(vertexShader, 512, NULL, buffer);
-    
-    // Create and compile the fragment shader
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-    glCompileShader(fragmentShader);
-    
-    // Link the vertex and fragment shader into a shader program
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, fragmentShader);
-    glAttachShader(shaderProgram, vertexShader);
-    glBindFragDataLocation(shaderProgram, 0, "out_color");
-    glLinkProgram(shaderProgram);
-    glUseProgram(shaderProgram);
-    
     // Specify the layout of the vertex data
     GLint posAttribute = glGetAttribLocation(shaderProgram, "vert_position");
     glEnableVertexAttribArray(posAttribute);
@@ -127,6 +79,9 @@ void QuickSquare::createSquare(){
     GLint colorAttribute = glGetAttribLocation(shaderProgram, "color");
     glEnableVertexAttribArray(colorAttribute);
     glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    
+    //Use our shader program
+    glUseProgram(shaderProgram);
     
 }
 
