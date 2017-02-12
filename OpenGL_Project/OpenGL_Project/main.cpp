@@ -12,6 +12,8 @@
 #include "QuickTetrahedron.hpp"
 #include "QuickTrianglesGube.hpp"
 
+#define SCREEN_WIDTH 720
+#define SCREEN_HEIGHT 680
 
 int keyCode = -1; 
 
@@ -24,9 +26,7 @@ bool autoRotate = true;
 
 float size = 1.0f;
 
-std::string shape = "cube";
-
-bool modernOpenGL = false;
+std::string shape = "tetrahedron";
 
 static void error_callback(int error, const char* description)
 {
@@ -83,7 +83,8 @@ GLFWwindow* initialiseWindow(const int width, const int height)
     
     
     glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
-    if(modernOpenGL == true){
+    if(shape == "triangle" || shape == "square" || shape == "trianglesCube" || shape == "newCube")
+    {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);//We don't want the old OpenGL and want the core profile
@@ -124,7 +125,7 @@ GLFWwindow* initialiseWindow(const int width, const int height)
     
     glEnable(GL_DEPTH_TEST); // enable depth-testing, //enables you to draw things in correct order
    
-    if(shape == "triangle" || shape == "cube" || shape == "tetrahedron" || shape == "trianglesCube"){
+    if(shape == "triangle" || shape == "cube" || shape == "tetrahedron" || shape == "trianglesCube" || shape == "newCube"){
         glEnable(GL_CULL_FACE);//only front facinf poligons are rendered, forn facing have a clock wise or counter clock wise order
     }else if (shape == "square"){
         glDisable(GL_CULL_FACE);
@@ -239,13 +240,15 @@ void controlShape(){
 
 void mvp(const float &w, const float &h, const GLuint &programID){
     
+    glViewport(0.0f, 0.0f, w, h);
+    
     // compute the aspect ratio
     // this is used to prevent the picture from distorting when
     // the window is resized
     float aspect = (float)w / (float)h;
     
-    if (modernOpenGL == true){
-        
+    if(shape == "triangle" || shape == "square" || shape == "trianglesCube" || shape == "newCube")
+    {
         // Get a handle for our "MVP" uniform
         GLuint MatrixID = glGetUniformLocation(programID, "MVP");
         
@@ -274,36 +277,38 @@ void mvp(const float &w, const float &h, const GLuint &programID){
         
         // Draw stuff
         glMatrixMode(GL_PROJECTION_MATRIX);
+        //glMatrixMode(GL_PROJECTION);// projection matrix defines the properties of the camera that views the object in the world coordinates frame.
         glLoadIdentity();//sets the model view matrix back to its initial state, which puts the camera directly in front of the world.
         
-        //    if (windowWidth >= windowHeight) {
-        //        // aspect >= 1, set the height from -1 to 1, with larger width
-        //        //gluOrtho2D(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0);
-        //        glOrtho(-1.0f * aspect, 1.0f * aspect, -1.0f, 1.0f, 1.0f, -1.0f);
-        //    } else {
-        //        // aspect < 1, set the width to -1 to 1, with larger height
-        //        //gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
-        //        glOrtho(-1.0f, 1.0f, -1.0 / aspect, 1.0 / aspect, 1.0f, -1.0f);
-        //    }
+//        if (windowWidth >= windowHeight) {
+//            glOrtho(-1.0f * aspect, 1.0f * aspect, -1.0f, 1.0f, 1.0f, -1.0f);
+//        } else {
+//            glOrtho(-1.0f, 1.0f, -1.0 / aspect, 1.0 / aspect, 1.0f, -1.0f);
+//        }
+        //glOrtho(0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, 0.0f, 10.0f);// essentially set coordinate system
         
-        gluPerspective( 45, aspect, 0.2f, 100.0f );
+        gluPerspective( 45, 1.0f * aspect, 0.2f, 100.0f );
         
-        glMatrixMode(GL_MODELVIEW_MATRIX);
+        glMatrixMode(GL_MODELVIEW_MATRIX);// (default matrix mode) modelview matrix defines how your objects are transformed (meaning translation, rotation, and scaling) in your world 
+        //glLoadIdentity(); // same as above
+        
     }
     
     
 }
+
+
 void displayWindow( GLFWwindow* window )
 {
-    
+    GLuint programID;
     QuickTriangle triang;
     QuickSquare square(true);
-    QuickCube cube(size);
-    QuickTetrahedron tetrahedron(size);
-    QuickTrianglesGube trianglesCube(size);
+    QuickCube cube;
+    QuickTetrahedron tetrahedron;
+    QuickTrianglesGube trianglesCube;
     
-    GLuint programID;
-    if (modernOpenGL == true){
+    if (shape == "triangle" || shape == "square" || shape == "trianglesCube" || shape == "newCube")
+    {
         programID = addShader();
         std::cout << "adding shader with modern open gl." << std::endl;
     }
@@ -314,20 +319,27 @@ void displayWindow( GLFWwindow* window )
     }else if (shape == "square"){
         square.createSquare(programID);
         std::cout << "Square";
+    }else if (shape == "cube"){
+        cube.drawVertices(size);
+        std::cout << "Cube";
+    }else if (shape == "tetrahedron"){
+        tetrahedron.drawVertices(size);
+        std::cout << "Tetrahedron";
+    }else if (shape == "trianglesCube"){
+        trianglesCube.drawVertices(size);
+        std::cout << "Triangles Cude";
     }
+
     
-            
+    // Scale to window size
+    GLint windowWidth, windowHeight;
+    glfwGetWindowSize(window, &windowWidth, &windowHeight);
+    glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
+    if (windowHeight == 0) windowHeight = 1; // To prevent divide by 0
     
+
     while(!glfwWindowShouldClose(window))
     {
-        // Scale to window size
-        GLint windowWidth, windowHeight;
-        glfwGetWindowSize(window, &windowWidth, &windowHeight);
-        glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
-        
-        if (windowHeight == 0) windowHeight = 1;                // To prevent divide by 0
-        glViewport(0, 0, windowWidth, windowHeight);
-        
         // Clear the screen
         glClearColor(0.4f, 0.4f, 0.4f, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -347,8 +359,11 @@ void displayWindow( GLFWwindow* window )
             tetrahedron.drawTetrahedron();
         }else if (shape == "trianglesCube"){
             trianglesCube.drawCube(programID);
+        }else if (shape == "newCube"){
+            
         }
         
+       
         // Update Screen
         glfwSwapBuffers(window);
         
@@ -360,7 +375,7 @@ void displayWindow( GLFWwindow* window )
 
 int main(int argc, const char * argv[]) {
     
-    GLFWwindow* window = initialiseWindow(760, 620);
+    GLFWwindow* window = initialiseWindow(SCREEN_WIDTH, SCREEN_HEIGHT);
     if( window != nullptr )
     {
         displayWindow( window );

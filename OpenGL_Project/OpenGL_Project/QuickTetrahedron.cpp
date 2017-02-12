@@ -11,7 +11,7 @@
 QuickTetrahedron::QuickTetrahedron(){
     
 }
-QuickTetrahedron::QuickTetrahedron(int size){
+QuickTetrahedron::QuickTetrahedron(float size){
     drawVertices(size);
 }
 QuickTetrahedron::~QuickTetrahedron(){
@@ -24,12 +24,12 @@ void QuickTetrahedron::drawVertices(float size){
     // with a triangle strip we have to repeat the last two vertices.
     vertices =
     {
-        0.0f, (size + size), 0.0f,
-        -size, 0.0f, size,
-        1.0f, 0.0f, size,
-        0.0f, 0.0f, -(size ),
-        0.0f, (size + size), 0.0f,
-        -size, 0.0f, size
+        0.0f, size, 0.0f,
+        -size, -(size/2.0f), size,
+        1.0f, -(size/2.0f), size,
+        0.0f, -(size/2.0f), -(size ),
+        0.0f, size , 0.0f,
+        -size, -(size/2.0f), size
     };
     
     colors =

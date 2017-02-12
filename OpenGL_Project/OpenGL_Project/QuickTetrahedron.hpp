@@ -16,7 +16,7 @@ class QuickTetrahedron {
     
 public:
     QuickTetrahedron();
-    QuickTetrahedron(int size);
+    QuickTetrahedron(float size);
     ~QuickTetrahedron();
     
     void drawVertices(float size);
