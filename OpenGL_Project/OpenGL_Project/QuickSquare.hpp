@@ -29,6 +29,7 @@ private:
     GLuint squareVAO;
     GLuint squareVBO;
     GLuint squareEBO;
+    GLuint IndexCount = 0;
     
     float verticesOfSix[36] = {
         -0.6f,  0.6f, 0.0f, 1.0f, 0.0f, 0.0f, // Top-left // Vertex 1 (X, Y, Z) and Vertex 1: Red 

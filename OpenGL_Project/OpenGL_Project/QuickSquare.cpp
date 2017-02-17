@@ -83,6 +83,7 @@ void QuickSquare::createSquare(const GLuint &shaderProgram){
     //Use our shader program
     glUseProgram(shaderProgram);
     
+    
 }
 
 void QuickSquare::drawSquare(){

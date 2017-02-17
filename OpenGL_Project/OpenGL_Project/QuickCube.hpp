@@ -28,12 +28,17 @@ public :
     
     void drawVertices(float size);
     void drawCube();
-    
+    void drawTorus(double r, double c, int rSeg, int cSeg);
     
 private:
     // Define the 8 vertices of a unit cube
     //VertexXYZColor g_VertexBuffer[8];
     std::vector <VertexXYZColor>  g_VertexBuffer;
+    std::vector<glm::vec3> squarePyramideVerts;
+    std::vector<glm::vec3> verts;
+    std::vector<glm::vec3> normal;
+    std::vector<glm::vec3> vertss;
+    std::vector<glm::vec2> uv;
     
     // Define the vertex indices for the cube.
     GLuint g_IndexBuffer[24] = {

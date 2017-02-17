@@ -22,11 +22,11 @@ float xRotation = 0.0f;
 float yRotation = 0.0f;
 float depth = - 5.0f;
 
-bool autoRotate = true;
+bool autoRotate = false;
 
 float size = 1.0f;
 
-std::string shape = "tetrahedron";
+std::string shape = "trianglesCube";
 
 static void error_callback(int error, const char* description)
 {
@@ -132,10 +132,9 @@ GLFWwindow* initialiseWindow(const int width, const int height)
     }
     
     //glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
-    //glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LEQUAL);
     
-    //glCullFace(GL_BACK);
-    
+    glCullFace(GL_BACK);
     
     return window;
 }
@@ -221,7 +220,6 @@ GLuint addShader(){
 }
 
 
-
 void controlShape(){
     
     glTranslatef( 0.0f, 0.0f, depth);// move the rest of the world back away from the camera
@@ -297,12 +295,12 @@ void mvp(const float &w, const float &h, const GLuint &programID){
     
 }
 
-
 void displayWindow( GLFWwindow* window )
 {
+    
     GLuint programID;
     QuickTriangle triang;
-    QuickSquare square(true);
+    QuickSquare square(false);
     QuickCube cube;
     QuickTetrahedron tetrahedron;
     QuickTrianglesGube trianglesCube;
@@ -329,7 +327,6 @@ void displayWindow( GLFWwindow* window )
         trianglesCube.drawVertices(size);
         std::cout << "Triangles Cude";
     }
-
     
     // Scale to window size
     GLint windowWidth, windowHeight;
@@ -343,6 +340,7 @@ void displayWindow( GLFWwindow* window )
         // Clear the screen
         glClearColor(0.4f, 0.4f, 0.4f, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
         
         mvp(windowWidth,windowHeight, programID);
         
@@ -360,9 +358,9 @@ void displayWindow( GLFWwindow* window )
         }else if (shape == "trianglesCube"){
             trianglesCube.drawCube(programID);
         }else if (shape == "newCube"){
+           
             
         }
-        
        
         // Update Screen
         glfwSwapBuffers(window);

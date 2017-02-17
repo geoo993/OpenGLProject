@@ -1,0 +1,12 @@
+#version 400 core
+
+uniform sampler2D tex;
+
+in vec2 fragTexCoord;
+
+out vec4 out_color;
+
+void main() {
+    //note: the texture function was called texture2D in older versions of GLSL
+    out_color = texture(tex, fragTexCoord);
+}

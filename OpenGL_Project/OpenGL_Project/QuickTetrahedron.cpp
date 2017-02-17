@@ -31,6 +31,7 @@ void QuickTetrahedron::drawVertices(float size){
         0.0f, size , 0.0f,
         -size, -(size/2.0f), size
     };
+
     
     colors =
     {
