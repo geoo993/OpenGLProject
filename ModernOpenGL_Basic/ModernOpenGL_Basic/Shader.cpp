@@ -8,8 +8,6 @@
 
 #include "Shader.h"
 
-static GLuint CreateShader (const std::string &text, GLenum shadertype);
-
 Shader::Shader(const std::string &fileName){
     //creating a new rogram, create some space in the gpu for our shader program, 
     //open gl will give us some number to refer to it by
@@ -32,11 +30,10 @@ Shader::Shader(const std::string &fileName){
     glBindAttribLocation(m_program, 1, "inTexCoord");
     glBindAttribLocation(m_program, 2, "inNormal");
     
-    int bUsetextureLocation = glGetUniformLocation(m_program, "bUseTexture");
-    glUniform1i(bUsetextureLocation, true);
+    //one is true and zero is false
+    glUniform1i(glGetUniformLocation(m_program, "bUseTexture"), 0);
     
-    int samplerLocation = glGetUniformLocation(m_program, "diffuse");
-    glUniform1i(samplerLocation, 0);
+    //glUniform1i(glGetUniformLocation(m_program, "diffuse"), 0);
     
     //we link all the attached shaders with out game
     glLinkProgram(m_program);
@@ -123,10 +120,11 @@ void Shader::CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const 
     GLint success = 0;
     GLchar error[1024] = { 0 };
     
-    if(isProgram)
+    if(isProgram){
         glGetProgramiv(shader, flag, &success);
-    else
+    }else{
         glGetShaderiv(shader, flag, &success);
+    }
     
     if(success == GL_FALSE)
     {

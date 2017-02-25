@@ -78,21 +78,21 @@ int main(int argc, const char * argv[])  {
     
     //load shader program
     std::string path = "/Users/GeorgeQuentin/Dev/OpenGL/OpenGLProject/ModernOpenGL_Basic/ModernOpenGL_Basic";
-    Shader shader(path + "/res/basicShader");
+    Shader shader(path + "/res/shaders/basicShader");
     
     
     //load mesh
     Vertex vertices[] = {
-        Vertex(glm::vec3(0.0f,0.8f,0.0f)),
-        Vertex(glm::vec3(-0.5f,-0.2f,0.0f)),
-        Vertex(glm::vec3(0.5f,-0.2f,0.0f))
+        Vertex( glm::vec3(0.0f,0.8f,0.0f), glm::vec2(0.0f,0.5f), glm::vec3(0.0f,0.2f,0.0f)   ),
+        Vertex( glm::vec3(-0.5f,-0.2f,0.0f), glm::vec2(0.25f,1.0f), glm::vec3(0.2f,0.1f,0.0f) ),
+        Vertex( glm::vec3(0.5f,-0.2f,0.0f), glm::vec2(0.5f,0.5f), glm::vec3(0.5f,0.6f,0.0f) )
     };
     
     Mesh mesh(vertices, sizeof(vertices)/sizeof(vertices[0]) );
     
     
     //load texture;
-    Texture texture(path + "/res/spiralcolor.jpg");
+    Texture texture(path + "/res/textures/spiralcolor.jpg", true);
     
     
     while(!glfwWindowShouldClose(window))

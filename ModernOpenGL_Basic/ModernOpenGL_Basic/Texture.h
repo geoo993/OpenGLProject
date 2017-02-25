@@ -14,20 +14,34 @@
 class Texture {
     
 public:
-    Texture(const std::string &fileName);
+    Texture(const std::string &filepath, const bool &generateMipMaps = true);
     virtual ~Texture();
+    
+    void CreateFromData(BYTE* imageData, int width, int height, int bpp, GLenum format, bool generateMipMaps = false);
+    
+    void SetSamplerObjectParameter(GLenum parameter, GLenum value);
+    void SetSamplerObjectParameterf(GLenum parameter, float value);
     
     void Bind(unsigned int textureUnit = 0);
     void UnBind();
     
+    int GetWidth();
+    int GetHeight();
+    int GetBPP();
+ 
     void Release();
     
 private:
     Texture(const Texture &other){}
     void operator=(const Texture &other){}
     
+    int m_width, m_height, m_bpp; // Texture width, height, and bytes per pixel
     GLuint m_texture; // Texture id
-
+    GLuint m_sampler; // Sampler id
+    bool m_mipMapsGenerated;
+    
+    string m_path;
+    
 };
 
 #endif /* Texture_h */
