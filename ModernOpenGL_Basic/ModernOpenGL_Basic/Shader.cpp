@@ -30,10 +30,6 @@ Shader::Shader(const std::string &fileName){
     glBindAttribLocation(m_program, 1, "inTexCoord");
     glBindAttribLocation(m_program, 2, "inNormal");
     
-    //one is true and zero is false
-    glUniform1i(glGetUniformLocation(m_program, "bUseTexture"), 0);
-    
-    //glUniform1i(glGetUniformLocation(m_program, "diffuse"), 0);
     
     //we link all the attached shaders with out game
     glLinkProgram(m_program);
@@ -42,6 +38,16 @@ Shader::Shader(const std::string &fileName){
     //validation, by checking shader program that it is still valid
     glValidateProgram(m_program);
     CheckShaderError(m_program, GL_VALIDATE_STATUS, true, "Error: Shader program is in-valid. ");
+    
+    //glGetUniformLocation takes two parameters, 
+    //first it gets the program we want to get the uniform from
+    //then the second is the uniform variable we want to get, it is the name of the unform variable
+    m_uniforms[TRANFORM_U] = glGetUniformLocation(m_program, "transform");
+    
+    m_uniforms[USETEXTURE_U]  = glGetUniformLocation(m_program, "bUseTexture");
+    
+    
+    //glUniform1i(glGetUniformLocation(m_program, "diffuse"), 0);
 }
 
 Shader::~Shader(){
@@ -89,6 +95,22 @@ void Shader::Bind(){
 void Shader::UnBind(){
     //unbind and stop using the shader program
     glUseProgram(0);
+}
+
+void Shader::Update(const Transform & tansform){
+    
+    //getting the model matrix
+    glm::mat4 model = tansform.GetModel();
+    
+    //openGL provides a function to update the uniform, this is called glUniform which has many types
+    //the first parameter is the uniform we want to update
+    //the next parameter is how many things we are sending in, which is one
+    //the next parameter is to tell whether we are interested in transposing our matrix, you you might actualy just want to transpose it in the order openGL expects, however glm already has it in the proper order so we can pass in GL_FALSE, but if you are writing your own matrix class and for some reason your having issues even when you know your maths is right, then you migh just need to transpos it
+    //the final variable is the actual data. here we are getting the address of the model matrix and accessing it as an array, which should provide the address of the first element in the model matrix
+    glUniformMatrix4fv(m_uniforms[TRANFORM_U], 1, GL_FALSE, &model[0][0]);
+    
+    //one is true and zero is false
+    glUniform1i(m_uniforms[USETEXTURE_U], 1);
 }
 
 std::string Shader::LoadShader(const std::string& fileName)

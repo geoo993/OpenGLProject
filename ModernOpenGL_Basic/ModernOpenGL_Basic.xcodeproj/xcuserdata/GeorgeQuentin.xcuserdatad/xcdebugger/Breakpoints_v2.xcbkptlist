@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ModernOpenGL_Basic/Shader.cpp"
-            timestampString = "509727415.366017"
+            timestampString = "509801397.438173"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "134"
-            endingLineNumber = "134"
+            startingLineNumber = "156"
+            endingLineNumber = "156"
             landmarkName = "Shader::CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const std::string&amp; errorMessage)"
             landmarkType = "7">
          </BreakpointContent>

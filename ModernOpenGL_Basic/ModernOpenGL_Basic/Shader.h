@@ -10,6 +10,7 @@
 #define Shader_h
 
 #include "Common.h"
+#include "Transform.h"
 
 class Shader {
     
@@ -20,6 +21,8 @@ public:
     void Bind();
     void UnBind();
     
+    void Update(const Transform & tansform);
+    
     GLuint CreateShader (const std::string &text, GLenum shadertype);
     std::string LoadShader(const std::string& fileName);
     void CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const std::string& errorMessage);
@@ -28,11 +31,20 @@ private:
     Shader(const Shader &other){}
     void operator=(const Shader &other){}
     
+    //numbers to refer to our different uniform variables
+    enum {
+        TRANFORM_U,
+        USETEXTURE_U,
+        
+        NUM_UNIFORMS
+    };
+    
     
     static const unsigned int NUM_SHADERS = 2;
     
     GLuint m_program;
     GLuint m_shaders[NUM_SHADERS];
+    GLuint m_uniforms[NUM_UNIFORMS];
 };
 
 #endif /* Shader_h */

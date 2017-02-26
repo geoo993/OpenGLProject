@@ -35,18 +35,17 @@
 
 #include <FreeImage.h>
 
-//#include <ctime>
-//#include <algorithm>
-//#include <cmath>
+#include <ctime>
+#include <algorithm>
 #include <assert.h>
-#include <cstring>
+#include <string>
 #include <vector>
 #include <fstream>
 #include <sstream>
-//#include <queue>
-//#include <map>
-//#include <set>
-//
+#include <queue>
+#include <map>
+#include <set>
+
 //#include <stdexcept>
 //#include <cstdlib>
 //#include <cstdio>

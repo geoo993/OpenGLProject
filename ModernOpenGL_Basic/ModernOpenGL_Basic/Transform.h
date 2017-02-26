@@ -14,8 +14,9 @@
 class Transform{
     
 public:
-    Transform(const glm::vec3 &position = glm::vec3(), 
-              const glm::vec3 &rotation = glm::vec3(), 
+    
+    Transform(const glm::vec3 &position = glm::vec3(0.0f, 0.0f, 0.0f), 
+              const glm::vec3 &rotation = glm::vec3(0.0f, 0.0f, 0.0f), 
               const glm::vec3 &scale = glm::vec3(1.0f, 1.0f, 1.0f)   
               ): m_position(position), m_rotation(rotation), m_scale(scale) {}
     
@@ -44,11 +45,11 @@ public:
     inline glm::vec3 & GetRotation() { return m_rotation; }
     inline glm::vec3 & GetScale() { return m_scale; }
     
-    inline void SetPositions(glm::vec3 & position) { m_position = position; }
-    inline void SetRotation(glm::vec3 & rotation) { m_rotation = rotation; }
-    inline void SetScale(glm::vec3 & scale) { m_scale = scale; }
+    inline void SetPositions(const glm::vec3 & position) { m_position = position; }
+    inline void SetRotation(const glm::vec3 & rotation) { m_rotation = rotation; }
+    inline void SetScale(const glm::vec3 & scale) { m_scale = scale; }
     
-    virtual ~Transform();
+    virtual ~Transform(){};
 private:
     Transform(const Transform &other){}
     void operator=(const Transform &other){}

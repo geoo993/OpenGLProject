@@ -12,9 +12,8 @@
 #include "Mesh.h"
 #include "Texture.h"
 
-
-#define SCREEN_WIDTH 720
-#define SCREEN_HEIGHT 680
+#define SCREEN_WIDTH 1020
+#define SCREEN_HEIGHT 720
 
 
 int main(int argc, const char * argv[])  {
@@ -72,10 +71,6 @@ int main(int argc, const char * argv[])  {
     glEnable(GL_CULL_FACE);//only front facinf poligons are rendered, forn facing have a clock wise or counter clock wise order
     //glDisable(GL_CULL_FACE);
     
-    //glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
     //load shader program
     std::string path = "/Users/GeorgeQuentin/Dev/OpenGL/OpenGLProject/ModernOpenGL_Basic/ModernOpenGL_Basic";
     Shader shader(path + "/res/shaders/basicShader");
@@ -83,9 +78,9 @@ int main(int argc, const char * argv[])  {
     
     //load mesh
     Vertex vertices[] = {
-        Vertex( glm::vec3(0.0f,0.8f,0.0f), glm::vec2(0.0f,0.5f), glm::vec3(0.0f,0.2f,0.0f)   ),
-        Vertex( glm::vec3(-0.5f,-0.2f,0.0f), glm::vec2(0.25f,1.0f), glm::vec3(0.2f,0.1f,0.0f) ),
-        Vertex( glm::vec3(0.5f,-0.2f,0.0f), glm::vec2(0.5f,0.5f), glm::vec3(0.5f,0.6f,0.0f) )
+        Vertex( glm::vec3(0.0f,0.8f,0.0f), glm::vec2(0.0f,0.5f), glm::vec3(0.0f,0.8f,0.0f)   ),
+        Vertex( glm::vec3(-0.5f,-0.2f,0.0f), glm::vec2(0.25f,1.0f), glm::vec3(0.8f,0.8f,0.0f) ),
+        Vertex( glm::vec3(0.5f,-0.2f,0.0f), glm::vec2(0.5f,0.5f), glm::vec3(0.8f,0.8f,0.0f) )
     };
     
     Mesh mesh(vertices, sizeof(vertices)/sizeof(vertices[0]) );
@@ -95,6 +90,10 @@ int main(int argc, const char * argv[])  {
     Texture texture(path + "/res/textures/spiralcolor.jpg", true);
     
     
+    //transform model
+    Transform transform;
+    float counter = 0.0f;
+    
     while(!glfwWindowShouldClose(window))
     {
         // Clear the screen
@@ -103,12 +102,25 @@ int main(int argc, const char * argv[])  {
         
         //Render process
         {
+            float sinCounter = sinf(counter);
+            float conCounter = cosf(counter);
+            
+            transform.GetPositions().x = sinCounter;
+            transform.GetRotation().z = counter * 40;
+            transform.SetScale(glm::vec3(conCounter, conCounter, conCounter));
             
             // bind the shader program 
             shader.Bind();
             
-            texture.Bind(0);//binding to zero
+            //update shader to tranform our mesh
+            shader.Update(transform);
             
+            
+            //binding texture at zero unit
+            texture.Bind(0);
+            
+            
+            //drawing our mesh
             mesh.Draw();
             
             //unbind texture
@@ -116,6 +128,9 @@ int main(int argc, const char * argv[])  {
             
             // unbind the shader program
             shader.UnBind();
+            
+            
+            counter += 0.001f;
         }
         
         
