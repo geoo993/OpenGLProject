@@ -20,9 +20,9 @@ public:
         this->normal = normal;
     }
     
-    glm::vec3* GetPositions() { return &position; }
-    glm::vec2* GetTexCoordinates() { return &texCoord; }
-    glm::vec3* GetNormals() { return &normal; }
+    inline glm::vec3* GetPositions() { return &position; }
+    inline glm::vec2* GetTexCoordinates() { return &texCoord; }
+    inline glm::vec3* GetNormals() { return &normal; }
     
 private:
     glm::vec3 position;

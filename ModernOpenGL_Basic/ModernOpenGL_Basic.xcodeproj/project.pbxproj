@@ -42,6 +42,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C7767B581E62DB2F00321D7D /* Transform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Transform.h; sourceTree = "<group>"; };
 		C7C3B9061E619C4000DDB382 /* ModernOpenGL_Basic */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ModernOpenGL_Basic; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7C3B9101E619CD600DDB382 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		C7C3B9111E619CD600DDB382 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -103,6 +104,7 @@
 				C7C3B9501E61EF6E00DDB382 /* obj_loader.cpp */,
 				C7C3B9511E61EF6E00DDB382 /* obj_loader.h */,
 				C7C3B9101E619CD600DDB382 /* Common.h */,
+				C7767B581E62DB2F00321D7D /* Transform.h */,
 				C7C3B9581E61F18E00DDB382 /* Texture.cpp */,
 				C7C3B9591E61F18E00DDB382 /* Texture.h */,
 				C7C3B9491E61BC6000DDB382 /* Shader.cpp */,
