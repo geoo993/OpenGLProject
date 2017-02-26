@@ -11,6 +11,7 @@
 
 #include "Common.h"
 #include "Transform.h"
+#include "Camera.h"
 
 class Shader {
     
@@ -21,7 +22,7 @@ public:
     void Bind();
     void UnBind();
     
-    void Update(const Transform & tansform);
+    void Update(const Transform & transform, const Camera & camera);
     
     GLuint CreateShader (const std::string &text, GLenum shadertype);
     std::string LoadShader(const std::string& fileName);

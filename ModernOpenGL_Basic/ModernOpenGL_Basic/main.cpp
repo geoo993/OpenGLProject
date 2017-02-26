@@ -67,8 +67,8 @@ int main(int argc, const char * argv[])  {
     
     // OpenGL settings
     // tell GL to only draw onto a pixel if the shape is closer to the viewer
-    glEnable(GL_DEPTH_TEST); // enable depth-testing
-    glEnable(GL_CULL_FACE);//only front facinf poligons are rendered, forn facing have a clock wise or counter clock wise order
+    //glEnable(GL_DEPTH_TEST); // enable depth-testing
+    //glEnable(GL_CULL_FACE);//only front facinf poligons are rendered, forn facing have a clock wise or counter clock wise order
     //glDisable(GL_CULL_FACE);
     
     //load shader program
@@ -77,22 +77,53 @@ int main(int argc, const char * argv[])  {
     
     
     //load mesh
-    Vertex vertices[] = {
+    Vertex triangleVertices[] = {
         Vertex( glm::vec3(0.0f,0.8f,0.0f), glm::vec2(0.0f,0.5f), glm::vec3(0.0f,0.8f,0.0f)   ),
         Vertex( glm::vec3(-0.5f,-0.2f,0.0f), glm::vec2(0.25f,1.0f), glm::vec3(0.8f,0.8f,0.0f) ),
         Vertex( glm::vec3(0.5f,-0.2f,0.0f), glm::vec2(0.5f,0.5f), glm::vec3(0.8f,0.8f,0.0f) )
     };
     
-    Mesh mesh(vertices, sizeof(vertices)/sizeof(vertices[0]) );
+    float size = 1.0f;
+    
+    // Define the 6 vertices of a unit tetrahedron
+    Vertex tetrahedronVertices[] = {
+        //vertices positions                          //colors
+        Vertex( glm::vec3(  0.0f,  size,  0.0f ), glm::vec2(1.0f,1.0f),glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 0
+        Vertex( glm::vec3( -size,  -(size/2.0f),  size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ), // 1
+        Vertex( glm::vec3( 1.0f, -(size/2.0f),  size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 0.0f, 1.0f ) ), // 2
+        Vertex( glm::vec3(  0.0f, -(size/2.0f),  -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 0.0f, 1.0f ) ), // 3
+        Vertex( glm::vec3(  0.0f, size, 0.0f ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 0.0f, 0.0f ) ), // 4
+        Vertex( glm::vec3( -size, -(size/2.0f), size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 0.0f, 0.0f ) ) // 5
+    };
+    
+    
+    // Define the 8 vertices of a unit cube
+    Vertex cubeVertices[] = {
+        //vertices positions                          //colors
+        Vertex( glm::vec3(  size,  size,  size ), glm::vec2(1.0f,1.0f),glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 0
+        Vertex( glm::vec3( -size,  size,  size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ), // 1
+        Vertex( glm::vec3( -size, -size,  size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 0.0f, 1.0f ) ), // 2
+        Vertex( glm::vec3(  size, -size,  size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 0.0f, 1.0f ) ), // 3
+        Vertex( glm::vec3(  size, -size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 0.0f, 0.0f ) ), // 4
+        Vertex( glm::vec3( -size, -size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 0.0f, 0.0f ) ), // 5
+        Vertex( glm::vec3( -size,  size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 1.0f, 0.0f ) ), // 6
+        Vertex( glm::vec3(  size,  size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 0.0f ) ), // 7
+    };
+    
+    Mesh mesh(triangleVertices, sizeof(triangleVertices)/sizeof(triangleVertices[0]) );
     
     
     //load texture;
     Texture texture(path + "/res/textures/spiralcolor.jpg", true);
     
+    //setup camera
+    float aspect = (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT;
+    Camera camera(glm::vec3(0,0,-3), 70.0f, aspect, 0.1f, 5000.0f);
     
     //transform model
     Transform transform;
     float counter = 0.0f;
+    
     
     while(!glfwWindowShouldClose(window))
     {
@@ -106,14 +137,17 @@ int main(int argc, const char * argv[])  {
             float conCounter = cosf(counter);
             
             transform.GetPositions().x = sinCounter;
+            transform.GetPositions().z = conCounter;
+            transform.GetRotation().x = counter * 40;
+            transform.GetRotation().y = counter * 40;
             transform.GetRotation().z = counter * 40;
-            transform.SetScale(glm::vec3(conCounter, conCounter, conCounter));
+            //transform.SetScale(glm::vec3(conCounter, conCounter, conCounter));
             
             // bind the shader program 
             shader.Bind();
             
-            //update shader to tranform our mesh
-            shader.Update(transform);
+            //update shader, including the tranform of our mesh, and the camera view of the mesh
+            shader.Update(transform, camera);
             
             
             //binding texture at zero unit

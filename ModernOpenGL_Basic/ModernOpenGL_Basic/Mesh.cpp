@@ -90,7 +90,6 @@ void Mesh::Draw(){
     //finally how much you want to read or how far you want to read, you can specify how much you want opnGL to draw your triangles or mesh, in this case how many vertices to draw, whcih will be taken from the drawcount
     glDrawArrays(GL_TRIANGLES, 0, m_drawCount);
     
-    
 }
 
 // Release memory on the GPU 

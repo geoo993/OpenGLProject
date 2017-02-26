@@ -49,7 +49,7 @@ public:
     inline void SetRotation(const glm::vec3 & rotation) { m_rotation = rotation; }
     inline void SetScale(const glm::vec3 & scale) { m_scale = scale; }
     
-    virtual ~Transform(){};
+    virtual ~Transform(){}
 private:
     Transform(const Transform &other){}
     void operator=(const Transform &other){}

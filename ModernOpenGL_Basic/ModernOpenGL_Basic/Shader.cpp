@@ -97,17 +97,24 @@ void Shader::UnBind(){
     glUseProgram(0);
 }
 
-void Shader::Update(const Transform & tansform){
+void Shader::Update(const Transform & transform, const Camera & camera){
+    
+    //here we model the mvp, meaning the model, view, and projection matrices of the shader
     
     //getting the model matrix
-    glm::mat4 model = tansform.GetModel();
+    glm::mat4 model =  transform.GetModel();
+    
+    //getting the projection and view matrix
+    glm::mat4 viewProjection = camera.GetViewProjection();
+    
+    glm::mat4 MVP = viewProjection * model;
     
     //openGL provides a function to update the uniform, this is called glUniform which has many types
     //the first parameter is the uniform we want to update
     //the next parameter is how many things we are sending in, which is one
     //the next parameter is to tell whether we are interested in transposing our matrix, you you might actualy just want to transpose it in the order openGL expects, however glm already has it in the proper order so we can pass in GL_FALSE, but if you are writing your own matrix class and for some reason your having issues even when you know your maths is right, then you migh just need to transpos it
     //the final variable is the actual data. here we are getting the address of the model matrix and accessing it as an array, which should provide the address of the first element in the model matrix
-    glUniformMatrix4fv(m_uniforms[TRANFORM_U], 1, GL_FALSE, &model[0][0]);
+    glUniformMatrix4fv(m_uniforms[TRANFORM_U], 1, GL_FALSE, &MVP[0][0]);
     
     //one is true and zero is false
     glUniform1i(m_uniforms[USETEXTURE_U], 1);
