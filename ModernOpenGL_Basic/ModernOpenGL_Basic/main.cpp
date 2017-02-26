@@ -67,8 +67,8 @@ int main(int argc, const char * argv[])  {
     
     // OpenGL settings
     // tell GL to only draw onto a pixel if the shape is closer to the viewer
-    //glEnable(GL_DEPTH_TEST); // enable depth-testing
-    //glEnable(GL_CULL_FACE);//only front facinf poligons are rendered, forn facing have a clock wise or counter clock wise order
+    glEnable(GL_DEPTH_TEST); // enable depth-testing
+    glEnable(GL_CULL_FACE);//only front facinf poligons are rendered, forn facing have a clock wise or counter clock wise order
     //glDisable(GL_CULL_FACE);
     
     //load shader program
@@ -78,39 +78,123 @@ int main(int argc, const char * argv[])  {
     
     //load mesh
     Vertex triangleVertices[] = {
+        //vertices positions                          //texture             //colors
         Vertex( glm::vec3(0.0f,0.8f,0.0f), glm::vec2(0.0f,0.5f), glm::vec3(0.0f,0.8f,0.0f)   ),
         Vertex( glm::vec3(-0.5f,-0.2f,0.0f), glm::vec2(0.25f,1.0f), glm::vec3(0.8f,0.8f,0.0f) ),
         Vertex( glm::vec3(0.5f,-0.2f,0.0f), glm::vec2(0.5f,0.5f), glm::vec3(0.8f,0.8f,0.0f) )
     };
     
+    
     float size = 1.0f;
+   
     
-    // Define the 6 vertices of a unit tetrahedron
-    Vertex tetrahedronVertices[] = {
-        //vertices positions                          //colors
-        Vertex( glm::vec3(  0.0f,  size,  0.0f ), glm::vec2(1.0f,1.0f),glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 0
-        Vertex( glm::vec3( -size,  -(size/2.0f),  size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ), // 1
-        Vertex( glm::vec3( 1.0f, -(size/2.0f),  size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 0.0f, 1.0f ) ), // 2
-        Vertex( glm::vec3(  0.0f, -(size/2.0f),  -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 0.0f, 1.0f ) ), // 3
-        Vertex( glm::vec3(  0.0f, size, 0.0f ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 0.0f, 0.0f ) ), // 4
-        Vertex( glm::vec3( -size, -(size/2.0f), size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 0.0f, 0.0f ) ) // 5
-    };
+    /////6--------------/5
+    ////  .           // |
+    //2--------------1   |
+    //    .          |   |
+    //    .          |   |
+    //    .          |   |
+    //    .          |   |
+    //    7......... |   /4
+    //               | //
+    //3--------------/0
     
     
-    // Define the 8 vertices of a unit cube
     Vertex cubeVertices[] = {
-        //vertices positions                          //colors
-        Vertex( glm::vec3(  size,  size,  size ), glm::vec2(1.0f,1.0f),glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 0
-        Vertex( glm::vec3( -size,  size,  size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ), // 1
-        Vertex( glm::vec3( -size, -size,  size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 0.0f, 1.0f ) ), // 2
-        Vertex( glm::vec3(  size, -size,  size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 0.0f, 1.0f ) ), // 3
-        Vertex( glm::vec3(  size, -size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 0.0f, 0.0f ) ), // 4
-        Vertex( glm::vec3( -size, -size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 0.0f, 0.0f ) ), // 5
-        Vertex( glm::vec3( -size,  size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 1.0f, 0.0f ) ), // 6
-        Vertex( glm::vec3(  size,  size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 0.0f ) ), // 7
+        //vertices positions                          //texture             //colors
+        //bottom 3,7,4  4,0,3
+        Vertex( glm::vec3(  -size,-size,size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 0
+        Vertex( glm::vec3( -size, -size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 1
+        Vertex( glm::vec3( size, -size, -size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 2
+        Vertex( glm::vec3(  size, -size, -size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 3
+        Vertex( glm::vec3( size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 4
+        Vertex( glm::vec3( -size, -size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 5
+        
+        //top   1,5,6   6,2,1
+        Vertex( glm::vec3( size,size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 6
+        Vertex( glm::vec3( size, size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 7
+        Vertex( glm::vec3(  -size, size,-size ), glm::vec2(0.0f,1.0f), glm::vec3(1.0f, 1.0f, 1.0f ) ), // 8
+        Vertex( glm::vec3( -size, size,-size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f) ), // 9
+        Vertex( glm::vec3( -size, size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 10
+        Vertex( glm::vec3( size, size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 11
+        
+        
+        //front 0,1,2    2,3,0
+        Vertex( glm::vec3(  size,-size,size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 12
+        Vertex( glm::vec3( size, size, size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 13
+        Vertex( glm::vec3( -size, size, size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 14
+        Vertex( glm::vec3( -size,size, size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 15
+        Vertex( glm::vec3(  -size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 16
+        Vertex( glm::vec3( size, -size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 17
+        
+        //back  7,6,5   5,4,7
+        Vertex( glm::vec3( -size, -size, -size ), glm::vec2(1.0f,0.0f), glm::vec3(1.0f, 1.0f, 1.0f ) ), // 18
+        Vertex( glm::vec3( -size, size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 19
+        Vertex( glm::vec3( size, size, -size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 20
+        Vertex( glm::vec3( size, size, -size ), glm::vec2(0.0f,1.0f), glm::vec3(1.0f, 1.0f, 1.0f ) ), // 21
+        Vertex( glm::vec3( size, -size,-size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 22
+        Vertex( glm::vec3( -size, -size, -size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 23
+        
+        //left   3,2,6  6,7,3
+        Vertex( glm::vec3( -size,-size,size), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 24
+        Vertex( glm::vec3( -size, size, size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 25
+        Vertex( glm::vec3( -size, size, -size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 26
+        Vertex( glm::vec3( -size, size, -size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 27
+        Vertex( glm::vec3( -size, -size, -size), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 28
+        Vertex( glm::vec3( -size, -size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 29
+        
+        //right   4,5,1   1,0,4
+        Vertex( glm::vec3( size, -size, -size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 30
+        Vertex( glm::vec3( size, size,-size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 31
+        Vertex( glm::vec3( size, size, size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 32
+        Vertex( glm::vec3( size, size, size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 33
+        Vertex( glm::vec3( size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 34
+        Vertex( glm::vec3( size, -size, -size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 35
     };
     
-    Mesh mesh(triangleVertices, sizeof(triangleVertices)/sizeof(triangleVertices[0]) );
+    /////---- 4-------
+    ////    . . .  .             
+    //    .  .   .  .      
+    //   .  .     .   .   
+    //  .  .       .    .
+    // .   2......... |  /3
+    //.              . //
+    //0--------------/1
+    
+    Vertex pyramidVertices[] = {
+        //vertices positions                          //texture             //colors
+        //bottom 0,2,3  3,1,0
+        Vertex( glm::vec3(  -size,-size,size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 0
+        Vertex( glm::vec3( -size, -size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 1
+        Vertex( glm::vec3( size, -size, -size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 2
+        Vertex( glm::vec3(  size, -size, -size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 3
+        Vertex( glm::vec3( size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 4
+        Vertex( glm::vec3( -size, -size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 5
+        
+        //front   4,0,1
+        Vertex( glm::vec3( 0.0f, size, 0.0f ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 6
+        Vertex( glm::vec3( -size, -size, size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 7
+        Vertex( glm::vec3(  size, -size,size ), glm::vec2(0.0f,1.0f), glm::vec3(1.0f, 1.0f, 1.0f ) ), // 8
+         
+        //back    4,3,2
+        Vertex( glm::vec3( 0.0f, size, 0.0f ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f) ), // 9
+        Vertex( glm::vec3( size, -size, -size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 10
+        Vertex( glm::vec3( -size, -size, -size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 11
+        
+        //left   4,2,0
+        Vertex( glm::vec3( 0.0f, size, 0.0f ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f) ), // 9
+        Vertex( glm::vec3( -size, -size, -size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 10
+        Vertex( glm::vec3( -size, -size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 11
+        
+        //right  4,1,3
+        Vertex( glm::vec3( 0.0f, size, 0.0f ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f) ), // 9
+        Vertex( glm::vec3( size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 10
+        Vertex( glm::vec3( size, -size, -size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 11
+        
+    };
+    
+    
+    Mesh mesh(pyramidVertices, sizeof(pyramidVertices)/sizeof(pyramidVertices[0]) );
     
     
     //load texture;
@@ -118,7 +202,7 @@ int main(int argc, const char * argv[])  {
     
     //setup camera
     float aspect = (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT;
-    Camera camera(glm::vec3(0,0,-3), 70.0f, aspect, 0.1f, 5000.0f);
+    Camera camera(glm::vec3(0,0,-10), 70.0f, aspect, 0.1f, 5000.0f);
     
     //transform model
     Transform transform;
@@ -138,9 +222,9 @@ int main(int argc, const char * argv[])  {
             
             transform.GetPositions().x = sinCounter;
             transform.GetPositions().z = conCounter;
-            transform.GetRotation().x = counter * 40;
-            transform.GetRotation().y = counter * 40;
-            transform.GetRotation().z = counter * 40;
+            transform.GetRotation().x = counter * 25;
+            transform.GetRotation().y = counter * 15;
+            transform.GetRotation().z = counter * 5;
             //transform.SetScale(glm::vec3(conCounter, conCounter, conCounter));
             
             // bind the shader program 

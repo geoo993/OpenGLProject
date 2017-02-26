@@ -46,16 +46,6 @@ private:
     Mesh(const Mesh &other){}
     void operator=(const Mesh &other){}
     
-    // Define the vertex indices for the cube.
-    GLuint indices[24] = {
-        0, 1, 2, 3,                 // Front face
-        7, 4, 5, 6,                 // Back face
-        6, 5, 2, 1,                 // Left face
-        7, 0, 3, 4,                 // Right face
-        7, 6, 1, 0,                 // Top face
-        3, 2, 5, 4,                 // Bottom face
-    };
-    
     enum {
         POSITION_VB,
         TEXCOORD_VB,

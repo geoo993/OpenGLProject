@@ -30,7 +30,7 @@ Mesh::Mesh(Vertex * vertices, unsigned int numVertices){
         texCoords.push_back(*vertices[i].GetTexCoordinates());
         normals.push_back(*vertices[i].GetNormals());
     }
-
+  
     //the way openGL refers to data in the gpu is with Buffer Objects, which is just any block of data in the gpu
     //so to handle data in openGL, we need Vertex Buffer Objects
     //now we get data on gpu by genBuffer and bind
@@ -43,7 +43,6 @@ Mesh::Mesh(Vertex * vertices, unsigned int numVertices){
     //the reason we are doing numVertices * sizeof(vertices[0]) instead of sizeof(vertices), is jut for convention of working out the size of an array, no difference.
     //next in the third parameter we pass in the vertices array it self, and finaly in the forth parameter we want to give the draw hint which is GL_STATIC_DRAW, this is the hint of where openGl should put the data in the graphics card, and static draw means openGL is going to put the data is a safe area we it is not expecting it to be changes, as we specified that we are not planning to modify the data as it is (STATIC). 
     glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(positions[0]), &positions[0], GL_STATIC_DRAW);
-    
     
     //now we tell openGL how to interpret this data, once it is trying to draw it, so we use vertex attribute
     //Specify the layout of the vertex data
@@ -58,6 +57,7 @@ Mesh::Mesh(Vertex * vertices, unsigned int numVertices){
     //the last specifies how much it needs to start from the beginning to find the first attribute, so it going to be zero because this is the first attribute 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     
+   
     //bind texture
     glBindBuffer(GL_ARRAY_BUFFER, m_vertexArrayBuffers[TEXCOORD_VB]);
     glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(texCoords[0]), &texCoords[0], GL_STATIC_DRAW);
@@ -89,7 +89,6 @@ void Mesh::Draw(){
     //then you have to specify where you want to start to draw, which is at 0, but you can specify where to start using values, and ensure that the value is within the bound of the vertex array buffer
     //finally how much you want to read or how far you want to read, you can specify how much you want opnGL to draw your triangles or mesh, in this case how many vertices to draw, whcih will be taken from the drawcount
     glDrawArrays(GL_TRIANGLES, 0, m_drawCount);
-    
 }
 
 // Release memory on the GPU 
@@ -99,7 +98,10 @@ void Mesh::Release(){
     //m_vbo.Release();
     
     // unbind the Vertex Array Object
+    // Unbind Everything (NOTE: unbind the vertex array object first)
     glBindVertexArray(0);
+    glBindBuffer( GL_ARRAY_BUFFER, 0);
+    //glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0); 
 }
 
 
