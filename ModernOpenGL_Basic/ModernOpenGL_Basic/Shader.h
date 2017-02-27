@@ -37,6 +37,8 @@ private:
         NORMAL_U,
         USETEXTURE_U,
         LIGHTDIRECTION_U,
+        DIFFUSECOLOR_U,
+        TWIST_U,
         
         NUM_UNIFORMS
     };

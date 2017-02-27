@@ -48,7 +48,11 @@ Shader::Shader(const std::string &fileName){
     
     m_uniforms[USETEXTURE_U]  = glGetUniformLocation(m_program, "bUseTexture");
     
-    m_uniforms[LIGHTDIRECTION_U] = glGetUniformLocation(m_program, "lightDirection");
+    m_uniforms[LIGHTDIRECTION_U] = glGetUniformLocation(m_program, "vLightDirection");
+    
+    m_uniforms[DIFFUSECOLOR_U] = glGetUniformLocation(m_program, "vDiffuseColor");
+    
+    m_uniforms[TWIST_U] = glGetUniformLocation(m_program, "fTwist");
     
 }
 
@@ -126,6 +130,10 @@ void Shader::Update(const Transform & transform, const Camera & camera, const bo
     
     //pass in light direction
     glUniform3f(m_uniforms[LIGHTDIRECTION_U], 0.0f, 0.0f, 1.0f);
+    
+    glUniform3f(m_uniforms[DIFFUSECOLOR_U], 0.0f, 1.0f, 1.0f);
+    
+    glUniform1f(m_uniforms[TWIST_U], 0.5f);
 }
 
 std::string Shader::LoadShader(const std::string& fileName)

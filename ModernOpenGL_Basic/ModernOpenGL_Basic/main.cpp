@@ -75,8 +75,76 @@ int main(int argc, const char * argv[])  {
     
     //load shader program
     std::string path = "/Users/GeorgeQuentin/Dev/OpenGL/OpenGLProject/ModernOpenGL_Basic/ModernOpenGL_Basic";
-    Shader shader(path + "/res/shaders/basicShader");
+    Shader shader(path + "/res/shaders/simpleShader");
     
+    
+//    int slicesIn = 50; 
+//    int stacksIn = 50;
+//    vector<Vertex> sphereVertices;
+//    
+//    // Compute vertex attributes and store in VBO
+//    int vertexCount = 0;
+//    for (int stacks = 0; stacks < stacksIn; stacks++) {
+//        float phi = (stacks / (float) (stacksIn - 1)) * (float) M_PI;
+//        
+//        for (int slices = 0; slices <= slicesIn; slices++) {
+//            float theta = (slices / (float) slicesIn) * 2 * (float) M_PI;
+//            
+//            glm::vec3 v = glm::vec3(cos(theta) * sin(phi), sin(theta) * sin(phi), cos(phi));
+//            glm::vec2 t = glm::vec2(slices / (float) slicesIn, stacks / (float) stacksIn);
+//            glm::vec3 n = v;
+//            
+//            sphereVertices.push_back(Vertex( v, t, n));
+//            vertexCount++;
+//            
+//        }
+//    }
+//    
+//    const unsigned int NUM = 20;
+//    Vertex arrayVertices[NUM];
+//    
+//    for(int i = 0; i < sphereVertices.size(); ++i)
+//    {
+//        arrayVertices[i] = sphereVertices[i];
+//    }
+//    
+//    
+//    
+//    vector<unsigned int> sphereIndices;
+//    int m_numTriangles = 0;
+//    for (int stacks = 0; stacks < stacksIn; stacks++) {
+//        for (int slices = 0; slices < slicesIn; slices++) {
+//            
+//            unsigned int nextSlice = slices + 1;
+//            unsigned int nextStack = (stacks + 1) % stacksIn;
+//            
+//            unsigned int index0 = stacks * (slicesIn+1) + slices;
+//            unsigned int index1 = nextStack * (slicesIn+1) + slices;
+//            unsigned int index2 = stacks * (slicesIn+1) + nextSlice;
+//            unsigned int index3 = nextStack * (slicesIn+1) + nextSlice;
+//            
+//            sphereIndices.push_back(index0);
+//            sphereIndices.push_back(index1);
+//            sphereIndices.push_back(index2);
+//            m_numTriangles++;
+//            
+//            sphereIndices.push_back(index2);
+//            sphereIndices.push_back(index1);
+//            sphereIndices.push_back(index3);
+//            m_numTriangles++;
+//            
+//        }
+//    }
+//    int arrayIndices[sphereIndices.size()];
+//    for(int i = 0; i < sphereIndices.size(); ++i)
+//    {
+//        arrayIndices[i] = sphereIndices[i];
+//    }
+//    
+//    std::cout << sphereIndices.size() << endl;
+//    std::cout << sizeof(arrayIndices)/sizeof(arrayIndices[0]) << endl;
+//    std::cout << m_numTriangles << endl;
+//    
     
     //load mesh
     Vertex triangleVertices[] = {
@@ -279,12 +347,12 @@ int main(int argc, const char * argv[])  {
             transform.GetRotation()->y = counter * 15;
             transform.GetRotation()->z = counter * 5;
             //transform.SetScale(glm::vec3(conCounter, conCounter, conCounter));
+            transform2.SetScale(glm::vec3(2,2,2));
+            
+            transform.SetPositions(glm::vec3(-3.0f, 0.0f, 0.0f) );
             
             // bind the shader program 
             shader.Bind();
-            
-            
-            transform.SetPositions(glm::vec3(-2.0f, 0.0f, 0.0f) );
             
             //update shader, including the tranform of our mesh, and the camera view of the mesh
             shader.Update(transform, camera, false);
