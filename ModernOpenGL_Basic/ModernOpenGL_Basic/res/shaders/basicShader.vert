@@ -6,23 +6,25 @@ layout (location = 0) in vec3 inPosition;
 layout (location = 1) in vec2 inTexCoord;
 layout (location = 2) in vec3 inNormal;
 
-uniform mat4 transform;
-uniform sampler2D diffuse;  // The texture sampler
+uniform mat4 MVP;
+uniform mat4 Normal;
+uniform sampler2D sampler;  // The texture sampler
 uniform bool bUseTexture;    // A flag indicating if texture-mapping should be applied
+uniform vec3 lightDirection;
 
 // Vertex colour output to fragment shader -- using Gouraud (interpolated) shading
-out vec3 vColour;	// Colour computed using reflectance model
-out vec2 vTexCoord0;	// Texture coordinate
+out vec3 normal0;	// Colour computed using reflectance model
+out vec2 texCoord0;	// Texture coordinate
 
 void main() {
     
-    gl_Position = transform * vec4(inPosition, 1.0);
+    gl_Position = MVP * vec4(inPosition, 1.0);
     
     // Pass through the texture coordinate
-    vTexCoord0 = inTexCoord;
+    texCoord0 = inTexCoord;
     
-    // Apply the Phong model to compute the vertex colour
-    vColour = inNormal;
+    // Apply lighting to the model
+    normal0 = (Normal * vec4(inNormal, 0.0)).xyz;//swizzerling
     
     
 }

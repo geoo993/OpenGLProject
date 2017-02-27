@@ -22,10 +22,10 @@ public:
            const float &zNear, 
            const float &zFar) {
         
-        m_perspectiveMatrix = glm::perspective(fieldOfView, aspect, zNear, zFar);
-        m_position = position;
-        m_forward = glm::vec3(0.0f, 0.0f, 1.0f);
-        m_up = glm::vec3(0.0f, 1.0f, 0.0f);
+        this->m_position = position;
+        this->m_projectionMatrix = glm::perspective(fieldOfView, aspect, zNear, zFar);
+        this->m_forward = glm::vec3(0.0f, 0.0f, 1.0f);
+        this->m_up = glm::vec3(0.0f, 1.0f, 0.0f);
         
     }
     
@@ -39,7 +39,7 @@ public:
                                            );
         
         
-        return m_perspectiveMatrix * cameraView;
+        return m_projectionMatrix * cameraView;
     }
     
     inline glm::vec3 GetPosition() const { return m_position; }
@@ -51,7 +51,7 @@ private:
     Camera(const Camera &other){}
     void operator=(const Camera &other){}
     
-    glm::mat4 m_perspectiveMatrix;
+    glm::mat4 m_projectionMatrix;
     glm::vec3 m_position;
     glm::vec3 m_forward;
     glm::vec3 m_up;

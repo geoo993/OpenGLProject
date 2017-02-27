@@ -67,9 +67,10 @@ int main(int argc, const char * argv[])  {
     
     // OpenGL settings
     // tell GL to only draw onto a pixel if the shape is closer to the viewer
-    glEnable(GL_DEPTH_TEST); // enable depth-testing
+    glEnable(GL_DEPTH_TEST); // enable the use of our depth buffer 
     glEnable(GL_CULL_FACE);//only front facinf poligons are rendered, forn facing have a clock wise or counter clock wise order
     //glDisable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
     
     //load shader program
     std::string path = "/Users/GeorgeQuentin/Dev/OpenGL/OpenGLProject/ModernOpenGL_Basic/ModernOpenGL_Basic";
@@ -87,7 +88,6 @@ int main(int argc, const char * argv[])  {
     
     float size = 1.0f;
    
-    
     /////6--------------/5
     ////  .           // |
     //2--------------1   |
@@ -99,6 +99,17 @@ int main(int argc, const char * argv[])  {
     //               | //
     //3--------------/0
     
+    //Specify the 8 VERTICES of A Cube
+    Vertex cubeUniqueVertices[] = { 
+        Vertex( glm::vec3( size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 0
+        Vertex( glm::vec3( size, size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 1
+        Vertex( glm::vec3( -size, size, size ), glm::vec2(0.0f,0.0f), glm::vec3(1.0f, 1.0f, 1.0f ) ), // 2
+        Vertex( glm::vec3( -size, -size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f) ), // 3
+        Vertex( glm::vec3( size, -size, -size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 4
+        Vertex( glm::vec3( size, size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 5
+        Vertex( glm::vec3( -size, size, -size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 6
+        Vertex( glm::vec3( -size, -size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 7
+    };
     
     Vertex cubeVertices[] = {
         //vertices positions                          //texture             //colors
@@ -117,7 +128,6 @@ int main(int argc, const char * argv[])  {
         Vertex( glm::vec3( -size, size,-size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f) ), // 9
         Vertex( glm::vec3( -size, size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 10
         Vertex( glm::vec3( size, size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 11
-        
         
         //front 0,1,2    2,3,0
         Vertex( glm::vec3(  size,-size,size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 12
@@ -151,6 +161,29 @@ int main(int argc, const char * argv[])  {
         Vertex( glm::vec3( size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 34
         Vertex( glm::vec3( size, -size, -size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 35
     };
+    unsigned int indices[] = { 
+        //bottom 
+        3,7,4,  
+        4,0,3,
+        //top   
+        1,5,6,
+        6,2,1,
+        //front 
+        0,1,2,
+        2,3,0,
+        //back  
+        7,6,5,
+        5,4,7,
+        //left   
+        3,2,6,
+        6,7,3,
+        //right   
+        4,5,1,
+        1,0,4
+    }; 
+    
+    
+    
     
     /////---- 4-------
     ////    . . .  .             
@@ -193,8 +226,22 @@ int main(int argc, const char * argv[])  {
         
     };
     
+    bool shouldUseIndices = true;
+    Mesh mesh( pyramidVertices, 
+              sizeof(pyramidVertices)/sizeof(pyramidVertices[0]), 
+              indices,
+              sizeof(indices)/sizeof(indices[0]),
+              false
+              );
     
-    Mesh mesh(pyramidVertices, sizeof(pyramidVertices)/sizeof(pyramidVertices[0]) );
+//    Mesh meshWithIndices( cubeUniqueVertices, 
+//              sizeof(cubeUniqueVertices)/sizeof(cubeUniqueVertices[0]), 
+//              indices,
+//              sizeof(indices)/sizeof(indices[0]),
+//              shouldUseIndices
+//              );
+  
+    Mesh meshModel(path + "/res/model/monkey3.obj");
     
     
     //load texture;
@@ -202,7 +249,7 @@ int main(int argc, const char * argv[])  {
     
     //setup camera
     float aspect = (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT;
-    Camera camera(glm::vec3(0,0,-10), 70.0f, aspect, 0.1f, 5000.0f);
+    Camera camera(glm::vec3(0.0f, 0.0f,-15.0f), 70.0f, aspect, 0.1f, 5000.0f);
     
     //transform model
     Transform transform;
@@ -213,33 +260,36 @@ int main(int argc, const char * argv[])  {
     {
         // Clear the screen
         glClearColor(0.1f, 0.4f, 0.4f, 1.0f); 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//enable and clear the color and depth buffer
         
         //Render process
         {
             float sinCounter = sinf(counter);
             float conCounter = cosf(counter);
             
-            transform.GetPositions().x = sinCounter;
-            transform.GetPositions().z = conCounter;
-            transform.GetRotation().x = counter * 25;
-            transform.GetRotation().y = counter * 15;
-            transform.GetRotation().z = counter * 5;
+            transform.GetPositions()->x = sinCounter;
+            transform.GetPositions()->z = conCounter;
+            transform.GetRotation()->x = counter * 25;
+            transform.GetRotation()->y = counter * 15;
+            transform.GetRotation()->z = counter * 5;
             //transform.SetScale(glm::vec3(conCounter, conCounter, conCounter));
             
             // bind the shader program 
             shader.Bind();
             
             //update shader, including the tranform of our mesh, and the camera view of the mesh
-            shader.Update(transform, camera);
-            
+            shader.Update(transform, camera, true);
             
             //binding texture at zero unit
             texture.Bind(0);
             
             
-            //drawing our mesh
-            mesh.Draw();
+            //drawing our meshes
+            mesh.Draw(false);
+            
+            //meshWithIndices.Draw(shouldUseIndices);
+            
+            meshModel.Draw(true);
             
             //unbind texture
             texture.UnBind();

@@ -1,12 +1,12 @@
-#include "obj_loader.h"
+#include "GameObject.h"
 
-static bool CompareOBJIndexPtr(const OBJIndex* a, const OBJIndex* b);
+static bool CompareGameObjectIndexPtr(const GameObjectIndex* a, const GameObjectIndex* b);
 static inline unsigned int FindNextChar(unsigned int start, const char* str, unsigned int length, char token);
-static inline unsigned int ParseOBJIndexValue(const std::string& token, unsigned int start, unsigned int end);
-static inline float ParseOBJFloatValue(const std::string& token, unsigned int start, unsigned int end);
+static inline unsigned int ParseGameObjectIndexValue(const std::string& token, unsigned int start, unsigned int end);
+static inline float ParseGameObjectFloatValue(const std::string& token, unsigned int start, unsigned int end);
 static inline std::vector<std::string> SplitString(const std::string &s, char delim);
 
-OBJModel::OBJModel(const std::string& fileName)
+GameObjectModel::GameObjectModel(const std::string& fileName)
 {
 	hasUVs = false;
 	hasNormals = false;
@@ -31,14 +31,14 @@ OBJModel::OBJModel(const std::string& fileName)
             {
                 case 'v':
                     if(lineCStr[1] == 't')
-                        this->uvs.push_back(ParseOBJVec2(line));
+                        this->uvs.push_back(ParseGameObjectVec2(line));
                     else if(lineCStr[1] == 'n')
-                        this->normals.push_back(ParseOBJVec3(line));
+                        this->normals.push_back(ParseGameObjectVec3(line));
                     else if(lineCStr[1] == ' ' || lineCStr[1] == '\t')
-                        this->vertices.push_back(ParseOBJVec3(line));
+                        this->vertices.push_back(ParseGameObjectVec3(line));
                 break;
                 case 'f':
-                    CreateOBJFace(line);
+                    CreateGameObjectFace(line);
                 break;
                 default: break;
             };
@@ -50,7 +50,7 @@ OBJModel::OBJModel(const std::string& fileName)
     }
 }
 
-void IndexedModel::CalcNormals()
+void IndexedModel::CalculateNormals()
 {
     for(unsigned int i = 0; i < indices.size(); i += 3)
     {
@@ -72,26 +72,26 @@ void IndexedModel::CalcNormals()
         normals[i] = glm::normalize(normals[i]);
 }
 
-IndexedModel OBJModel::ToIndexedModel()
+IndexedModel GameObjectModel::ToIndexedModel()
 {
     IndexedModel result;
     IndexedModel normalModel;
     
-    unsigned int numIndices = OBJIndices.size();
+    unsigned int numIndices = GameObjectIndices.size();
     
-    std::vector<OBJIndex*> indexLookup;
+    std::vector<GameObjectIndex*> indexLookup;
     
     for(unsigned int i = 0; i < numIndices; i++)
-        indexLookup.push_back(&OBJIndices[i]);
+        indexLookup.push_back(&GameObjectIndices[i]);
     
-    std::sort(indexLookup.begin(), indexLookup.end(), CompareOBJIndexPtr);
+    std::sort(indexLookup.begin(), indexLookup.end(), CompareGameObjectIndexPtr);
     
-    std::map<OBJIndex, unsigned int> normalModelIndexMap;
+    std::map<GameObjectIndex, unsigned int> normalModelIndexMap;
     std::map<unsigned int, unsigned int> indexMap;
     
     for(unsigned int i = 0; i < numIndices; i++)
     {
-        OBJIndex* currentIndex = &OBJIndices[i];
+        GameObjectIndex* currentIndex = &GameObjectIndices[i];
         
         glm::vec3 currentPosition = vertices[currentIndex->vertexIndex];
         glm::vec2 currentTexCoord;
@@ -111,12 +111,12 @@ IndexedModel OBJModel::ToIndexedModel()
         unsigned int resultModelIndex;
         
         //Create model to properly generate normals on
-        std::map<OBJIndex, unsigned int>::iterator it = normalModelIndexMap.find(*currentIndex);
+        std::map<GameObjectIndex, unsigned int>::iterator it = normalModelIndexMap.find(*currentIndex);
         if(it == normalModelIndexMap.end())
         {
             normalModelIndex = normalModel.positions.size();
         
-            normalModelIndexMap.insert(std::pair<OBJIndex, unsigned int>(*currentIndex, normalModelIndex));
+            normalModelIndexMap.insert(std::pair<GameObjectIndex, unsigned int>(*currentIndex, normalModelIndex));
             normalModel.positions.push_back(currentPosition);
             normalModel.texCoords.push_back(currentTexCoord);
             normalModel.normals.push_back(currentNormal);
@@ -145,7 +145,7 @@ IndexedModel OBJModel::ToIndexedModel()
     
     if(!hasNormals)
     {
-        normalModel.CalcNormals();
+        normalModel.CalculateNormals();
         
         for(unsigned int i = 0; i < result.positions.size(); i++)
             result.normals[i] = normalModel.normals[indexMap[i]];
@@ -154,7 +154,7 @@ IndexedModel OBJModel::ToIndexedModel()
     return result;
 };
 
-unsigned int OBJModel::FindLastVertexIndex(const std::vector<OBJIndex*>& indexLookup, const OBJIndex* currentIndex, const IndexedModel& result)
+unsigned int GameObjectModel::FindLastVertexIndex(const std::vector<GameObjectIndex*>& indexLookup, const GameObjectIndex* currentIndex, const IndexedModel& result)
 {
     unsigned int start = 0;
     unsigned int end = indexLookup.size();
@@ -163,7 +163,7 @@ unsigned int OBJModel::FindLastVertexIndex(const std::vector<OBJIndex*>& indexLo
     
     while(current != previous)
     {
-        OBJIndex* testIndex = indexLookup[current];
+        GameObjectIndex* testIndex = indexLookup[current];
         
         if(testIndex->vertexIndex == currentIndex->vertexIndex)
         {
@@ -171,7 +171,7 @@ unsigned int OBJModel::FindLastVertexIndex(const std::vector<OBJIndex*>& indexLo
         
             for(unsigned int i = 0; i < current; i++)
             {
-                OBJIndex* possibleIndex = indexLookup[current - i];
+                GameObjectIndex* possibleIndex = indexLookup[current - i];
                 
                 if(possibleIndex == currentIndex)
                     continue;
@@ -184,7 +184,7 @@ unsigned int OBJModel::FindLastVertexIndex(const std::vector<OBJIndex*>& indexLo
             
             for(unsigned int i = countStart; i < indexLookup.size() - countStart; i++)
             {
-                OBJIndex* possibleIndex = indexLookup[current + i];
+                GameObjectIndex* possibleIndex = indexLookup[current + i];
                 
                 if(possibleIndex == currentIndex)
                     continue;
@@ -237,23 +237,23 @@ unsigned int OBJModel::FindLastVertexIndex(const std::vector<OBJIndex*>& indexLo
     return -1;
 }
 
-void OBJModel::CreateOBJFace(const std::string& line)
+void GameObjectModel::CreateGameObjectFace(const std::string& line)
 {
     std::vector<std::string> tokens = SplitString(line, ' ');
 
-    this->OBJIndices.push_back(ParseOBJIndex(tokens[1], &this->hasUVs, &this->hasNormals));
-    this->OBJIndices.push_back(ParseOBJIndex(tokens[2], &this->hasUVs, &this->hasNormals));
-    this->OBJIndices.push_back(ParseOBJIndex(tokens[3], &this->hasUVs, &this->hasNormals));
+    this->GameObjectIndices.push_back(ParseGameObjectIndex(tokens[1], &this->hasUVs, &this->hasNormals));
+    this->GameObjectIndices.push_back(ParseGameObjectIndex(tokens[2], &this->hasUVs, &this->hasNormals));
+    this->GameObjectIndices.push_back(ParseGameObjectIndex(tokens[3], &this->hasUVs, &this->hasNormals));
 
     if((int)tokens.size() > 4)
     {
-        this->OBJIndices.push_back(ParseOBJIndex(tokens[1], &this->hasUVs, &this->hasNormals));
-        this->OBJIndices.push_back(ParseOBJIndex(tokens[3], &this->hasUVs, &this->hasNormals));
-        this->OBJIndices.push_back(ParseOBJIndex(tokens[4], &this->hasUVs, &this->hasNormals));
+        this->GameObjectIndices.push_back(ParseGameObjectIndex(tokens[1], &this->hasUVs, &this->hasNormals));
+        this->GameObjectIndices.push_back(ParseGameObjectIndex(tokens[3], &this->hasUVs, &this->hasNormals));
+        this->GameObjectIndices.push_back(ParseGameObjectIndex(tokens[4], &this->hasUVs, &this->hasNormals));
     }
 }
 
-OBJIndex OBJModel::ParseOBJIndex(const std::string& token, bool* hasUVs, bool* hasNormals)
+GameObjectIndex GameObjectModel::ParseGameObjectIndex(const std::string& token, bool* hasUVs, bool* hasNormals)
 {
     unsigned int tokenLength = token.length();
     const char* tokenString = token.c_str();
@@ -261,8 +261,8 @@ OBJIndex OBJModel::ParseOBJIndex(const std::string& token, bool* hasUVs, bool* h
     unsigned int vertIndexStart = 0;
     unsigned int vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, '/');
     
-    OBJIndex result;
-    result.vertexIndex = ParseOBJIndexValue(token, vertIndexStart, vertIndexEnd);
+    GameObjectIndex result;
+    result.vertexIndex = ParseGameObjectIndexValue(token, vertIndexStart, vertIndexEnd);
     result.uvIndex = 0;
     result.normalIndex = 0;
     
@@ -272,7 +272,7 @@ OBJIndex OBJModel::ParseOBJIndex(const std::string& token, bool* hasUVs, bool* h
     vertIndexStart = vertIndexEnd + 1;
     vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, '/');
     
-    result.uvIndex = ParseOBJIndexValue(token, vertIndexStart, vertIndexEnd);
+    result.uvIndex = ParseGameObjectIndexValue(token, vertIndexStart, vertIndexEnd);
     *hasUVs = true;
     
     if(vertIndexEnd >= tokenLength)
@@ -281,13 +281,13 @@ OBJIndex OBJModel::ParseOBJIndex(const std::string& token, bool* hasUVs, bool* h
     vertIndexStart = vertIndexEnd + 1;
     vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, '/');
     
-    result.normalIndex = ParseOBJIndexValue(token, vertIndexStart, vertIndexEnd);
+    result.normalIndex = ParseGameObjectIndexValue(token, vertIndexStart, vertIndexEnd);
     *hasNormals = true;
     
     return result;
 }
 
-glm::vec3 OBJModel::ParseOBJVec3(const std::string& line) 
+glm::vec3 GameObjectModel::ParseGameObjectVec3(const std::string& line) 
 {
     unsigned int tokenLength = line.length();
     const char* tokenString = line.c_str();
@@ -303,24 +303,24 @@ glm::vec3 OBJModel::ParseOBJVec3(const std::string& line)
     
     unsigned int vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, ' ');
     
-    float x = ParseOBJFloatValue(line, vertIndexStart, vertIndexEnd);
+    float x = ParseGameObjectFloatValue(line, vertIndexStart, vertIndexEnd);
     
     vertIndexStart = vertIndexEnd + 1;
     vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, ' ');
     
-    float y = ParseOBJFloatValue(line, vertIndexStart, vertIndexEnd);
+    float y = ParseGameObjectFloatValue(line, vertIndexStart, vertIndexEnd);
     
     vertIndexStart = vertIndexEnd + 1;
     vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, ' ');
     
-    float z = ParseOBJFloatValue(line, vertIndexStart, vertIndexEnd);
+    float z = ParseGameObjectFloatValue(line, vertIndexStart, vertIndexEnd);
     
     return glm::vec3(x,y,z);
 
     //glm::vec3(atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()))
 }
 
-glm::vec2 OBJModel::ParseOBJVec2(const std::string& line)
+glm::vec2 GameObjectModel::ParseGameObjectVec2(const std::string& line)
 {
     unsigned int tokenLength = line.length();
     const char* tokenString = line.c_str();
@@ -336,17 +336,17 @@ glm::vec2 OBJModel::ParseOBJVec2(const std::string& line)
     
     unsigned int vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, ' ');
     
-    float x = ParseOBJFloatValue(line, vertIndexStart, vertIndexEnd);
+    float x = ParseGameObjectFloatValue(line, vertIndexStart, vertIndexEnd);
     
     vertIndexStart = vertIndexEnd + 1;
     vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, ' ');
     
-    float y = ParseOBJFloatValue(line, vertIndexStart, vertIndexEnd);
+    float y = ParseGameObjectFloatValue(line, vertIndexStart, vertIndexEnd);
     
     return glm::vec2(x,y);
 }
 
-static bool CompareOBJIndexPtr(const OBJIndex* a, const OBJIndex* b)
+static bool CompareGameObjectIndexPtr(const GameObjectIndex* a, const GameObjectIndex* b)
 {
     return a->vertexIndex < b->vertexIndex;
 }
@@ -364,12 +364,12 @@ static inline unsigned int FindNextChar(unsigned int start, const char* str, uns
     return result;
 }
 
-static inline unsigned int ParseOBJIndexValue(const std::string& token, unsigned int start, unsigned int end)
+static inline unsigned int ParseGameObjectIndexValue(const std::string& token, unsigned int start, unsigned int end)
 {
     return atoi(token.substr(start, end - start).c_str()) - 1;
 }
 
-static inline float ParseOBJFloatValue(const std::string& token, unsigned int start, unsigned int end)
+static inline float ParseGameObjectFloatValue(const std::string& token, unsigned int start, unsigned int end)
 {
     return atof(token.substr(start, end - start).c_str());
 }

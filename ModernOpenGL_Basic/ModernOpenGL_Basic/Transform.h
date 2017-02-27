@@ -10,6 +10,7 @@
 #define Transform_h
 
 #include "Common.h"
+#include "Camera.h"
 
 class Transform{
     
@@ -41,13 +42,21 @@ public:
         return positionMatrix * rotationMatrix * scaleMatrix;
     }
     
-    inline glm::vec3 & GetPositions() { return m_position; }
-    inline glm::vec3 & GetRotation() { return m_rotation; }
-    inline glm::vec3 & GetScale() { return m_scale; }
+    inline glm::mat4 GetMVP(const Camera& camera) const
+    {
+        glm::mat4 ViewPrpojection = camera.GetViewProjection();
+        glm::mat4 Model = GetModel();
+        
+        return ViewPrpojection * Model;
+    }
     
-    inline void SetPositions(const glm::vec3 & position) { m_position = position; }
-    inline void SetRotation(const glm::vec3 & rotation) { m_rotation = rotation; }
-    inline void SetScale(const glm::vec3 & scale) { m_scale = scale; }
+    inline glm::vec3 * GetPositions() { return &m_position; }
+    inline glm::vec3 * GetRotation() { return &m_rotation; }
+    inline glm::vec3 * GetScale() { return &m_scale; }
+    
+    inline void SetPositions(const glm::vec3 & position) { this->m_position = position; }
+    inline void SetRotation(const glm::vec3 & rotation) { this->m_rotation = rotation; }
+    inline void SetScale(const glm::vec3 & scale) { this->m_scale = scale; }
     
     virtual ~Transform(){}
 private:
@@ -57,8 +66,6 @@ private:
     glm::vec3 m_position;
     glm::vec3 m_rotation;
     glm::vec3 m_scale;
-    
-    glm::mat4 m_model;
     
 };
 

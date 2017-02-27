@@ -11,7 +11,6 @@
 
 #include "Common.h"
 #include "Transform.h"
-#include "Camera.h"
 
 class Shader {
     
@@ -22,7 +21,7 @@ public:
     void Bind();
     void UnBind();
     
-    void Update(const Transform & transform, const Camera & camera);
+    void Update(const Transform & transform, const Camera & camera, const bool & bUseTexture);
     
     GLuint CreateShader (const std::string &text, GLenum shadertype);
     std::string LoadShader(const std::string& fileName);
@@ -34,8 +33,10 @@ private:
     
     //numbers to refer to our different uniform variables
     enum {
-        TRANFORM_U,
+        MVP_U,
+        NORMAL_U,
         USETEXTURE_U,
+        LIGHTDIRECTION_U,
         
         NUM_UNIFORMS
     };

@@ -10,11 +10,12 @@
 #define Mesh_h
 
 #include "Common.h"
+#include "GameObject.h"
 
 class Vertex{
     
 public:
-    Vertex(const glm::vec3 &position, const glm::vec2 &texCoord, const glm::vec3 &normal){
+    Vertex(const glm::vec3 &position, const glm::vec2 &texCoord, const glm::vec3 &normal = glm::vec3(0,0,0)){
         this->position = position;
         this->texCoord = texCoord;
         this->normal = normal;
@@ -35,10 +36,14 @@ private:
 class Mesh{
     
 public:
-    Mesh(Vertex * vertices, unsigned int numVertices);
+    
+    Mesh(Vertex * vertices, const unsigned int &numVertices, unsigned int * indices, const unsigned int & numIndices, const bool & withIndices);
+    
+    Mesh (const std::string &fileName);
+    
     virtual ~Mesh();
     
-    void Draw();
+    void Draw(const bool & withIndices);
     void Release();
 
         
@@ -46,10 +51,13 @@ private:
     Mesh(const Mesh &other){}
     void operator=(const Mesh &other){}
     
+    void GenerateAndBindMeshData(const IndexedModel & model, const bool & withIndices);
+    
     enum {
         POSITION_VB,
         TEXCOORD_VB,
         NORMAL_VB,
+        INDEX_VB,
         
         NUM_BUFFERS
     };
