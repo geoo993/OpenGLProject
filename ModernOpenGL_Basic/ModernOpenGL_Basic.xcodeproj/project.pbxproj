@@ -42,6 +42,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C70660311E63AEFE00118113 /* Triangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Triangle.h; sourceTree = "<group>"; };
+		C70660321E63AF1100118113 /* Cubei.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cubei.h; sourceTree = "<group>"; };
+		C70660331E63AF1D00118113 /* Cube.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cube.h; sourceTree = "<group>"; };
 		C7767B581E62DB2F00321D7D /* Transform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Transform.h; sourceTree = "<group>"; };
 		C7767B5B1E63116E00321D7D /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
 		C7C3B9061E619C4000DDB382 /* ModernOpenGL_Basic */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ModernOpenGL_Basic; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -62,6 +65,7 @@
 		C7C3B9581E61F18E00DDB382 /* Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
 		C7C3B9591E61F18E00DDB382 /* Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
 		C7C3B95B1E61F61100DDB382 /* libfreeimage.3.17.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreeimage.3.17.0.dylib; path = ../../../../../../opt/local/lib/libfreeimage.3.17.0.dylib; sourceTree = "<group>"; };
+		C7D007751E63AFA9009D5648 /* Pyramid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pyramid.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +117,10 @@
 				C7C3B94A1E61BC6000DDB382 /* Shader.h */,
 				C7C3B94D1E61D3D700DDB382 /* Mesh.cpp */,
 				C7C3B94E1E61D3D700DDB382 /* Mesh.h */,
+				C70660311E63AEFE00118113 /* Triangle.h */,
+				C70660321E63AF1100118113 /* Cubei.h */,
+				C70660331E63AF1D00118113 /* Cube.h */,
+				C7D007751E63AFA9009D5648 /* Pyramid.h */,
 				C7C3B9111E619CD600DDB382 /* main.cpp */,
 			);
 			path = ModernOpenGL_Basic;

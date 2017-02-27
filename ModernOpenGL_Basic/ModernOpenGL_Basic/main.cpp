@@ -10,6 +10,7 @@
 
 #include "Shader.h"
 #include "Mesh.h"
+#include "Pyramid.h"
 #include "Texture.h"
 
 #define SCREEN_WIDTH 1020
@@ -101,14 +102,14 @@ int main(int argc, const char * argv[])  {
     
     //Specify the 8 VERTICES of A Cube
     Vertex cubeUniqueVertices[] = { 
-        Vertex( glm::vec3( size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 0
-        Vertex( glm::vec3( size, size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 1
+        Vertex( glm::vec3( size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 0.0f ) ), // 0
+        Vertex( glm::vec3( size, size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ), // 1
         Vertex( glm::vec3( -size, size, size ), glm::vec2(0.0f,0.0f), glm::vec3(1.0f, 1.0f, 1.0f ) ), // 2
         Vertex( glm::vec3( -size, -size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f) ), // 3
-        Vertex( glm::vec3( size, -size, -size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 4
-        Vertex( glm::vec3( size, size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 5
+        Vertex( glm::vec3( size, -size, -size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 0.0f, 0.0f ) ), // 4
+        Vertex( glm::vec3( size, size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 0.0f, 1.0f ) ), // 5
         Vertex( glm::vec3( -size, size, -size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 6
-        Vertex( glm::vec3( -size, -size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 7
+        Vertex( glm::vec3( -size, -size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ), // 7
     };
     
     Vertex cubeVertices[] = {
@@ -226,23 +227,20 @@ int main(int argc, const char * argv[])  {
         
     };
     
-    bool shouldUseIndices = true;
-    Mesh mesh( pyramidVertices, 
-              sizeof(pyramidVertices)/sizeof(pyramidVertices[0]), 
-              indices,
-              sizeof(indices)/sizeof(indices[0]),
-              false
-              );
-    
-//    Mesh meshWithIndices( cubeUniqueVertices, 
-//              sizeof(cubeUniqueVertices)/sizeof(cubeUniqueVertices[0]), 
+//    Mesh mesh( pyramidVertices, 
+//              sizeof(pyramidVertices)/sizeof(pyramidVertices[0]), 
 //              indices,
 //              sizeof(indices)/sizeof(indices[0]),
-//              shouldUseIndices
+//              false
 //              );
-  
-    Mesh meshModel(path + "/res/model/monkey3.obj");
     
+    bool shouldUseIndices = true;
+    Mesh meshWithIndices( cubeUniqueVertices, 
+              sizeof(cubeUniqueVertices)/sizeof(cubeUniqueVertices[0]), 
+              indices,
+              sizeof(indices)/sizeof(indices[0]),
+              shouldUseIndices
+              );
     
     //load texture;
     Texture texture(path + "/res/textures/spiralcolor.jpg", true);
@@ -256,14 +254,22 @@ int main(int argc, const char * argv[])  {
     float counter = 0.0f;
     
     
+    
+    Shader shader2(path + "/res/shaders/basicShader");
+    Mesh meshModel(path + "/res/model/monkey3.obj");
+    Texture texture2(path + "/res/textures/bricks.jpg", true);
+    Transform transform2;
+    
+    
     while(!glfwWindowShouldClose(window))
     {
         // Clear the screen
         glClearColor(0.1f, 0.4f, 0.4f, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//enable and clear the color and depth buffer
         
-        //Render process
+        //Render process 1
         {
+           
             float sinCounter = sinf(counter);
             float conCounter = cosf(counter);
             
@@ -277,19 +283,20 @@ int main(int argc, const char * argv[])  {
             // bind the shader program 
             shader.Bind();
             
+            
+            transform.SetPositions(glm::vec3(-2.0f, 0.0f, 0.0f) );
+            
             //update shader, including the tranform of our mesh, and the camera view of the mesh
-            shader.Update(transform, camera, true);
+            shader.Update(transform, camera, false);
             
             //binding texture at zero unit
             texture.Bind(0);
             
-            
             //drawing our meshes
-            mesh.Draw(false);
+            //mesh.Draw(false);
             
-            //meshWithIndices.Draw(shouldUseIndices);
+            meshWithIndices.Draw(shouldUseIndices);
             
-            meshModel.Draw(true);
             
             //unbind texture
             texture.UnBind();
@@ -297,10 +304,37 @@ int main(int argc, const char * argv[])  {
             // unbind the shader program
             shader.UnBind();
             
-            
-            counter += 0.001f;
         }
         
+        
+        //Render process 2
+        {
+            // bind the shader program 
+            shader2.Bind();
+            
+            transform2.SetPositions(glm::vec3(5.0f, 0.0f, 10.0f) );
+            transform2.GetRotation()->y = counter * 25;
+            transform2.SetScale(glm::vec3(3,3,3));
+            
+            //update shader, including the tranform of our mesh, and the camera view of the mesh
+            shader2.Update(transform2, camera, true);
+            
+            //binding texture at zero unit
+            texture2.Bind(0);
+            
+            
+            meshModel.Draw(true);
+            
+            //unbind texture
+            texture2.UnBind();
+            
+            // unbind the shader program
+            shader2.UnBind();
+            
+        }
+        
+        counter += 0.001f;
+
         
         // Update Screen, swap the display buffers (displays what was just drawn)
         glfwSwapBuffers(window);

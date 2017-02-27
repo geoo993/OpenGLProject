@@ -101,6 +101,7 @@ void Shader::UnBind(){
 
 void Shader::Update(const Transform & transform, const Camera & camera, const bool & bUseTexture ){
     
+    
     //here we model the mvp, meaning the model, view, and projection matrices of the shader
     
     //getting the model matrix

@@ -13,7 +13,8 @@ uniform bool bUseTexture;    // A flag indicating if texture-mapping should be a
 uniform vec3 lightDirection;
 
 // Vertex colour output to fragment shader -- using Gouraud (interpolated) shading
-out vec3 normal0;	// Colour computed using reflectance model
+out vec3 color0;	// Colour computed using reflectance model
+out vec3 normal0;	// Normal computed using reflectance model
 out vec2 texCoord0;	// Texture coordinate
 
 void main() {
@@ -25,6 +26,9 @@ void main() {
     
     // Apply lighting to the model
     normal0 = (Normal * vec4(inNormal, 0.0)).xyz;//swizzerling
+    
+    // Apply the Phong model to compute the vertex colour
+    color0 = inNormal;
     
     
 }

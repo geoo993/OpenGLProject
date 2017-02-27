@@ -26,6 +26,7 @@ public:
         this->m_projectionMatrix = glm::perspective(fieldOfView, aspect, zNear, zFar);
         this->m_forward = glm::vec3(0.0f, 0.0f, 1.0f);
         this->m_up = glm::vec3(0.0f, 1.0f, 0.0f);
+        this->m_view = position + m_forward;
         
     }
     
@@ -34,7 +35,7 @@ public:
         //this matrix is where you want the to look at 
         glm::mat4 cameraView = glm::lookAt(
                                            m_position, // what position you want the camera to be at when looking at something in World Space
-                                           m_position + m_forward, // // what position you want the camera to be  looking at in World Space, meaning look at what(using vec3) ?
+                                           m_view, // // what position you want the camera to be  looking at in World Space, meaning look at what(using vec3) ?  // meaning the camera view point
                                            m_up  //which direction is up, you can set to (0,-1,0) to look upside-down
                                            );
         
@@ -43,8 +44,12 @@ public:
     }
     
     inline glm::vec3 GetPosition() const { return m_position; }
+    inline glm::vec3 GetView() const { return m_view; }
     inline glm::vec3 GetForward() const { return m_forward; }
     inline glm::vec3 GetUp() const { return m_up; }
+
+    inline void SetPosition(const glm::vec3 &pos){  m_position = m_position + pos;  } 
+    inline void SetView(const glm::vec3 &pos){  m_view = m_view + pos + m_forward; }
     
     virtual ~Camera(){}
 private:
@@ -53,6 +58,7 @@ private:
     
     glm::mat4 m_projectionMatrix;
     glm::vec3 m_position;
+    glm::vec3 m_view;
     glm::vec3 m_forward;
     glm::vec3 m_up;
     

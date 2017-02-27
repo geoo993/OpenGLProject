@@ -24,7 +24,7 @@ public:
     inline glm::mat4 GetModel() const { 
         
         //this generates a 4x4 matrix with a position vector
-        glm::mat4 positionMatrix = glm::translate(m_position);
+        glm::mat4 positionMatrix = glm::translate(m_position) ;//translation matrix
         
         //this generates a 4x4 matrix with a rotation vector, but these takes some angle
         //these are rotations to represent the axis and we use vec3(1,0,0) on x for suggesting the x axis
