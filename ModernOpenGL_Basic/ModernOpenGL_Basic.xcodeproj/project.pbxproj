@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C737CD1E1E64DF1E00DD79A4 /* TorusKnotMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C737CD1C1E64DF1E00DD79A4 /* TorusKnotMesh.cpp */; };
+		C737CD221E64EFEA00DD79A4 /* TorusMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C737CD201E64EFEA00DD79A4 /* TorusMesh.cpp */; };
 		C7C3B91C1E619DD200DDB382 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C3B91A1E619DD200DDB382 /* libglfw.3.2.dylib */; };
 		C7C3B91D1E619DD200DDB382 /* libglib-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C3B91B1E619DD200DDB382 /* libglib-2.0.0.dylib */; };
 		C7C3B91E1E619DEE00DDB382 /* libglfw.3.2.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7C3B91A1E619DD200DDB382 /* libglfw.3.2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -45,6 +47,11 @@
 		C70660311E63AEFE00118113 /* Triangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Triangle.h; sourceTree = "<group>"; };
 		C70660321E63AF1100118113 /* Cubei.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cubei.h; sourceTree = "<group>"; };
 		C70660331E63AF1D00118113 /* Cube.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cube.h; sourceTree = "<group>"; };
+		C737CD1C1E64DF1E00DD79A4 /* TorusKnotMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TorusKnotMesh.cpp; sourceTree = "<group>"; };
+		C737CD1D1E64DF1E00DD79A4 /* TorusKnotMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TorusKnotMesh.h; sourceTree = "<group>"; };
+		C737CD1F1E64DFF300DD79A4 /* Vertex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Vertex.h; sourceTree = "<group>"; };
+		C737CD201E64EFEA00DD79A4 /* TorusMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TorusMesh.cpp; sourceTree = "<group>"; };
+		C737CD211E64EFEA00DD79A4 /* TorusMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TorusMesh.h; sourceTree = "<group>"; };
 		C7767B581E62DB2F00321D7D /* Transform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Transform.h; sourceTree = "<group>"; };
 		C7767B5B1E63116E00321D7D /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
 		C7C3B9061E619C4000DDB382 /* ModernOpenGL_Basic */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ModernOpenGL_Basic; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,8 +122,13 @@
 				C7C3B9591E61F18E00DDB382 /* Texture.h */,
 				C7C3B9491E61BC6000DDB382 /* Shader.cpp */,
 				C7C3B94A1E61BC6000DDB382 /* Shader.h */,
+				C737CD1F1E64DFF300DD79A4 /* Vertex.h */,
 				C7C3B94D1E61D3D700DDB382 /* Mesh.cpp */,
 				C7C3B94E1E61D3D700DDB382 /* Mesh.h */,
+				C737CD1C1E64DF1E00DD79A4 /* TorusKnotMesh.cpp */,
+				C737CD1D1E64DF1E00DD79A4 /* TorusKnotMesh.h */,
+				C737CD201E64EFEA00DD79A4 /* TorusMesh.cpp */,
+				C737CD211E64EFEA00DD79A4 /* TorusMesh.h */,
 				C70660311E63AEFE00118113 /* Triangle.h */,
 				C70660321E63AF1100118113 /* Cubei.h */,
 				C70660331E63AF1D00118113 /* Cube.h */,
@@ -203,6 +215,8 @@
 				C7C3B95A1E61F18E00DDB382 /* Texture.cpp in Sources */,
 				C7C3B9201E61A59D00DDB382 /* Common.h in Sources */,
 				C7C3B9541E61EF6E00DDB382 /* GameObject.cpp in Sources */,
+				C737CD1E1E64DF1E00DD79A4 /* TorusKnotMesh.cpp in Sources */,
+				C737CD221E64EFEA00DD79A4 /* TorusMesh.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

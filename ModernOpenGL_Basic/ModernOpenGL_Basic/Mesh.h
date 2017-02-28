@@ -11,27 +11,7 @@
 
 #include "Common.h"
 #include "GameObject.h"
-
-class Vertex{
-    
-public:
-    Vertex(const glm::vec3 &position, const glm::vec2 &texCoord, const glm::vec3 &normal = glm::vec3(0,0,0)){
-        this->position = position;
-        this->texCoord = texCoord;
-        this->normal = normal;
-    }
-    
-    inline glm::vec3* GetPositions() { return &position; }
-    inline glm::vec2* GetTexCoordinates() { return &texCoord; }
-    inline glm::vec3* GetNormals() { return &normal; }
-    
-private:
-    glm::vec3 position;
-    glm::vec2 texCoord;
-    glm::vec3 normal;
-    
-};
-
+#include "Vertex.h"
 
 class Mesh{
     

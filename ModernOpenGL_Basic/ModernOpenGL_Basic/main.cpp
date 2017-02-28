@@ -12,6 +12,8 @@
 #include "Mesh.h"
 #include "Pyramid.h"
 #include "Texture.h"
+#include "TorusKnotMesh.h"
+#include "TorusMesh.h"
 
 #define SCREEN_WIDTH 1020
 #define SCREEN_HEIGHT 720
@@ -77,75 +79,6 @@ int main(int argc, const char * argv[])  {
     std::string path = "/Users/GeorgeQuentin/Dev/OpenGL/OpenGLProject/ModernOpenGL_Basic/ModernOpenGL_Basic";
     Shader shader(path + "/res/shaders/simpleShader");
     
-    
-//    int slicesIn = 50; 
-//    int stacksIn = 50;
-//    vector<Vertex> sphereVertices;
-//    
-//    // Compute vertex attributes and store in VBO
-//    int vertexCount = 0;
-//    for (int stacks = 0; stacks < stacksIn; stacks++) {
-//        float phi = (stacks / (float) (stacksIn - 1)) * (float) M_PI;
-//        
-//        for (int slices = 0; slices <= slicesIn; slices++) {
-//            float theta = (slices / (float) slicesIn) * 2 * (float) M_PI;
-//            
-//            glm::vec3 v = glm::vec3(cos(theta) * sin(phi), sin(theta) * sin(phi), cos(phi));
-//            glm::vec2 t = glm::vec2(slices / (float) slicesIn, stacks / (float) stacksIn);
-//            glm::vec3 n = v;
-//            
-//            sphereVertices.push_back(Vertex( v, t, n));
-//            vertexCount++;
-//            
-//        }
-//    }
-//    
-//    const unsigned int NUM = 20;
-//    Vertex arrayVertices[NUM];
-//    
-//    for(int i = 0; i < sphereVertices.size(); ++i)
-//    {
-//        arrayVertices[i] = sphereVertices[i];
-//    }
-//    
-//    
-//    
-//    vector<unsigned int> sphereIndices;
-//    int m_numTriangles = 0;
-//    for (int stacks = 0; stacks < stacksIn; stacks++) {
-//        for (int slices = 0; slices < slicesIn; slices++) {
-//            
-//            unsigned int nextSlice = slices + 1;
-//            unsigned int nextStack = (stacks + 1) % stacksIn;
-//            
-//            unsigned int index0 = stacks * (slicesIn+1) + slices;
-//            unsigned int index1 = nextStack * (slicesIn+1) + slices;
-//            unsigned int index2 = stacks * (slicesIn+1) + nextSlice;
-//            unsigned int index3 = nextStack * (slicesIn+1) + nextSlice;
-//            
-//            sphereIndices.push_back(index0);
-//            sphereIndices.push_back(index1);
-//            sphereIndices.push_back(index2);
-//            m_numTriangles++;
-//            
-//            sphereIndices.push_back(index2);
-//            sphereIndices.push_back(index1);
-//            sphereIndices.push_back(index3);
-//            m_numTriangles++;
-//            
-//        }
-//    }
-//    int arrayIndices[sphereIndices.size()];
-//    for(int i = 0; i < sphereIndices.size(); ++i)
-//    {
-//        arrayIndices[i] = sphereIndices[i];
-//    }
-//    
-//    std::cout << sphereIndices.size() << endl;
-//    std::cout << sizeof(arrayIndices)/sizeof(arrayIndices[0]) << endl;
-//    std::cout << m_numTriangles << endl;
-//    
-    
     //load mesh
     Vertex triangleVertices[] = {
         //vertices positions                          //texture             //colors
@@ -154,8 +87,327 @@ int main(int argc, const char * argv[])  {
         Vertex( glm::vec3(0.5f,-0.2f,0.0f), glm::vec2(0.5f,0.5f), glm::vec3(0.8f,0.8f,0.0f) )
     };
     
+//////////////////////////////////////////////////////////////////////////
+///////////////////////////TORUS INCOMPLETE MODEL/////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+    std::vector<Vertex> torusVerts;{
+
+        int numc = 50; 
+        int numt = 55;
+        int ii, jj, k;
+        float s, t, x, y, z, twopi;
+        float radius = 2.0f;
+        float tick = 1.3f;
+        twopi = 2 * glm::pi <float> ();
+        
+        for (ii = 0; ii < numc; ii++) {
+            for (jj = 0; jj <= numt; jj++) {
+                for (k = 1; k >= 0; k--) {
+                    s = (ii + k) % numc + 0.5;
+                    t = jj % numt;
+                    
+                    x = (radius + tick * cos(s * twopi/numc)) * cos( t * twopi / numt);
+                    y = (radius + tick * cos(s * twopi/numc)) * sin( t * twopi / numt);
+                    z = tick * sin(s * twopi / numc);
+                    
+                    glm::vec3 position = glm::vec3(x,y,z);
+                    torusVerts.push_back( Vertex( position, glm::vec2(1.0f,0.5f), glm::vec3(1.0f,0.8f,1.0f)  ) );
+                }
+            }
+        }
+    }
+    TorusMesh torusMesh( torusVerts.data(), torusVerts.size() );
+    Shader shader6(path + "/res/shaders/basicShader");
+    Texture texture6(path + "/res/textures/space_galaxy.jpg", true);
+    Transform transform6;
     
-    float size = 1.0f;
+    
+//////////////////////////////////////////////////////////////////////////
+///////////////////////////TORUS KNOT MODEL/////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+    vector<Vertex> torusKnotVertices;
+    
+    int aSteps = 1024;           // in: Number of steps in the torus knot
+    int aFacets = 32;          // in: Number of facets
+    float aScale = 2.0f;         // in: Scale of the knot
+    float aThickness = 0.5f;     // in: Thickness of the knot
+    float aClumps = 0.0f;        // in: Number of clumps in the knot
+    float aClumpOffset = 0.0f;   // in: Offset of the clump (in 0..2pi)
+    float aClumpScale = 0.0f;    // in: Scale of a clump
+    float aUScale = 2.0f;        // in: U coordinate scale
+    float aVScale = 32.0f;        // in: V coordinate scale
+    float aP = 2.0f;             // in: P parameter of the knot
+    float aQ = 4.0f;             // in: Q parameter of the knot
+    
+    int i, j;
+    aThickness *= aScale;
+    float pi2 = glm::two_pi<float>();
+    
+    GLfloat *vtx      = new GLfloat[((aSteps + 1) * (aFacets + 1) + 1) * 3];
+    GLfloat *normal   = new GLfloat[((aSteps + 1) * (aFacets + 1) + 1) * 3];
+    GLfloat *texcoord = new GLfloat[((aSteps + 1) * (aFacets + 1) + 1) * 2];
+    GLuint  *torusIndices      = new GLuint[(aSteps + 1) * aFacets * 2];
+    
+    int numIndices = (aSteps + 1) * aFacets * 2;
+    int numVertices = ((aSteps + 1) * (aFacets + 1) + 1);
+    {
+        for (j = 0; j < aFacets; j++)
+        {
+            for (i = 0; i < aSteps + 1; i++)
+            {
+                torusIndices[i * 2 + 0 + j * (aSteps + 1) * 2] = ((j + 1) + i * (aFacets + 1));
+                torusIndices[i * 2 + 1 + j * (aSteps + 1) * 2] = (j + i * (aFacets + 1));
+            }
+            
+        }
+        
+        
+        for (i = 0; i < aSteps; i++)
+        {       
+            float centerpoint[3];
+            float Pp = aP * i * pi2 / aSteps;
+            float Qp = aQ * i * pi2 / aSteps;
+            float r = (.5f * (2 + (float)sin(Qp))) * aScale;
+            centerpoint[0] = r * (float)cos(Pp);
+            centerpoint[1] = r * (float)cos(Qp);
+            centerpoint[2] = r * (float)sin(Pp);
+            
+            float nextpoint[3];
+            Pp = aP * (i + 1) * pi2 / aSteps;
+            Qp = aQ * (i + 1) * pi2 / aSteps;
+            r = (.5f * (2 + (float)sin(Qp))) * aScale;
+            nextpoint[0] = r * (float)cos(Pp);
+            nextpoint[1] = r * (float)cos(Qp);
+            nextpoint[2] = r * (float)sin(Pp);
+            
+            float T[3];
+            T[0] = nextpoint[0] - centerpoint[0];
+            T[1] = nextpoint[1] - centerpoint[1];
+            T[2] = nextpoint[2] - centerpoint[2];
+            
+            float N[3];
+            N[0] = nextpoint[0] + centerpoint[0];
+            N[1] = nextpoint[1] + centerpoint[1];
+            N[2] = nextpoint[2] + centerpoint[2];
+            
+            
+            float B[3];
+            B[0] = T[1]*N[2] - T[2]*N[1];
+            B[1] = T[2]*N[0] - T[0]*N[2];
+            B[2] = T[0]*N[1] - T[1]*N[0];
+            
+            N[0] = B[1]*T[2] - B[2]*T[1];
+            N[1] = B[2]*T[0] - B[0]*T[2];
+            N[2] = B[0]*T[1] - B[1]*T[0];
+            
+            float l;
+            l = (float)sqrt(B[0] * B[0] + B[1] * B[1] + B[2] * B[2]);
+            B[0] /= l;
+            B[1] /= l;
+            B[2] /= l;
+            
+            l = (float)sqrt(N[0] * N[0] + N[1] * N[1] + N[2] * N[2]);
+            N[0] /= l;
+            N[1] /= l;
+            N[2] /= l;
+            
+            for (j = 0; j < aFacets; j++)
+            {
+                
+                float pointx = (float)sin(j * pi2 / aFacets) * aThickness * (((float)sin(aClumpOffset + aClumps * i * pi2 / aSteps) * aClumpScale) + 1);
+                float pointy = (float)cos(j * pi2 / aFacets) * aThickness * (((float)cos(aClumpOffset + aClumps * i * pi2 / aSteps) * aClumpScale) + 1);
+                
+                vtx[i * (aFacets + 1) * 3 + j * 3 + 0] = N[0] * pointx + B[0] * pointy + centerpoint[0];
+                vtx[i * (aFacets + 1) * 3 + j * 3 + 1] = N[1] * pointx + B[1] * pointy + centerpoint[1];
+                vtx[i * (aFacets + 1) * 3 + j * 3 + 2] = N[2] * pointx + B[2] * pointy + centerpoint[2];
+                
+                normal[i * (aFacets + 1) * 3 + j * 3 + 0] = vtx[i * (aFacets + 1) * 3 + j * 3 + 0] - centerpoint[0];
+                normal[i * (aFacets + 1) * 3 + j * 3 + 1] = vtx[i * (aFacets + 1) * 3 + j * 3 + 1] - centerpoint[1];
+                normal[i * (aFacets + 1) * 3 + j * 3 + 2] = vtx[i * (aFacets + 1) * 3 + j * 3 + 2] - centerpoint[2];
+                
+                float l;
+                l = (float)sqrt(normal[i * (aFacets + 1) * 3 + j * 3 + 0] * normal[i * (aFacets + 1) * 3 + j * 3 + 0] +
+                                normal[i * (aFacets + 1) * 3 + j * 3 + 1] * normal[i * (aFacets + 1) * 3 + j * 3 + 1] +
+                                normal[i * (aFacets + 1) * 3 + j * 3 + 2] * normal[i * (aFacets + 1) * 3 + j * 3 + 2]);
+                
+                texcoord[i * (aFacets + 1) * 2 + j * 2 + 0] = ((float)j / aFacets) * aUScale;
+                texcoord[i * (aFacets + 1) * 2 + j * 2 + 1] = ((float)i / aSteps) * aVScale;
+                
+                torusKnotVertices.push_back( 
+                Vertex( glm::vec3(vtx[    i * (aFacets + 1) * 3 + j * 3 + 0], 
+                                  vtx[    i * (aFacets + 1) * 3 + j * 3 + 1], 
+                                  vtx[    i * (aFacets + 1) * 3 + j * 3 + 2]), 
+                       glm::vec2(texcoord[i * (aFacets + 1) * 2 + j * 2 + 0],
+                                 texcoord[i * (aFacets + 1) * 2 + j * 2 + 1]), 
+                       glm::vec3(normal[  i * (aFacets + 1) * 3 + j * 3 + 0], 
+                                 normal[  i * (aFacets + 1) * 3 + j * 3 + 1],
+                                 normal[  i * (aFacets + 1) * 3 + j * 3 + 2])  
+                       ) 
+                    );
+                
+                
+                normal[i * (aFacets + 1) * 3 + j * 3 + 0] /= l;
+                normal[i * (aFacets + 1) * 3 + j * 3 + 1] /= l;
+                normal[i * (aFacets + 1) * 3 + j * 3 + 2] /= l;
+            }
+            // create duplicate vertex for sideways wrapping
+            // otherwise identical to first vertex in the 'ring' except for the U coordinate
+            vtx[i * (aFacets + 1) * 3 + aFacets * 3 + 0] = vtx[i * (aFacets + 1) * 3 + 0];
+            vtx[i * (aFacets + 1) * 3 + aFacets * 3 + 1] = vtx[i * (aFacets + 1) * 3 + 1];
+            vtx[i * (aFacets + 1) * 3 + aFacets * 3 + 2] = vtx[i * (aFacets + 1) * 3 + 2];
+            
+            normal[i * (aFacets + 1) * 3 + aFacets * 3 + 0] = normal[i * (aFacets + 1) * 3 + 0];
+            normal[i * (aFacets + 1) * 3 + aFacets * 3 + 1] = normal[i * (aFacets + 1) * 3 + 1];
+            normal[i * (aFacets + 1) * 3 + aFacets * 3 + 2] = normal[i * (aFacets + 1) * 3 + 2];
+            
+            texcoord[i * (aFacets + 1) * 2 + aFacets * 2 + 0] = aUScale;
+            texcoord[i * (aFacets + 1) * 2 + aFacets * 2 + 1] = texcoord[i * (aFacets + 1) * 2 + 1];
+            
+            torusKnotVertices.push_back( 
+            Vertex( glm::vec3(vtx[    i * (aFacets + 1) * 3 + aFacets * 3 + 0], 
+                              vtx[    i * (aFacets + 1) * 3 + aFacets * 3 + 1], 
+                              vtx[    i * (aFacets + 1) * 3 + aFacets * 3 + 2]), 
+                   glm::vec2(texcoord[i * (aFacets + 1) * 2 + aFacets * 2 + 0],
+                             texcoord[i * (aFacets + 1) * 2 + aFacets * 2 + 1]), 
+                   glm::vec3(normal[  i * (aFacets + 1) * 3 + aFacets * 3 + 0], 
+                             normal[  i * (aFacets + 1) * 3 + aFacets * 3 + 1],
+                             normal[  i * (aFacets + 1) * 3 + aFacets * 3 + 2])  
+                   ) 
+            );
+        }
+        
+        // create duplicate ring of vertices for longways wrapping
+        // otherwise identical to first 'ring' in the knot except for the V coordinate
+        for (j = 0; j < aFacets; j++)
+        {
+            vtx[aSteps * (aFacets + 1) * 3 + j * 3 + 0] = vtx[j * 3 + 0];
+            vtx[aSteps * (aFacets + 1) * 3 + j * 3 + 1] = vtx[j * 3 + 1];
+            vtx[aSteps * (aFacets + 1) * 3 + j * 3 + 2] = vtx[j * 3 + 2];
+            
+            normal[aSteps * (aFacets + 1) * 3 + j * 3 + 0] = normal[j * 3 + 0];
+            normal[aSteps * (aFacets + 1) * 3 + j * 3 + 1] = normal[j * 3 + 1];
+            normal[aSteps * (aFacets + 1) * 3 + j * 3 + 2] = normal[j * 3 + 2];
+            
+            texcoord[aSteps * (aFacets + 1) * 2 + j * 2 + 0] = texcoord[j * 2 + 0];
+            texcoord[aSteps * (aFacets + 1) * 2 + j * 2 + 1] = aVScale;
+            
+            torusKnotVertices.push_back( 
+            Vertex( glm::vec3(vtx[    aSteps * (aFacets + 1) * 3 + j * 3 + 0], 
+                              vtx[    aSteps * (aFacets + 1) * 3 + j * 3 + 1], 
+                              vtx[    aSteps * (aFacets + 1) * 3 + j * 3 + 2]), 
+                   glm::vec2(texcoord[aSteps * (aFacets + 1) * 2 + j * 2 + 0],
+                             texcoord[aSteps * (aFacets + 1) * 2 + j * 2 + 1]), 
+                   glm::vec3(normal[  aSteps * (aFacets + 1) * 3 + j * 3 + 0], 
+                             normal[  aSteps * (aFacets + 1) * 3 + j * 3 + 1],
+                             normal[  aSteps * (aFacets + 1) * 3 + j * 3 + 2])  
+                   ) 
+            );
+        }
+        
+        // finally, there's one vertex that needs to be duplicated due to both U and V coordinate.
+        
+        vtx[aSteps * (aFacets + 1) * 3 + aFacets * 3 + 0] = vtx[0];
+        vtx[aSteps * (aFacets + 1) * 3 + aFacets * 3 + 1] = vtx[1];
+        vtx[aSteps * (aFacets + 1) * 3 + aFacets * 3 + 2] = vtx[2];
+        
+        normal[aSteps * (aFacets + 1) * 3 + aFacets * 3 + 0] = normal[0];
+        normal[aSteps * (aFacets + 1) * 3 + aFacets * 3 + 1] = normal[1];
+        normal[aSteps * (aFacets + 1) * 3 + aFacets * 3 + 2] = normal[2];
+        
+        texcoord[aSteps * (aFacets + 1) * 2 + aFacets * 2 + 0] = aUScale;
+        texcoord[aSteps * (aFacets + 1) * 2 + aFacets * 2 + 1] = aVScale;
+        
+        torusKnotVertices.push_back( 
+        Vertex( glm::vec3(vtx[    aSteps * (aFacets + 1) * 3 + aFacets * 3 + 0], 
+                          vtx[    aSteps * (aFacets + 1) * 3 + aFacets * 3 + 1], 
+                          vtx[    aSteps * (aFacets + 1) * 3 + aFacets * 3 + 2]), 
+               glm::vec2(texcoord[aSteps * (aFacets + 1) * 2 + aFacets * 2 + 0],
+                         texcoord[aSteps * (aFacets + 1) * 2 + aFacets * 2 + 1]), 
+               glm::vec3(normal[  aSteps * (aFacets + 1) * 3 + aFacets * 3 + 0], 
+                         normal[  aSteps * (aFacets + 1) * 3 + aFacets * 3 + 1],
+                         normal[  aSteps * (aFacets + 1) * 3 + aFacets * 3 + 2])  
+               ) 
+        );
+    }
+    TorusKnotMesh torusMeshWithIndices( torusKnotVertices.data(), 
+                               numVertices, 
+                               torusIndices,
+                               numIndices
+                               );
+    Shader shader5(path + "/res/shaders/basicShader");
+    Texture texture5(path + "/res/textures/colors-wallpaper.jpg", true);
+    Transform transform5;
+    
+    
+    
+//////////////////////////////////////////////////////////////////////////
+///////////////////////////SPHERE MODEL/////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+    
+    std::vector<Vertex> sphereVerts;
+    std::vector<unsigned int> sphereIndices; {
+    
+        unsigned int StacksIn = 50;
+        unsigned int SlicesIn = 50;
+        float Radius = 1.0f;
+        
+        // Calc The Vertices
+        for (int stacks = 0; stacks <= StacksIn; ++stacks){
+            
+            float V   = stacks / (float) StacksIn;
+            float phi = V * glm::pi <float> ();
+            
+            // Loop Through Slices
+            for (int slices = 0; slices <= SlicesIn; ++slices){
+                
+                float U = slices / (float) SlicesIn;
+                float theta = U * (glm::pi <float> () * 2);
+                
+                // Calc The Vertex Positions
+                float x = cosf (theta) * sinf (phi);
+                float y = cosf (phi);
+                float z = sinf (theta) * sinf (phi);
+                
+                glm::vec3 position = glm::vec3(x,y,z) * Radius;
+                glm::vec2 textureCoord = glm::vec2(slices / (float) SlicesIn, stacks / (float) StacksIn);
+                glm::vec3 normal = position;
+                
+                Vertex vertex = Vertex(position , textureCoord, normal  );
+                
+                // Push Back Vertex Data
+                sphereVerts.push_back ( vertex );
+            }
+        }
+        
+        // Calc The Index Positions
+        for (int i = 0; i < SlicesIn * StacksIn + SlicesIn; ++i){
+            
+            sphereIndices.push_back (i);
+            sphereIndices.push_back (i + SlicesIn + 1);
+            sphereIndices.push_back (i + SlicesIn);
+            
+            sphereIndices.push_back (i + SlicesIn + 1);
+            sphereIndices.push_back (i);
+            sphereIndices.push_back (i + 1);
+        }
+    }
+    Mesh sphereMeshWithIndices( sphereVerts.data(), 
+                         sphereVerts.size(), 
+                         sphereIndices.data(),
+                         sphereIndices.size(),
+                         true
+                         );
+    
+    Shader shader4(path + "/res/shaders/basicShader");
+    Texture texture4(path + "/res/textures/blue-frozen-water.jpg", true);
+    Transform transform4;
+    
+//////////////////////////////////////////////////////////////////////////
+///////////////////////////CUBE MODEL/////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+    
    
     /////6--------------/5
     ////  .           // |
@@ -168,8 +420,9 @@ int main(int argc, const char * argv[])  {
     //               | //
     //3--------------/0
     
+    float size = 1.0f;
     //Specify the 8 VERTICES of A Cube
-    Vertex cubeUniqueVertices[] = { 
+    vector<Vertex> cubeUniqueVertices = { 
         Vertex( glm::vec3( size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 0.0f ) ), // 0
         Vertex( glm::vec3( size, size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ), // 1
         Vertex( glm::vec3( -size, size, size ), glm::vec2(0.0f,0.0f), glm::vec3(1.0f, 1.0f, 1.0f ) ), // 2
@@ -230,7 +483,7 @@ int main(int argc, const char * argv[])  {
         Vertex( glm::vec3( size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 34
         Vertex( glm::vec3( size, -size, -size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 35
     };
-    unsigned int indices[] = { 
+    vector<unsigned int> cubeIndices = { 
         //bottom 
         3,7,4,  
         4,0,3,
@@ -251,9 +504,33 @@ int main(int argc, const char * argv[])  {
         1,0,4
     }; 
     
+  
+    bool shouldUseIndices = true;
+    Mesh cubeMeshWithIndices( cubeUniqueVertices.data(), 
+              cubeUniqueVertices.size(), 
+              cubeIndices.data(),
+              cubeIndices.size(),
+              shouldUseIndices
+              );
+    
+
+    
+    //load texture;
+    Texture texture(path + "/res/textures/spiralcolor.jpg", true);
+    
+    //setup camera
+    float aspect = (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT;
+    Camera camera(glm::vec3(0.0f, 0.0f,-15.0f), 70.0f, aspect, 0.1f, 5000.0f);
+    
+    //transform model
+    Transform transform;
+    float counter = 0.0f;
     
     
     
+//////////////////////////////////////////////////////////////////////////
+///////////////////////////PYRAMID MODEL/////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
     /////---- 4-------
     ////    . . .  .             
     //    .  .   .  .      
@@ -263,7 +540,7 @@ int main(int argc, const char * argv[])  {
     //.              . //
     //0--------------/1
     
-    Vertex pyramidVertices[] = {
+    vector<Vertex> pyramidVertices = {
         //vertices positions                          //texture             //colors
         //bottom 0,2,3  3,1,0
         Vertex( glm::vec3(  -size,-size,size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 0
@@ -277,7 +554,7 @@ int main(int argc, const char * argv[])  {
         Vertex( glm::vec3( 0.0f, size, 0.0f ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 6
         Vertex( glm::vec3( -size, -size, size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 7
         Vertex( glm::vec3(  size, -size,size ), glm::vec2(0.0f,1.0f), glm::vec3(1.0f, 1.0f, 1.0f ) ), // 8
-         
+        
         //back    4,3,2
         Vertex( glm::vec3( 0.0f, size, 0.0f ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f) ), // 9
         Vertex( glm::vec3( size, -size, -size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 10
@@ -295,38 +572,24 @@ int main(int argc, const char * argv[])  {
         
     };
     
-//    Mesh mesh( pyramidVertices, 
-//              sizeof(pyramidVertices)/sizeof(pyramidVertices[0]), 
-//              indices,
-//              sizeof(indices)/sizeof(indices[0]),
-//              false
-//              );
-    
-    bool shouldUseIndices = true;
-    Mesh meshWithIndices( cubeUniqueVertices, 
-              sizeof(cubeUniqueVertices)/sizeof(cubeUniqueVertices[0]), 
-              indices,
-              sizeof(indices)/sizeof(indices[0]),
-              shouldUseIndices
-              );
-    
-    //load texture;
-    Texture texture(path + "/res/textures/spiralcolor.jpg", true);
-    
-    //setup camera
-    float aspect = (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT;
-    Camera camera(glm::vec3(0.0f, 0.0f,-15.0f), 70.0f, aspect, 0.1f, 5000.0f);
-    
-    //transform model
-    Transform transform;
-    float counter = 0.0f;
-    
-    
-    
+    unsigned int indices[] = {0};
+    Mesh pyramidmesh( pyramidVertices.data(), 
+                     pyramidVertices.size(), 
+                     indices,
+                     sizeof(indices)/sizeof(indices[0]),
+                     false
+                     );
     Shader shader2(path + "/res/shaders/basicShader");
-    Mesh meshModel(path + "/res/model/monkey3.obj");
     Texture texture2(path + "/res/textures/bricks.jpg", true);
     Transform transform2;
+    
+//////////////////////////////////////////////////////////////////////////
+///////////////////////////MESH MODEL/////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+    Shader shader3(path + "/res/shaders/basicShader");
+    Texture texture3(path + "/res/textures/space_galaxy.jpg", true);
+    Transform transform3;
+    Mesh meshModel(path + "/res/model/monkey3.obj");
     
     
     while(!glfwWindowShouldClose(window))
@@ -335,7 +598,7 @@ int main(int argc, const char * argv[])  {
         glClearColor(0.1f, 0.4f, 0.4f, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//enable and clear the color and depth buffer
         
-        //Render process 1
+        //Render cube 
         {
            
             float sinCounter = sinf(counter);
@@ -347,24 +610,21 @@ int main(int argc, const char * argv[])  {
             transform.GetRotation()->y = counter * 15;
             transform.GetRotation()->z = counter * 5;
             //transform.SetScale(glm::vec3(conCounter, conCounter, conCounter));
-            transform2.SetScale(glm::vec3(2,2,2));
+            transform2.SetScale(glm::vec3(10,10,10));
             
-            transform.SetPositions(glm::vec3(-3.0f, 0.0f, 0.0f) );
+            transform.SetPositions(glm::vec3(0.0f, -2.0f, -4.0f) );
             
             // bind the shader program 
             shader.Bind();
             
             //update shader, including the tranform of our mesh, and the camera view of the mesh
-            shader.Update(transform, camera, false);
+            shader.Update(transform, camera, true);
             
             //binding texture at zero unit
             texture.Bind(0);
             
             //drawing our meshes
-            //mesh.Draw(false);
-            
-            meshWithIndices.Draw(shouldUseIndices);
-            
+            cubeMeshWithIndices.Draw(true);
             
             //unbind texture
             texture.UnBind();
@@ -375,13 +635,14 @@ int main(int argc, const char * argv[])  {
         }
         
         
-        //Render process 2
+        //Render pyramid 
         {
             // bind the shader program 
             shader2.Bind();
             
-            transform2.SetPositions(glm::vec3(5.0f, 0.0f, 10.0f) );
-            transform2.GetRotation()->y = counter * 25;
+            transform2.SetPositions(glm::vec3(8.0f, 5.0f, 10.0f) );
+            transform2.GetRotation()->y = counter * 5;
+            transform2.GetRotation()->z = counter * 5;
             transform2.SetScale(glm::vec3(3,3,3));
             
             //update shader, including the tranform of our mesh, and the camera view of the mesh
@@ -390,14 +651,112 @@ int main(int argc, const char * argv[])  {
             //binding texture at zero unit
             texture2.Bind(0);
             
-            
-            meshModel.Draw(true);
+            pyramidmesh.Draw(false);
             
             //unbind texture
             texture2.UnBind();
             
             // unbind the shader program
             shader2.UnBind();
+            
+        }
+        
+        //Render model 
+        {
+            // bind the shader program 
+            shader3.Bind();
+            
+            transform3.SetPositions(glm::vec3(8.0f, -3.0f, 3.0f) );
+            transform3.GetRotation()->y = counter * 25;
+            transform3.SetScale(glm::vec3(3,3,3));
+            
+            //update shader, including the tranform of our mesh, and the camera view of the mesh
+            shader3.Update(transform3, camera, true);
+            
+            //binding texture at zero unit
+            texture3.Bind(0);
+            
+            
+            meshModel.Draw(true);
+            
+            //unbind texture
+            texture3.UnBind();
+            
+            // unbind the shader program
+            shader3.UnBind();
+            
+        }
+        
+        //Render Sphere 
+        {
+            // bind the shader program 
+            shader4.Bind();
+            
+            transform4.SetPositions(glm::vec3(-8.0f, 3.0f, 1.0f) );
+            transform4.GetRotation()->y = counter * 20;
+            
+            //update shader, including the tranform of our mesh, and the camera view of the mesh
+            shader4.Update(transform4, camera, true);
+            
+            //binding texture at zero unit
+            texture4.Bind(0);
+            
+            
+            sphereMeshWithIndices.Draw(true);
+            
+            //unbind texture
+            texture4.UnBind();
+            
+            // unbind the shader program
+            shader4.UnBind();
+            
+        }
+        
+        //Render Torus Knot 
+        {
+            // bind the shader program 
+            shader5.Bind();
+            
+            transform5.SetPositions(glm::vec3(-2.0f, 3.0f, 1.0f) );
+            transform5.GetRotation()->y = counter * 20;
+            
+            //update shader, including the tranform of our mesh, and the camera view of the mesh
+            shader5.Update(transform5, camera, true);
+            
+            //binding texture at zero unit
+            texture5.Bind(0);
+            
+            torusMeshWithIndices.Draw();
+            
+            //unbind texture
+            texture5.UnBind();
+            
+            // unbind the shader program
+            shader5.UnBind();
+            
+        }
+        
+        //Render Torus  
+        {
+            // bind the shader program 
+            shader6.Bind();
+            
+            transform6.SetPositions(glm::vec3(-6.0f, -4.0f, 1.0f) );
+            transform6.GetRotation()->z = counter * 20;
+            
+            //update shader, including the tranform of our mesh, and the camera view of the mesh
+            shader5.Update(transform6, camera, true);
+            
+            //binding texture at zero unit
+            texture6.Bind(0);
+            
+            torusMesh.Draw();
+            
+            //unbind texture
+            texture6.UnBind();
+            
+            // unbind the shader program
+            shader6.UnBind();
             
         }
         
