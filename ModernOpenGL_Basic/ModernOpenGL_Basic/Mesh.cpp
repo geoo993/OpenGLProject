@@ -94,7 +94,7 @@ Mesh::Mesh(Vertex * vertices, const unsigned int &numVertices, unsigned int * in
 //    if (withIndices){
 //        //the one very important change here is the GL_ELEMENT_ARRAY_BUFFER, this means it is going to be an array, but an array that is ging to reference the vertex data or some other array. it basically an array of elements of another array, which in this case is an array of indecies that reference the GL_ARRAY_BUFFER
 //        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_vertexArrayBuffers[INDEX_VB]);
-//        glBufferData( GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(indices), &indices[0], GL_STATIC_DRAW );
+//        glBufferData( GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(indices[0]), &indices[0], GL_STATIC_DRAW );
 //    }
 //    
 //    // unbind the Vertex Array Object

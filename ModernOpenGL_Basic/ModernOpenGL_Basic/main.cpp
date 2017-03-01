@@ -19,6 +19,105 @@
 #define SCREEN_HEIGHT 720
 
 
+
+static void MakeCylinder(float radius, float length, unsigned int numSteps, glm::vec3  * m_verts, unsigned int * m_indices)
+{
+    
+    //glm::vec3  *m_verts = new glm::vec3[(numSteps * 2 + 2)];
+    m_verts = new glm::vec3[(numSteps * 2 + 2)];
+    
+    float hl = length * 0.5f;
+    
+    float a = 0.0f;
+    
+    float pi2 = glm::two_pi<float>();//TWO_PI
+    
+    float step = M_2_PI / (float)numSteps;
+    
+    for (int i = 0; i < numSteps; ++i)
+        
+    {
+        
+        float x = cos(a) * radius;
+        
+        float y = sin(a) * radius;
+        
+        m_verts[i] = glm::vec3(x, y, hl);
+        
+        m_verts[i + numSteps] = glm::vec3(x, y, -hl);
+        
+        a += step;
+        
+    }
+    
+    
+    
+    m_verts[numSteps * 2 + 0] = glm::vec3(0.0f, 0.0f, +hl);
+    
+    m_verts[numSteps * 2 + 1] = glm::vec3(0.0f, 0.0f, -hl);
+    
+    
+    //unsigned int  *m_indices = new unsigned int[(4 * numSteps * 3)];
+    m_indices = new unsigned int[(4 * numSteps * 3)];
+    
+    
+    for (int i = 0; i < numSteps; ++i)
+        
+    {
+        
+        unsigned int i1 = i;
+        
+        unsigned int i2 = (i1 + 1) % numSteps;
+        
+        unsigned int i3 = i1 + numSteps;
+        
+        unsigned int i4 = i2 + numSteps;
+        
+        
+        
+        // Sides
+        
+        
+        
+        m_indices[i * 6 + 0] = i1;
+        
+        m_indices[i * 6 + 1] = i3;
+        
+        m_indices[i * 6 + 2] = i2;
+        
+        
+        
+        m_indices[i * 6 + 3] = i4;
+        
+        m_indices[i * 6 + 4] = i2;
+        
+        m_indices[i * 6 + 5] = i3;
+        
+        
+        
+        // Caps
+        
+        
+        
+        m_indices[numSteps * 6 + i * 6 + 0] = numSteps * 2 + 0;
+        
+        m_indices[numSteps * 6 + i * 6 + 1] = i1;
+        
+        m_indices[numSteps * 6 + i * 6 + 2] = i2;
+        
+        
+        
+        m_indices[numSteps * 6 + i * 6 + 3] = numSteps * 2 + 1;
+        
+        m_indices[numSteps * 6 + i * 6 + 4] = i4;
+        
+        m_indices[numSteps * 6 + i * 6 + 5] = i3;
+        
+    }
+    
+}
+
+
 int main(int argc, const char * argv[])  {
     
     // start GL context and O/S window using the GLFW helper library
@@ -131,16 +230,16 @@ int main(int argc, const char * argv[])  {
     
     int aSteps = 1024;           // in: Number of steps in the torus knot
     int aFacets = 32;          // in: Number of facets
-    float aScale = 2.0f;         // in: Scale of the knot
+    float aScale = 4.0f;         // in: Scale of the knot
     float aThickness = 0.5f;     // in: Thickness of the knot
     float aClumps = 0.0f;        // in: Number of clumps in the knot
     float aClumpOffset = 0.0f;   // in: Offset of the clump (in 0..2pi)
     float aClumpScale = 0.0f;    // in: Scale of a clump
     float aUScale = 2.0f;        // in: U coordinate scale
     float aVScale = 32.0f;        // in: V coordinate scale
-    float aP = 2.0f;             // in: P parameter of the knot
-    float aQ = 4.0f;             // in: Q parameter of the knot
-    
+    float aP = 3;//3.0f;             // in: P parameter of the knot
+    float aQ = 2;//-7.0f;             // in: Q parameter of the knot
+ 
     int i, j;
     aThickness *= aScale;
     float pi2 = glm::two_pi<float>();
@@ -393,13 +492,17 @@ int main(int argc, const char * argv[])  {
             sphereIndices.push_back (i + 1);
         }
     }
-    Mesh sphereMeshWithIndices( sphereVerts.data(), 
-                         sphereVerts.size(), 
-                         sphereIndices.data(),
-                         sphereIndices.size(),
-                         true
-                         );
     
+  
+    // next mesh
+    Mesh sphereMeshWithIndices( sphereVerts.data(), 
+                               sphereVerts.size(), 
+                               sphereIndices.data(),
+                               sphereIndices.size(),
+                               true
+                               );
+    
+
     Shader shader4(path + "/res/shaders/basicShader");
     Texture texture4(path + "/res/textures/blue-frozen-water.jpg", true);
     Transform transform4;
@@ -703,6 +806,7 @@ int main(int argc, const char * argv[])  {
             
             
             sphereMeshWithIndices.Draw(true);
+            //sphereMeshWithIndices.Draw(true);
             
             //unbind texture
             texture4.UnBind();

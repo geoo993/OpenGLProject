@@ -17,7 +17,7 @@ class TorusKnotMesh{
     
 public:
     
-    TorusKnotMesh(Vertex * vertices, const unsigned int &numVertices, GLuint * indices, const unsigned int & numIndices);
+    TorusKnotMesh(Vertex * vertices, const unsigned long int &numVertices, GLuint * indices, const unsigned long int & numIndices);
     
     virtual ~TorusKnotMesh();
     
@@ -43,7 +43,7 @@ private:
     GLuint m_vertexArrayBuffers[NUM_BUFFERS];
     
     GLuint * m_Indexes;
-    unsigned int m_Indices;
+    unsigned long int m_Indices;
     
     
 };
