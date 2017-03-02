@@ -15,6 +15,8 @@
 #include "TorusKnotMesh.h"
 #include "TorusMesh.h"
 #include "ConeMesh.h"
+#include "CylinderMesh.h"
+
 
 #define SCREEN_WIDTH 1020
 #define SCREEN_HEIGHT 720
@@ -783,6 +785,68 @@ int main(int argc, const char * argv[])  {
     Shader shader10(path + "/res/shaders/simpleShader");
     Texture texture10(path + "/res/textures/space_galaxy.jpg", true);
     Transform transform10;
+
+//////////////////////////////////////////////////////////////////////////
+///////////////////////////CYLINDER PRISM MODEL/////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+    vector<Vertex> cylinderVertices;
+    GLuint topTriangleFanCount = 0;
+    GLuint bottomTriangleFanCount = 0;
+    {
+        float cheight = 1.0f;
+        float cradius = 0.5f;
+        GLfloat x              = 0.0;
+        GLfloat y              = 0.0;
+        GLfloat angle          = 0.0;
+        GLfloat angle_stepsize = 0.1;
+        
+
+        cylinderVertices.push_back( Vertex( glm::vec3( cradius, 0.0, cheight), glm::vec2(0.0f,1.0f), glm::vec3( 0.5f, 0.0f, 1.0f ) ));
+        topTriangleFanCount += 1;
+        angle = 0.0;
+        while( angle < 2 * glm::pi<float>() ) {
+            x = cradius * cos(angle);
+            y = cradius * sin(angle);
+            
+            cylinderVertices.push_back( Vertex( glm::vec3( x, y, cheight), glm::vec2(0.0f,1.0f), glm::vec3( 0.5f, 0.0f, 1.0f ) ));
+            topTriangleFanCount += 1;
+            angle = angle + angle_stepsize;
+        }
+        
+        
+        cylinderVertices.push_back( Vertex( glm::vec3( cradius, 0.0, 0.0), glm::vec2(0.0f,1.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ));
+        bottomTriangleFanCount += 1;
+        angle = -0.12;
+        while( angle < 2 * glm::pi<float>() ) {
+            x = -(cradius * cos(angle));
+            y = cradius * sin(angle);
+            
+            std::cout << x << endl;
+            cylinderVertices.push_back( Vertex( glm::vec3( x, y, 0.0), glm::vec2(0.0f,1.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ));
+            bottomTriangleFanCount += 1;
+            angle = angle + angle_stepsize;
+        }
+      
+        angle = 0.0;
+        while( angle < 2 * glm::pi<float>() ) {
+            x = cradius * cos(angle);
+            y = cradius * sin(angle);
+            
+            cylinderVertices.push_back( Vertex( glm::vec3( x, y , cheight), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 0.0f, 0.0f ) ));
+            cylinderVertices.push_back( Vertex( glm::vec3( x, y , 0.0f), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 0.0f ) ));
+            angle = angle + angle_stepsize;
+        }
+        cylinderVertices.push_back( Vertex( glm::vec3( cradius, 0.0f, cheight), glm::vec2(0.0f,1.0f), glm::vec3( 0.0f, 0.0f, 1.0f ) ));
+        cylinderVertices.push_back( Vertex( glm::vec3( cradius, 0.0f, 0.0f), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 0.0f, 1.0f ) ));
+        
+        
+    }
+    
+    Shader shader11(path + "/res/shaders/simpleShader");
+    Texture texture11(path + "/res/textures/space_galaxy.jpg", true);
+    Transform transform11;
+    CylinderMesh cylind(cylinderVertices.data(), cylinderVertices.size(), topTriangleFanCount, bottomTriangleFanCount);
     
     
 //////////////////////////////////////////////////////////////////////////
@@ -814,7 +878,7 @@ int main(int argc, const char * argv[])  {
             //transform.SetScale(glm::vec3(conCounter, conCounter, conCounter));
             transform2.SetScale(glm::vec3(10,10,10));
             
-            transform.SetPositions(glm::vec3(0.0f, -2.0f, -4.0f) );
+            transform.SetPositions(glm::vec3(0.0f, -3.0f, -4.0f) );
             
             // bind the shader program 
             shader.Bind();
@@ -1038,7 +1102,7 @@ int main(int argc, const char * argv[])  {
             
         }
         
-        //Render model 
+        //Render cone 
         {
             // bind the shader program 
             shader10.Bind();
@@ -1061,6 +1125,32 @@ int main(int argc, const char * argv[])  {
             
             // unbind the shader program
             shader10.UnBind();
+            
+        }
+        
+        //Render cylinder 
+        {
+            // bind the shader program 
+            shader11.Bind();
+            
+            transform11.SetPositions(glm::vec3(0.0f, 0.0f, 0.0f) );
+            transform11.GetRotation()->z = counter * 5;
+            transform11.GetRotation()->x = counter * 15;
+            transform11.SetScale(glm::vec3(2,2,2));
+            
+            //update shader, including the tranform of our mesh, and the camera view of the mesh
+            shader11.Update(transform11, camera, false);
+            
+            //binding texture at zero unit
+            texture11.Bind(0);
+            
+            cylind.Draw();
+            
+            //unbind texture
+            texture11.UnBind();
+            
+            // unbind the shader program
+            shader11.UnBind();
             
         }
         
