@@ -14,108 +14,10 @@
 #include "Texture.h"
 #include "TorusKnotMesh.h"
 #include "TorusMesh.h"
+#include "ConeMesh.h"
 
 #define SCREEN_WIDTH 1020
 #define SCREEN_HEIGHT 720
-
-
-
-static void MakeCylinder(float radius, float length, unsigned int numSteps, glm::vec3  * m_verts, unsigned int * m_indices)
-{
-    
-    //glm::vec3  *m_verts = new glm::vec3[(numSteps * 2 + 2)];
-    m_verts = new glm::vec3[(numSteps * 2 + 2)];
-    
-    float hl = length * 0.5f;
-    
-    float a = 0.0f;
-    
-    float pi2 = glm::two_pi<float>();//TWO_PI
-    
-    float step = M_2_PI / (float)numSteps;
-    
-    for (int i = 0; i < numSteps; ++i)
-        
-    {
-        
-        float x = cos(a) * radius;
-        
-        float y = sin(a) * radius;
-        
-        m_verts[i] = glm::vec3(x, y, hl);
-        
-        m_verts[i + numSteps] = glm::vec3(x, y, -hl);
-        
-        a += step;
-        
-    }
-    
-    
-    
-    m_verts[numSteps * 2 + 0] = glm::vec3(0.0f, 0.0f, +hl);
-    
-    m_verts[numSteps * 2 + 1] = glm::vec3(0.0f, 0.0f, -hl);
-    
-    
-    //unsigned int  *m_indices = new unsigned int[(4 * numSteps * 3)];
-    m_indices = new unsigned int[(4 * numSteps * 3)];
-    
-    
-    for (int i = 0; i < numSteps; ++i)
-        
-    {
-        
-        unsigned int i1 = i;
-        
-        unsigned int i2 = (i1 + 1) % numSteps;
-        
-        unsigned int i3 = i1 + numSteps;
-        
-        unsigned int i4 = i2 + numSteps;
-        
-        
-        
-        // Sides
-        
-        
-        
-        m_indices[i * 6 + 0] = i1;
-        
-        m_indices[i * 6 + 1] = i3;
-        
-        m_indices[i * 6 + 2] = i2;
-        
-        
-        
-        m_indices[i * 6 + 3] = i4;
-        
-        m_indices[i * 6 + 4] = i2;
-        
-        m_indices[i * 6 + 5] = i3;
-        
-        
-        
-        // Caps
-        
-        
-        
-        m_indices[numSteps * 6 + i * 6 + 0] = numSteps * 2 + 0;
-        
-        m_indices[numSteps * 6 + i * 6 + 1] = i1;
-        
-        m_indices[numSteps * 6 + i * 6 + 2] = i2;
-        
-        
-        
-        m_indices[numSteps * 6 + i * 6 + 3] = numSteps * 2 + 1;
-        
-        m_indices[numSteps * 6 + i * 6 + 4] = i4;
-        
-        m_indices[numSteps * 6 + i * 6 + 5] = i3;
-        
-    }
-    
-}
 
 
 int main(int argc, const char * argv[])  {
@@ -211,13 +113,13 @@ int main(int argc, const char * argv[])  {
                     z = tick * sin(s * twopi / numc);
                     
                     glm::vec3 position = glm::vec3(x,y,z);
-                    torusVerts.push_back( Vertex( position, glm::vec2(1.0f,0.5f), glm::vec3(1.0f,0.8f,1.0f)  ) );
+                    torusVerts.push_back( Vertex( position, glm::vec2(1.0f,0.5f), position  ) );
                 }
             }
         }
     }
     TorusMesh torusMesh( torusVerts.data(), torusVerts.size() );
-    Shader shader6(path + "/res/shaders/basicShader");
+    Shader shader6(path + "/res/shaders/simpleShader");
     Texture texture6(path + "/res/textures/space_galaxy.jpg", true);
     Transform transform6;
     
@@ -619,7 +521,7 @@ int main(int argc, const char * argv[])  {
 
     
     //load texture;
-    Texture texture(path + "/res/textures/spiralcolor.jpg", true);
+    Texture texture(path + "/res/textures/colors-wallpaper.jpg", true);
     
     //setup camera
     float aspect = (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT;
@@ -675,7 +577,7 @@ int main(int argc, const char * argv[])  {
         
     };
     
-    unsigned int indices[] = {0};
+    GLuint indices[] = {0};
     Mesh pyramidmesh( pyramidVertices.data(), 
                      pyramidVertices.size(), 
                      indices,
@@ -683,8 +585,205 @@ int main(int argc, const char * argv[])  {
                      false
                      );
     Shader shader2(path + "/res/shaders/basicShader");
-    Texture texture2(path + "/res/textures/bricks.jpg", true);
+    Texture texture2(path + "/res/textures/spiralcolor.jpg", true);
     Transform transform2;
+    
+    
+    //////////////////////////////////////////////////////////////////////////
+    ///////////////////////////DIAMOND MODEL/////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    /////---- 4-------
+    ////    . . .  .             
+    //    .  .   .  .      
+    //   .  .     .   .   
+    //  .  .       .    .
+    // .  2.......... |  /3
+    //.  .            . . //
+    //0--------------/1
+    // . .        . . //
+    ////. .      . .  //
+    /////. .    .  ////
+    ///////.. . .///
+    //////// 5//
+    /////////////////
+    vector<Vertex> diamondVertices = {
+        //vertices positions                          //texture             //colors
+        Vertex( glm::vec3(  -size, 0.0f ,size ), glm::vec2(0.0f,0.0f), glm::vec3( 0.0f, 0.0f, 1.0f ) ), // 0
+        Vertex( glm::vec3( size, 0.0f, size ), glm::vec2(1.0f,0.0f), glm::vec3( 0.0f, 0.0f, 0.0f ) ), // 1
+        Vertex( glm::vec3( -size, 0.0f, -size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 2
+        Vertex( glm::vec3(  size, 0.0f, -size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 0.0f, 1.0f ) ), // 3
+        Vertex( glm::vec3( 0.0f, size, 0.0f ), glm::vec2(0.5f,1.0f), glm::vec3( 1.0f, 1.0f, 0.0f ) ), // 4
+        Vertex( glm::vec3( 0.0f, -size, 0.0f ), glm::vec2(0.5f,0.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ), // 5
+        
+    };
+    vector<GLuint> diamondIndices = { 
+        //front top  
+        4,0,1,
+        //back top   
+        4,3,2,
+        //left top  
+        4,2,0,
+        //right top  
+        4,1,3,
+        //front bottom  
+        5,1,0,
+        //back top  
+        5,2,3,
+        //left top  
+        5,0,2,
+        //front bottom  
+        5,3,1
+    }; 
+    Mesh diamondmesh( diamondVertices.data(), 
+                     diamondVertices.size(), 
+                     diamondIndices.data(),
+                     diamondIndices.size(),
+                     true
+                     );
+    Shader shader7(path + "/res/shaders/simpleShader");
+    Texture texture7(path + "/res/textures/colors-wallpaper.jpg", true);
+    Transform transform7;
+    
+    
+    //////////////////////////////////////////////////////////////////////////
+    ///////////////////////////ICOSAHEDRON MODEL/////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+
+    vector<Vertex> icosahedronVertices;
+    
+    double theta = 26.56505117707799 * M_PI / 180.0f; // refer paper for theta value
+    
+    double stheta = std::sin(theta);
+    double ctheta = std::cos(theta);
+    icosahedronVertices.push_back( Vertex( glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 0.0f ) ) );// the lower vertex
+    
+    // the lower pentagon
+    double phi = M_PI / 5.0f;
+    for (int i = 1; i < 6; ++i) {
+        icosahedronVertices.push_back( Vertex( glm::vec3(ctheta * std::cos(phi), ctheta * std::sin(phi), -stheta), glm::vec2(0.0f,0.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ) );
+        phi += 2.0f * M_PI / 5.0f;
+    }
+    
+    // the upper pentagon
+    phi = 0.0;
+    for (int i = 6; i < 11; ++i) {
+        icosahedronVertices.push_back( Vertex( glm::vec3(ctheta * std::cos(phi), ctheta * std::sin(phi), stheta), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 0.0f, 1.0f ) ) );
+        phi += 2.0f * M_PI / 5.0f;
+    }
+    icosahedronVertices.push_back( Vertex( glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f,0.0f), glm::vec3( 0.0f, 1.0f, 0.0f ) ) );// the upper vertex
+
+    std::deque<GLuint> icosahedronIndices = { 
+        0, 2, 1,
+        0, 3, 2,
+        0, 4, 3,
+        
+        0, 5, 4,
+        0, 1, 5,
+        1, 2, 7,
+        2, 3, 8,
+        3, 4, 9,
+        4, 5, 10,
+        5, 1, 6,
+        1, 7, 6,
+        2, 8, 7,
+        3, 9, 8,
+        4, 10, 9,
+        5, 6, 10,
+        6, 7, 11,
+        7, 8, 11,
+        8, 9, 11,
+        9, 10, 11,
+        10, 6, 11,
+    }; 
+    
+    Mesh icosahedronmesh( icosahedronVertices.data(), 
+                     icosahedronVertices.size(), 
+                     &icosahedronIndices[0],
+                     icosahedronIndices.size(),
+                     true
+                     );
+    Shader shader8(path + "/res/shaders/simpleShader");
+    Texture texture8(path + "/res/textures/colors-wallpaper.jpg", true);
+    Transform transform8;
+    
+//////////////////////////////////////////////////////////////////////////
+///////////////////////////TRIANGULAR PRISM MODEL/////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+    /////////2//////////
+    ///////. | ./////
+    //   .   |    .//
+    // .     |      .//
+    //0--------------/1
+    //|      |      |//
+    //|      |      |//
+    //|      |      |//
+    //|      5       |//
+    //|    .   .    |//
+    //|  .       .  |//
+    //|.            .|//
+    //3/////////////4
+   
+    vector<Vertex> triangularPrismVertices = {
+        //vertices positions                          //texture             //colors
+        Vertex( glm::vec3(  -size, (size * 2.0f) , size ), glm::vec2(0.0f,1.0f), glm::vec3( 0.0f, 0.0f, 1.0f ) ), // 0
+        Vertex( glm::vec3( size, (size * 2.0f), size ), glm::vec2(1.0f,1.0f), glm::vec3( 0.0f, 1.0f, 0.0f ) ), // 1
+        Vertex( glm::vec3( 0.0f, (size * 2.0f), -size ), glm::vec2(0.5f,1.0f), glm::vec3( 1.0f, 1.0f, 0.0f ) ), // 2
+        Vertex( glm::vec3(  -size, -(size * 2.0f), size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 0.0f, 1.0f ) ), // 3
+        Vertex( glm::vec3( size, -(size * 2.0f), size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 0.0f, 0.0f ) ), // 4
+        Vertex( glm::vec3( 0.0f, -(size * 2.0f), -size ), glm::vec2(0.5f,1.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ), // 5        
+    };
+    vector<GLuint> triangularPrismIndices = { 
+        //top
+        0,1,2,
+        //bottom
+        3,4,5,
+        //front
+        4,1,0,   
+        0,3,4,
+        //right
+        5,2,1,
+        1,4,5,
+        //left
+        3,0,2,
+        2,5,3,
+    }; 
+    Mesh triangularPrismmesh( triangularPrismVertices.data(), 
+                         triangularPrismVertices.size(), 
+                         triangularPrismIndices.data(),
+                         triangularPrismIndices.size(),
+                         true
+                         );
+    Shader shader9(path + "/res/shaders/simpleShader");
+    Texture texture9(path + "/res/textures/space_galaxy.jpg", true);
+    Transform transform9;
+    
+//////////////////////////////////////////////////////////////////////////
+///////////////////////////TRIANGULAR PRISM MODEL/////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+    float height = 2.0f;
+    float radiuss = 1.0f;
+    int numSegments = 40;
+    vector<Vertex> coneVertices;
+    coneVertices.push_back( Vertex( glm::vec3( 0.0f, 0.0f, 0.0f ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 0.0f, 0.0f ) ));
+    for(int segment = 0; segment <= numSegments; segment++) //use the second vertex twice
+    {
+        float angle = 2.0 * M_PI * ((double)segment/(double)numSegments); //angle in radians
+        coneVertices.push_back( Vertex( glm::vec3( radiuss * sin(angle), 0.0f, radiuss * cos(angle)), glm::vec2(0.0f,1.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ));
+    }
+
+    coneVertices.push_back( Vertex( glm::vec3( 0.0f, height, 0.0f ), glm::vec2(0.0f,1.0f), glm::vec3( 0.0f, 0.0f, 1.0f ) )); 
+    for(int segment = numSegments; segment >= 0; segment--)  //reverse order for matching polygon winding
+    {
+        float angle = 2.0 * M_PI * ((double)segment/(double)numSegments); //angle in radians
+        coneVertices.push_back( Vertex( glm::vec3( radiuss * sin(angle), 0.0f, radiuss * cos(angle)), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 0.0f, 1.0f ) ));
+    }
+
+    ConeMesh conemesh( coneVertices.data(), coneVertices.size());
+    Shader shader10(path + "/res/shaders/simpleShader");
+    Texture texture10(path + "/res/textures/space_galaxy.jpg", true);
+    Transform transform10;
+    
     
 //////////////////////////////////////////////////////////////////////////
 ///////////////////////////MESH MODEL/////////////////////////////////////
@@ -743,7 +842,7 @@ int main(int argc, const char * argv[])  {
             // bind the shader program 
             shader2.Bind();
             
-            transform2.SetPositions(glm::vec3(8.0f, 5.0f, 10.0f) );
+            transform2.SetPositions(glm::vec3(10.0f, 8.0f, 10.0f) );
             transform2.GetRotation()->y = counter * 5;
             transform2.GetRotation()->z = counter * 5;
             transform2.SetScale(glm::vec3(3,3,3));
@@ -769,7 +868,7 @@ int main(int argc, const char * argv[])  {
             // bind the shader program 
             shader3.Bind();
             
-            transform3.SetPositions(glm::vec3(8.0f, -3.0f, 3.0f) );
+            transform3.SetPositions(glm::vec3(8.0f, -3.0f, 20.0f) );
             transform3.GetRotation()->y = counter * 25;
             transform3.SetScale(glm::vec3(3,3,3));
             
@@ -797,6 +896,7 @@ int main(int argc, const char * argv[])  {
             
             transform4.SetPositions(glm::vec3(-8.0f, 3.0f, 1.0f) );
             transform4.GetRotation()->y = counter * 20;
+            transform4.SetScale(glm::vec3(2,2,2));
             
             //update shader, including the tranform of our mesh, and the camera view of the mesh
             shader4.Update(transform4, camera, true);
@@ -804,9 +904,7 @@ int main(int argc, const char * argv[])  {
             //binding texture at zero unit
             texture4.Bind(0);
             
-            
             sphereMeshWithIndices.Draw(true);
-            //sphereMeshWithIndices.Draw(true);
             
             //unbind texture
             texture4.UnBind();
@@ -817,28 +915,28 @@ int main(int argc, const char * argv[])  {
         }
         
         //Render Torus Knot 
-        {
-            // bind the shader program 
-            shader5.Bind();
-            
-            transform5.SetPositions(glm::vec3(-2.0f, 3.0f, 1.0f) );
-            transform5.GetRotation()->y = counter * 20;
-            
-            //update shader, including the tranform of our mesh, and the camera view of the mesh
-            shader5.Update(transform5, camera, true);
-            
-            //binding texture at zero unit
-            texture5.Bind(0);
-            
-            torusMeshWithIndices.Draw();
-            
-            //unbind texture
-            texture5.UnBind();
-            
-            // unbind the shader program
-            shader5.UnBind();
-            
-        }
+//        {
+//            // bind the shader program 
+//            shader5.Bind();
+//            
+//            transform5.SetPositions(glm::vec3(-2.0f, 3.0f, 1.0f) );
+//            transform5.GetRotation()->y = counter * 20;
+//            
+//            //update shader, including the tranform of our mesh, and the camera view of the mesh
+//            shader5.Update(transform5, camera, true);
+//            
+//            //binding texture at zero unit
+//            texture5.Bind(0);
+//            
+//            torusMeshWithIndices.Draw();
+//            
+//            //unbind texture
+//            texture5.UnBind();
+//            
+//            // unbind the shader program
+//            shader5.UnBind();
+//            
+//        }
         
         //Render Torus  
         {
@@ -847,9 +945,10 @@ int main(int argc, const char * argv[])  {
             
             transform6.SetPositions(glm::vec3(-6.0f, -4.0f, 1.0f) );
             transform6.GetRotation()->z = counter * 20;
+            transform6.GetRotation()->y = counter * 10;
             
             //update shader, including the tranform of our mesh, and the camera view of the mesh
-            shader5.Update(transform6, camera, true);
+            shader6.Update(transform6, camera, false);
             
             //binding texture at zero unit
             texture6.Bind(0);
@@ -861,6 +960,107 @@ int main(int argc, const char * argv[])  {
             
             // unbind the shader program
             shader6.UnBind();
+            
+        }
+        
+        //Render diamond  
+        {
+            // bind the shader program 
+            shader7.Bind();
+            
+            transform7.SetPositions(glm::vec3(4.0f, -3.0f, -6.0f)  );
+            transform7.GetRotation()->z = counter * 10;
+            transform7.GetRotation()->x = counter * 10;
+            
+            //update shader, including the tranform of our mesh, and the camera view of the mesh
+            shader7.Update(transform7, camera, false);
+            
+            //binding texture at zero unit
+            texture7.Bind(0);
+            
+            diamondmesh.Draw(true);
+            
+            //unbind texture
+            texture7.UnBind();
+            
+            // unbind the shader program
+            shader7.UnBind();
+            
+        }
+        
+        //Render icosahedron  
+        {
+            // bind the shader program 
+            shader8.Bind();
+            
+            transform8.SetPositions(glm::vec3(0.0f, 2.0f, -6.0f)  );
+            transform8.GetRotation()->z = counter * 10;
+            transform8.GetRotation()->x = counter * 10;
+            
+            //update shader, including the tranform of our mesh, and the camera view of the mesh
+            shader8.Update(transform8, camera, false);
+            
+            //binding texture at zero unit
+            texture8.Bind(0);
+            
+            icosahedronmesh.Draw(true);
+            
+            //unbind texture
+            texture8.UnBind();
+            
+            // unbind the shader program
+            shader8.UnBind();
+            
+        }
+        
+        //Render triangular Prism  
+        {
+            // bind the shader program 
+            shader9.Bind();
+            
+            transform9.SetPositions(glm::vec3(-4.0f, 2.0f, -1.0f)  );
+            transform9.GetRotation()->z = counter * 10;
+            transform9.GetRotation()->y = counter * 10;
+            
+            //update shader, including the tranform of our mesh, and the camera view of the mesh
+            shader9.Update(transform9, camera, true);
+            
+            //binding texture at zero unit
+            texture9.Bind(0);
+            
+            triangularPrismmesh.Draw(true);
+            
+            //unbind texture
+            texture9.UnBind();
+            
+            // unbind the shader program
+            shader9.UnBind();
+            
+        }
+        
+        //Render model 
+        {
+            // bind the shader program 
+            shader10.Bind();
+            
+            transform10.SetPositions(glm::vec3(8.0f, 0.0f, 10.0f) );
+            transform10.GetRotation()->y = counter * 20;
+            transform10.GetRotation()->x = counter * 15;
+            transform10.SetScale(glm::vec3(3,3,3));
+            
+            //update shader, including the tranform of our mesh, and the camera view of the mesh
+            shader10.Update(transform10, camera, false);
+            
+            //binding texture at zero unit
+            texture10.Bind(0);
+            
+            conemesh.Draw();
+            
+            //unbind texture
+            texture10.UnBind();
+            
+            // unbind the shader program
+            shader10.UnBind();
             
         }
         

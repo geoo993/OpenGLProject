@@ -1,15 +1,15 @@
 //
-//  Torus.cpp
+//  ConeMesh.cpp
 //  ModernOpenGL_Basic
 //
-//  Created by GEORGE QUENTIN on 27/02/2017.
+//  Created by GEORGE QUENTIN on 02/03/2017.
 //  Copyright © 2017 LEXI LABS. All rights reserved.
 //
 
-#include "TorusMesh.h"
+#include "ConeMesh.h"
 
 
-TorusMesh::TorusMesh(Vertex * vertices, const unsigned int &numVertices)
+ConeMesh::ConeMesh(Vertex * vertices, const GLuint &numVertices)
 {
     
     m_drawCount = numVertices;
@@ -32,7 +32,7 @@ TorusMesh::TorusMesh(Vertex * vertices, const unsigned int &numVertices)
         texCoords.push_back(*vertices[i].GetTexCoordinates());
         normals.push_back(*vertices[i].GetNormals());
     }
-  
+    
     
     glGenBuffers(NUM_BUFFERS, m_vertexArrayBuffers);
     
@@ -60,12 +60,13 @@ TorusMesh::TorusMesh(Vertex * vertices, const unsigned int &numVertices)
     
 }
 
-void TorusMesh::Draw(){
+void ConeMesh::Draw(){
     
     //bind attribute array
     glBindVertexArray(m_vertexArrayObject);
     
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, m_drawCount);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, m_drawCount/2);
+    glDrawArrays(GL_TRIANGLE_FAN, m_drawCount/2, m_drawCount/2);
     
     // Unbind Everything (NOTE: unbind the vertex array object first)
     glBindVertexArray(0);
@@ -73,7 +74,7 @@ void TorusMesh::Draw(){
 }
 
 // Release memory on the GPU 
-void TorusMesh::Release(){
+void ConeMesh::Release(){
     
     glDeleteBuffers(NUM_BUFFERS, m_vertexArrayBuffers);
     glDeleteVertexArrays(1, &m_vertexArrayObject);
@@ -81,6 +82,6 @@ void TorusMesh::Release(){
 }
 
 
-TorusMesh::~TorusMesh(){
+ConeMesh::~ConeMesh(){
     Release();
 }
