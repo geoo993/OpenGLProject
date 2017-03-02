@@ -83,6 +83,10 @@ int main(int argc, const char * argv[])  {
     Shader shader(path + "/res/shaders/simpleShader");
     
     //load mesh
+
+//////////////////////////////////////////////////////////////////////////
+///////////////////////////TRIANGLE MODEL/////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
     Vertex triangleVertices[] = {
         //vertices positions                          //texture             //colors
         Vertex( glm::vec3(0.0f,0.8f,0.0f), glm::vec2(0.0f,0.5f), glm::vec3(0.0f,0.8f,0.0f)   ),
@@ -91,7 +95,7 @@ int main(int argc, const char * argv[])  {
     };
     
 //////////////////////////////////////////////////////////////////////////
-///////////////////////////TORUS INCOMPLETE MODEL/////////////////////////////////////
+///////////////////////////TORUS MODEL/////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
     std::vector<Vertex> torusVerts;{
@@ -760,7 +764,7 @@ int main(int argc, const char * argv[])  {
     Transform transform9;
     
 //////////////////////////////////////////////////////////////////////////
-///////////////////////////TRIANGULAR PRISM MODEL/////////////////////////////////////
+///////////////////////////CONE PRISM MODEL/////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
     float height = 2.0f;
@@ -822,7 +826,6 @@ int main(int argc, const char * argv[])  {
             x = -(cradius * cos(angle));
             y = cradius * sin(angle);
             
-            std::cout << x << endl;
             cylinderVertices.push_back( Vertex( glm::vec3( x, y, 0.0), glm::vec2(0.0f,1.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ));
             bottomTriangleFanCount += 1;
             angle = angle + angle_stepsize;
@@ -909,7 +912,7 @@ int main(int argc, const char * argv[])  {
             transform2.SetPositions(glm::vec3(10.0f, 8.0f, 10.0f) );
             transform2.GetRotation()->y = counter * 5;
             transform2.GetRotation()->z = counter * 5;
-            transform2.SetScale(glm::vec3(3,3,3));
+            transform2.SetScale(glm::vec3(2,2,2));
             
             //update shader, including the tranform of our mesh, and the camera view of the mesh
             shader2.Update(transform2, camera, true);
@@ -927,31 +930,31 @@ int main(int argc, const char * argv[])  {
             
         }
         
-        //Render model 
-        {
-            // bind the shader program 
-            shader3.Bind();
-            
-            transform3.SetPositions(glm::vec3(8.0f, -3.0f, 20.0f) );
-            transform3.GetRotation()->y = counter * 25;
-            transform3.SetScale(glm::vec3(3,3,3));
-            
-            //update shader, including the tranform of our mesh, and the camera view of the mesh
-            shader3.Update(transform3, camera, true);
-            
-            //binding texture at zero unit
-            texture3.Bind(0);
-            
-            
-            meshModel.Draw(true);
-            
-            //unbind texture
-            texture3.UnBind();
-            
-            // unbind the shader program
-            shader3.UnBind();
-            
-        }
+//        //Render model 
+//        {
+//            // bind the shader program 
+//            shader3.Bind();
+//            
+//            transform3.SetPositions(glm::vec3(8.0f, -3.0f, 20.0f) );
+//            transform3.GetRotation()->y = counter * 25;
+//            transform3.SetScale(glm::vec3(3,3,3));
+//            
+//            //update shader, including the tranform of our mesh, and the camera view of the mesh
+//            shader3.Update(transform3, camera, true);
+//            
+//            //binding texture at zero unit
+//            texture3.Bind(0);
+//            
+//            
+//            meshModel.Draw(true);
+//            
+//            //unbind texture
+//            texture3.UnBind();
+//            
+//            // unbind the shader program
+//            shader3.UnBind();
+//            
+//        }
         
         //Render Sphere 
         {
@@ -979,28 +982,28 @@ int main(int argc, const char * argv[])  {
         }
         
         //Render Torus Knot 
-//        {
-//            // bind the shader program 
-//            shader5.Bind();
-//            
-//            transform5.SetPositions(glm::vec3(-2.0f, 3.0f, 1.0f) );
-//            transform5.GetRotation()->y = counter * 20;
-//            
-//            //update shader, including the tranform of our mesh, and the camera view of the mesh
-//            shader5.Update(transform5, camera, true);
-//            
-//            //binding texture at zero unit
-//            texture5.Bind(0);
-//            
-//            torusMeshWithIndices.Draw();
-//            
-//            //unbind texture
-//            texture5.UnBind();
-//            
-//            // unbind the shader program
-//            shader5.UnBind();
-//            
-//        }
+        {
+            // bind the shader program 
+            shader5.Bind();
+            
+            transform5.SetPositions(glm::vec3(14.0f, 4.0f, 50.0f) );
+            transform5.GetRotation()->y = counter * 20;
+            
+            //update shader, including the tranform of our mesh, and the camera view of the mesh
+            shader5.Update(transform5, camera, true);
+            
+            //binding texture at zero unit
+            texture5.Bind(0);
+            
+            torusMeshWithIndices.Draw();
+            
+            //unbind texture
+            texture5.UnBind();
+            
+            // unbind the shader program
+            shader5.UnBind();
+            
+        }
         
         //Render Torus  
         {
@@ -1087,7 +1090,7 @@ int main(int argc, const char * argv[])  {
             transform9.GetRotation()->y = counter * 10;
             
             //update shader, including the tranform of our mesh, and the camera view of the mesh
-            shader9.Update(transform9, camera, true);
+            shader9.Update(transform9, camera, false);
             
             //binding texture at zero unit
             texture9.Bind(0);
@@ -1107,10 +1110,10 @@ int main(int argc, const char * argv[])  {
             // bind the shader program 
             shader10.Bind();
             
-            transform10.SetPositions(glm::vec3(8.0f, 0.0f, 10.0f) );
+            transform10.SetPositions(glm::vec3(12.0f, 0.0f, 10.0f) );
             transform10.GetRotation()->y = counter * 20;
             transform10.GetRotation()->x = counter * 15;
-            transform10.SetScale(glm::vec3(3,3,3));
+            transform10.SetScale(glm::vec3(2,2,2));
             
             //update shader, including the tranform of our mesh, and the camera view of the mesh
             shader10.Update(transform10, camera, false);
