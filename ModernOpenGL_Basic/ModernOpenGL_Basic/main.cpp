@@ -82,8 +82,7 @@ int main(int argc, const char * argv[])  {
     std::string path = "/Users/GeorgeQuentin/Dev/OpenGL/OpenGLProject/ModernOpenGL_Basic/ModernOpenGL_Basic";
     Shader shader(path + "/res/shaders/simpleShader");
     
-    //load mesh
-
+    //load meshes
 //////////////////////////////////////////////////////////////////////////
 ///////////////////////////TRIANGLE MODEL/////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -314,7 +313,6 @@ int main(int argc, const char * argv[])  {
         }
         
         // finally, there's one vertex that needs to be duplicated due to both U and V coordinate.
-        
         vtx[aSteps * (aFacets + 1) * 3 + aFacets * 3 + 0] = vtx[0];
         vtx[aSteps * (aFacets + 1) * 3 + aFacets * 3 + 1] = vtx[1];
         vtx[aSteps * (aFacets + 1) * 3 + aFacets * 3 + 2] = vtx[2];
@@ -805,7 +803,7 @@ int main(int argc, const char * argv[])  {
         GLfloat angle          = 0.0;
         GLfloat angle_stepsize = 0.1;
         
-
+        //top
         cylinderVertices.push_back( Vertex( glm::vec3( cradius, 0.0, cheight), glm::vec2(0.0f,1.0f), glm::vec3( 0.5f, 0.0f, 1.0f ) ));
         topTriangleFanCount += 1;
         angle = 0.0;
@@ -818,7 +816,7 @@ int main(int argc, const char * argv[])  {
             angle = angle + angle_stepsize;
         }
         
-        
+        //bottom
         cylinderVertices.push_back( Vertex( glm::vec3( cradius, 0.0, 0.0), glm::vec2(0.0f,1.0f), glm::vec3( 0.0f, 1.0f, 1.0f ) ));
         bottomTriangleFanCount += 1;
         angle = -0.12;
@@ -831,6 +829,7 @@ int main(int argc, const char * argv[])  {
             angle = angle + angle_stepsize;
         }
       
+        //circumference
         angle = 0.0;
         while( angle < 2 * glm::pi<float>() ) {
             x = cradius * cos(angle);
@@ -930,40 +929,40 @@ int main(int argc, const char * argv[])  {
             
         }
         
-//        //Render model 
-//        {
-//            // bind the shader program 
-//            shader3.Bind();
-//            
-//            transform3.SetPositions(glm::vec3(8.0f, -3.0f, 20.0f) );
-//            transform3.GetRotation()->y = counter * 25;
-//            transform3.SetScale(glm::vec3(3,3,3));
-//            
-//            //update shader, including the tranform of our mesh, and the camera view of the mesh
-//            shader3.Update(transform3, camera, true);
-//            
-//            //binding texture at zero unit
-//            texture3.Bind(0);
-//            
-//            
-//            meshModel.Draw(true);
-//            
-//            //unbind texture
-//            texture3.UnBind();
-//            
-//            // unbind the shader program
-//            shader3.UnBind();
-//            
-//        }
+        //Render model 
+        {
+            // bind the shader program 
+            shader3.Bind();
+            
+            transform3.SetPositions(glm::vec3(8.0f, -5.0f, 20.0f) );
+            transform3.GetRotation()->y = counter * 25;
+            transform3.SetScale(glm::vec3(3,3,3));
+            
+            //update shader, including the tranform of our mesh, and the camera view of the mesh
+            shader3.Update(transform3, camera, true);
+            
+            //binding texture at zero unit
+            texture3.Bind(0);
+            
+            
+            meshModel.Draw(true);
+            
+            //unbind texture
+            texture3.UnBind();
+            
+            // unbind the shader program
+            shader3.UnBind();
+            
+        }
         
         //Render Sphere 
         {
             // bind the shader program 
             shader4.Bind();
             
-            transform4.SetPositions(glm::vec3(-8.0f, 3.0f, 1.0f) );
+            transform4.SetPositions(glm::vec3(-10.0f, 4.0f, 4.0f) );
             transform4.GetRotation()->y = counter * 20;
-            transform4.SetScale(glm::vec3(2,2,2));
+            transform4.SetScale(glm::vec3(1.5f,1.5f,1.5f));
             
             //update shader, including the tranform of our mesh, and the camera view of the mesh
             shader4.Update(transform4, camera, true);
@@ -1060,7 +1059,7 @@ int main(int argc, const char * argv[])  {
             // bind the shader program 
             shader8.Bind();
             
-            transform8.SetPositions(glm::vec3(0.0f, 2.0f, -6.0f)  );
+            transform8.SetPositions(glm::vec3(0.0f, 2.8f, -6.0f)  );
             transform8.GetRotation()->z = counter * 10;
             transform8.GetRotation()->x = counter * 10;
             
