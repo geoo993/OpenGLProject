@@ -1,0 +1,14 @@
+#version 400 core
+
+uniform sampler2D texFramebuffer;
+
+in vec2 vTexCoord;
+
+out vec4 vOutputColour;
+
+
+void main() {
+
+    //note: the texture function was called texture2D in older versions of GLSL
+    vOutputColour =  texture(texFramebuffer, vTexCoord);
+}

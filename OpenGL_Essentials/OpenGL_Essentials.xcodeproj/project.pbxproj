@@ -40,6 +40,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C788938B1EBDF48400D3493C /* grid.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = grid.jpg; sourceTree = "<group>"; };
+		C788938C1EBE11B100D3493C /* screen-vertex-shader.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "screen-vertex-shader.txt"; sourceTree = "<group>"; };
+		C788938D1EBE11BD00D3493C /* screen-fragment-shader.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "screen-fragment-shader.txt"; sourceTree = "<group>"; };
 		C7BDA6F11E54768500883194 /* libfreeimage.3.17.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreeimage.3.17.0.dylib; path = ../../../../../../opt/local/lib/libfreeimage.3.17.0.dylib; sourceTree = "<group>"; };
 		C7EE03801E5440A200ED906C /* OpenGL_Essentials */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OpenGL_Essentials; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7EE03831E5440A200ED906C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -126,6 +129,7 @@
 				C7EE03A51E544AA600ED906C /* FragmentShaders */,
 				C7EE03A61E544AA600ED906C /* VertexShaders */,
 				C7EE03A21E5449D700ED906C /* wooden-crate.jpg */,
+				C788938B1EBDF48400D3493C /* grid.jpg */,
 			);
 			path = resources;
 			sourceTree = "<group>";
@@ -133,6 +137,7 @@
 		C7EE03A51E544AA600ED906C /* FragmentShaders */ = {
 			isa = PBXGroup;
 			children = (
+				C788938D1EBE11BD00D3493C /* screen-fragment-shader.txt */,
 				C7EE039F1E54461A00ED906C /* fragment-shader.txt */,
 			);
 			path = FragmentShaders;
@@ -141,6 +146,7 @@
 		C7EE03A61E544AA600ED906C /* VertexShaders */ = {
 			isa = PBXGroup;
 			children = (
+				C788938C1EBE11B100D3493C /* screen-vertex-shader.txt */,
 				C7EE039E1E5445FE00ED906C /* vertex-shader.txt */,
 			);
 			path = VertexShaders;

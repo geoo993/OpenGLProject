@@ -40,27 +40,91 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <cstdio>
+#include <chrono>
 
-#define SCREEN_WIDTH 720
+#define SCREEN_WIDTH 820
 #define SCREEN_HEIGHT 680
 
-std::string texturepath = "/Users/GeorgeQuentin/Dev/OpenGL/OpenGLProject/OpenGL_Essentials/OpenGL_Essentials/resources/wooden-crate.jpg";
-std::string vertpath = "/Users/GeorgeQuentin/Dev/OpenGL/OpenGLProject/OpenGL_Essentials/OpenGL_Essentials/resources/vertex-shader.txt";
-std::string fragpath = "/Users/GeorgeQuentin/Dev/OpenGL/OpenGLProject/OpenGL_Essentials/OpenGL_Essentials/resources/fragment-shader.txt";
+std::string path = "/Users/GeorgeQuentin/Dev/OpenGL/OpenGLProject/OpenGL_Essentials/OpenGL_Essentials/resources/";
 
+GLuint frameBuffer, texColorBuffer, rboDepthStencil;
+GLuint sceneShaderProgram, screenShaderProgram;
 
-GLuint shaderProgramID;
-GLuint gVAO = 0;
-GLuint gVBO = 0;
-GLuint texture;
+GLuint vaoCube, vaoQuad;
+GLuint vboCube, vboQuad;
+
+GLuint textures[2];
 glm::mat4 camera;
 glm::mat4 projection;
-glm::mat4 view;
 glm::mat4 model;
 GLfloat gDegreesRotated = 0.0f;
 glm::vec3 position;
-glm::vec3 intensities; //a.k.a. the color of the light
 
+
+// Make a cube out of triangles (two triangles per side), vertices
+static GLfloat cubeVertices[] = {
+    //  X     Y     Z     U     V
+    // bottom
+    -1.0f,-1.0f,-1.0f,     0.0f, 0.0f,
+    1.0f,-1.0f,-1.0f,     1.0f, 0.0f,
+    -1.0f,-1.0f, 1.0f,     0.0f, 1.0f,
+    1.0f,-1.0f,-1.0f,     1.0f, 0.0f,
+    1.0f,-1.0f, 1.0f,     1.0f, 1.0f,
+    -1.0f,-1.0f, 1.0f,     0.0f, 1.0f,
+    
+    // top
+    -1.0f, 1.0f,-1.0f,    0.0f, 0.0f,
+    -1.0f, 1.0f, 1.0f,    0.0f, 1.0f,
+    1.0f, 1.0f,-1.0f,    1.0f, 0.0f,
+    1.0f, 1.0f,-1.0f,    1.0f, 0.0f,
+    -1.0f, 1.0f, 1.0f,    0.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+    
+    // front
+    -1.0f,-1.0f, 1.0f,   1.0f, 0.0f,
+    1.0f,-1.0f, 1.0f,   0.0f, 0.0f,
+    -1.0f, 1.0f, 1.0f,   1.0f, 1.0f,
+    1.0f,-1.0f, 1.0f,   0.0f, 0.0f,
+    1.0f, 1.0f, 1.0f,   0.0f, 1.0f,
+    -1.0f, 1.0f, 1.0f,   1.0f, 1.0f,
+    
+    // back
+    -1.0f,-1.0f,-1.0f,    0.0f, 0.0f,
+    -1.0f, 1.0f,-1.0f,    0.0f, 1.0f,
+    1.0f,-1.0f,-1.0f,    1.0f, 0.0f,
+    1.0f,-1.0f,-1.0f,    1.0f, 0.0f,
+    -1.0f, 1.0f,-1.0f,    0.0f, 1.0f,
+    1.0f, 1.0f,-1.0f,    1.0f, 1.0f,
+    
+    // left
+    -1.0f,-1.0f, 1.0f,    0.0f, 1.0f,
+    -1.0f, 1.0f,-1.0f,    1.0f, 0.0f,
+    -1.0f,-1.0f,-1.0f,    0.0f, 0.0f,
+    -1.0f,-1.0f, 1.0f,    0.0f, 1.0f,
+    -1.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+    -1.0f, 1.0f,-1.0f,    1.0f, 0.0f,
+    
+    // right
+    1.0f,-1.0f, 1.0f,    1.0f, 1.0f,
+    1.0f,-1.0f,-1.0f,    1.0f, 0.0f,
+    1.0f, 1.0f,-1.0f,    0.0f, 0.0f,
+    1.0f,-1.0f, 1.0f,    1.0f, 1.0f,
+    1.0f, 1.0f,-1.0f,    0.0f, 0.0f,
+    1.0f, 1.0f, 1.0f,    0.0f, 1.0f
+    
+};
+
+
+// Quad vertices
+static GLfloat quadVertices[] = {
+    -1.0f,  1.0f,  0.0f, 1.0f,
+    1.0f,  1.0f,  1.0f, 1.0f,
+    1.0f, -1.0f,  1.0f, 0.0f,
+    
+    1.0f, -1.0f,  1.0f, 0.0f,
+    -1.0f, -1.0f,  0.0f, 0.0f,
+    -1.0f,  1.0f,  0.0f, 1.0f
+};
 
 std::string shaderFromResources(std::string path){
     
@@ -81,10 +145,9 @@ std::string shaderFromResources(std::string path){
 // loads the file "hazard.png" into gTexture
 static void loadTexture(std::string filePath) {
     
-  
-    // Load texture
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+
+    //glGenTextures(1, &texture);
+    //glBindTexture(GL_TEXTURE_2D, texture);
     
 //    Bitmap img(filePath.c_str());
 //    ////*-----------------------------------------------------------------------------
@@ -123,20 +186,21 @@ static void loadTexture(std::string filePath) {
     int height = FreeImage_GetHeight(dib);
     int bpp = FreeImage_GetBPP(dib);// bytes per pixel
     
-    
     // set wrap mode
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
     
     float color[] = { 1.0f, 0.0f, 0.0f, 1.0f };
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color);
     
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    
-    // Nice trilinear filtering.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    
+    // Nice trilinear filtering.
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     
     glGenerateMipmap(GL_TEXTURE_2D);
     
@@ -155,11 +219,29 @@ static void loadTexture(std::string filePath) {
     
     glGenerateMipmap(GL_TEXTURE_2D);
     
+
     /////*-----------------------------------------------------------------------------
     //// *  Unbind texture
     ////*-----------------------------------------------------------------------------
-    glBindTexture(GL_TEXTURE_2D, 0);
+    //glBindTexture(GL_TEXTURE_2D, 0);
+    
+}
 
+// binding the textures and set the uniform in the fragment shader
+static void createTextures() {
+    
+    // Load texture
+    glGenTextures(2, textures);
+    
+    // bind the texture and set the "tex" uniform in the fragment shader
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textures[0]);
+    loadTexture(path+"wooden-crate.jpg");
+    
+    // bind the texture and set the "tex2" uniform in the fragment shader
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, textures[1]);
+    loadTexture(path+"grid.jpg");
     
 }
 
@@ -206,7 +288,7 @@ GLuint loadShaderProgram(const char* vertexShaderSource, const char* fragmentSha
     GLuint shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
-    //glBindFragDataLocation(shaderProgram, 0, "out_color");
+    glBindFragDataLocation(shaderProgram, 0, "vOutputColour");
     
     //then we are going to link all the attached shaders with out game
     glLinkProgram(shaderProgram);
@@ -227,17 +309,19 @@ GLuint loadShaderProgram(const char* vertexShaderSource, const char* fragmentSha
     glDeleteShader(fragmentShader);
     
     
-    // then we can call the user program to use the shader program
-    glUseProgram(shaderProgram);
+    
+    return shaderProgram;
+}
+
+static void projectionNcamera(const GLuint &shaderProgram){
     
     float aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
     
     // Projection matrix : 45∞ Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units.
     //set the "projection" uniform in the vertex shader, because it's not going to change
-    projection = glm::perspective(glm::radians(50.0f), aspectRatio, 0.1f, 10.0f);
+    projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 10.0f);
     GLint projectionMatrixLocation = glGetUniformLocation(shaderProgram, "projection" );
     glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projection));
-    
     
     //set the "camera" uniform in the vertex shader, because it's also not going to change
     //passing information to the vertext shader 
@@ -254,74 +338,14 @@ GLuint loadShaderProgram(const char* vertexShaderSource, const char* fragmentSha
     //stop using the shader program
     glUseProgram(0);
     
-    return shaderProgram;
 }
 
-// loads a cube into the VAO and VBO globals: gVAO and gVBO
-static void loadCube(const GLuint &shaderProgram) {
-    // make and bind the VAO
-    glGenVertexArrays(1, &gVAO);
-    glBindVertexArray(gVAO);
+
+static void specifySceneVertexAttributes(const GLuint &shaderProgram)
+{    
+    GLsizei stride = 5 * sizeof(GLfloat); 
+    //GLsizei stride = 8 * sizeof(GLfloat);
     
-    // make and bind the VBO
-    glGenBuffers(1, &gVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, gVBO);
-    
-    // Make a cube out of triangles (two triangles per side)
-    GLfloat vertexData[] = {
-        //  X     Y     Z       U     V
-        // bottom
-        -1.0f,-1.0f,-1.0f,   0.0f, 0.0f,
-        1.0f,-1.0f,-1.0f,   1.0f, 0.0f,
-        -1.0f,-1.0f, 1.0f,   0.0f, 1.0f,
-        1.0f,-1.0f,-1.0f,   1.0f, 0.0f,
-        1.0f,-1.0f, 1.0f,   1.0f, 1.0f,
-        -1.0f,-1.0f, 1.0f,   0.0f, 1.0f,
-        
-        // top
-        -1.0f, 1.0f,-1.0f,   0.0f, 0.0f,
-        -1.0f, 1.0f, 1.0f,   0.0f, 1.0f,
-        1.0f, 1.0f,-1.0f,   1.0f, 0.0f,
-        1.0f, 1.0f,-1.0f,   1.0f, 0.0f,
-        -1.0f, 1.0f, 1.0f,   0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,   1.0f, 1.0f,
-        
-        // front
-        -1.0f,-1.0f, 1.0f,   1.0f, 0.0f,
-        1.0f,-1.0f, 1.0f,   0.0f, 0.0f,
-        -1.0f, 1.0f, 1.0f,   1.0f, 1.0f,
-        1.0f,-1.0f, 1.0f,   0.0f, 0.0f,
-        1.0f, 1.0f, 1.0f,   0.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f,   1.0f, 1.0f,
-        
-        // back
-        -1.0f,-1.0f,-1.0f,   0.0f, 0.0f,
-        -1.0f, 1.0f,-1.0f,   0.0f, 1.0f,
-        1.0f,-1.0f,-1.0f,   1.0f, 0.0f,
-        1.0f,-1.0f,-1.0f,   1.0f, 0.0f,
-        -1.0f, 1.0f,-1.0f,   0.0f, 1.0f,
-        1.0f, 1.0f,-1.0f,   1.0f, 1.0f,
-        
-        // left
-        -1.0f,-1.0f, 1.0f,   0.0f, 1.0f,
-        -1.0f, 1.0f,-1.0f,   1.0f, 0.0f,
-        -1.0f,-1.0f,-1.0f,   0.0f, 0.0f,
-        -1.0f,-1.0f, 1.0f,   0.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f,   1.0f, 1.0f,
-        -1.0f, 1.0f,-1.0f,   1.0f, 0.0f,
-        
-        // right
-        1.0f,-1.0f, 1.0f,   1.0f, 1.0f,
-        1.0f,-1.0f,-1.0f,   1.0f, 0.0f,
-        1.0f, 1.0f,-1.0f,   0.0f, 0.0f,
-        1.0f,-1.0f, 1.0f,   1.0f, 1.0f,
-        1.0f, 1.0f,-1.0f,   0.0f, 0.0f,
-        1.0f, 1.0f, 1.0f,   0.0f, 1.0f
-    };
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
-    
-    
-    GLsizei stride = 5 * sizeof(GLfloat); //8*sizeof(GLfloat);
     
     // Specify the layout of the vertex data
     // connect the xyz to the "vert" attribute of the vertex shader
@@ -330,7 +354,6 @@ static void loadCube(const GLuint &shaderProgram) {
         throw std::runtime_error(std::string("Program attribute not found: ") + "vert_position");
     }
     glEnableVertexAttribArray(positionAttribute);
-   // glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
     glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
     
     // connect the uv coords to the "vertTexCoord" attribute of the vertex shader. 
@@ -342,7 +365,6 @@ static void loadCube(const GLuint &shaderProgram) {
     glEnableVertexAttribArray(textureAttribute);
     glVertexAttribPointer(textureAttribute, 2, GL_FLOAT, GL_TRUE,  stride, (const GLvoid*)(3 * sizeof(GLfloat)));
     
-    
     // connect the normal to the "vertNormal" attribute of the vertex shader
     GLint normalAttribute = glGetAttribLocation(shaderProgram, "vert_normal");
     if(normalAttribute == -1){
@@ -350,46 +372,157 @@ static void loadCube(const GLuint &shaderProgram) {
     }
     glEnableVertexAttribArray(normalAttribute);
     glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_TRUE,  stride, (const GLvoid*)(5 * sizeof(GLfloat)));
+    //glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_TRUE,  stride, (const GLvoid*)(6 * sizeof(GLfloat)));
     
     
     //unbind the VAO
     glBindVertexArray(0);
 }
 
+static void specifyScreenVertexAttributes(GLuint shaderProgram)
+{
+    GLsizei stride = 4 * sizeof(GLfloat); 
+    
+    // connect the xyz to the "vert" attribute of the vertex shader
+    GLint positionAttribute = glGetAttribLocation(shaderProgram, "vert_position");// Vertex positions
+    if(positionAttribute == -1){
+        throw std::runtime_error(std::string("Program attribute not found: ") + "vert_position");
+    }
+    glEnableVertexAttribArray(positionAttribute);
+    glVertexAttribPointer(positionAttribute, 2, GL_FLOAT, GL_FALSE, stride, nullptr);
+    
+    // connect the uv coords to the "vertTexCoord" attribute of the vertex shader. 
+    GLint textureAttribute = glGetAttribLocation(shaderProgram, "vert_texCoord");
+    if(textureAttribute == -1){
+        throw std::runtime_error(std::string("Program attribute not found: ") + "vert_texCoord");
+    }
+    // connect the uv coords to the "vertTexCoord" attribute of the vertex shader
+    glEnableVertexAttribArray(textureAttribute);
+    glVertexAttribPointer(textureAttribute, 2, GL_FLOAT, GL_TRUE, stride, (void*)(2 * sizeof(GLfloat)));
+    
+}
+
+static void frameBufferObject(){
+    
+    // Create framebuffer
+    glGenFramebuffers(1, &frameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    
+    // Create texture to hold color buffer
+    glGenTextures(1, &texColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
+    
+    // Create Renderbuffer Object to hold depth and stencil buffers
+//    glGenRenderbuffers(1, &rboDepthStencil);
+//    glBindRenderbuffer(GL_RENDERBUFFER, rboDepthStencil);
+//    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCREEN_WIDTH, SCREEN_HEIGHT);
+//    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboDepthStencil);
+//    
+}
+
+// loads a cube into the VAO and VBO globals: gVAO and gVBO
+static void loadObjects() {
+    // make and bind the VAO
+    glGenVertexArrays(1, &vaoCube);
+    glGenVertexArrays(1, &vaoQuad);
+    
+    // make and bind the VBO
+    glGenBuffers(1, &vboCube);
+    glGenBuffers(1, &vboQuad);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, vboCube);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, vboQuad);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+    
+    
+    //loading shaders, load vertex and fragment shaders into opengl
+    std::string scene_vertpath = path+"vertex-shader.txt";
+    std::string scene_fragpath = path+"fragment-shader.txt";
+    std::string screen_vertpath = path+"screen-vertex-shader.txt";
+    std::string screen_fragpath = path+"screen-fragment-shader.txt";
+    sceneShaderProgram = loadShaderProgram(shaderFromResources(scene_vertpath).c_str(), shaderFromResources(scene_fragpath).c_str());
+    
+    screenShaderProgram = loadShaderProgram(shaderFromResources(screen_vertpath).c_str(), shaderFromResources(screen_fragpath).c_str());
+   
+    // Specify the layout of the vertex data
+    glBindVertexArray(vaoCube);
+    glBindBuffer(GL_ARRAY_BUFFER, vboCube);
+    specifySceneVertexAttributes(sceneShaderProgram);
+    
+    glBindVertexArray(vaoQuad);
+    glBindBuffer(GL_ARRAY_BUFFER, vboQuad);
+    specifyScreenVertexAttributes(screenShaderProgram);
+    
+    
+    // then we can call the user program to use the shader program
+    glUseProgram(sceneShaderProgram);
+    glUniform1i(glGetUniformLocation(sceneShaderProgram, "tex"), 0);
+    glUniform1i(glGetUniformLocation(sceneShaderProgram, "tex2"), 1);
+    
+    // then we can call the user program to use the shader program
+    glUseProgram(screenShaderProgram);
+    glUniform1i(glGetUniformLocation(screenShaderProgram, "texFramebuffer"), 0);
+    
+    
+    frameBufferObject();
+    
+    projectionNcamera(sceneShaderProgram);
+    
+}
+
 
 // draws object here
 static void Render() {
     
-    // Clear the screen
-    glClearColor(0.1f, 0.4f, 0.4f, 1.0f); 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    // bind the program (the shaders)
-    glUseProgram(shaderProgramID);
+    glUseProgram(sceneShaderProgram);
+    glUseProgram(screenShaderProgram);
     
     // Model matrix : an identity matrix (model will be at the origin)
     // set the "model" uniform in the vertex shader, based on the gDegreesRotated global
     model = glm::rotate( glm::mat4(), glm::radians(gDegreesRotated), glm::vec3(0,1,0)  );
-    GLint modelMatrixLocation = glGetUniformLocation(shaderProgramID, "model" );
+    GLint modelMatrixLocation = glGetUniformLocation(sceneShaderProgram, "model" );
     glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(model));
     
     
-    //GLint text = glGetUniformLocation(shaderProgramID, "tex" );
+    //create and load textures
+    createTextures();
     
-    
-    // bind the texture and set the "tex" uniform in the fragment shader
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    // Bind our framebuffer and draw 3D scene (spinning cube)
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
     
     // bind the VAO (the triangle)
-    glBindVertexArray(gVAO);
+    glBindVertexArray(vaoCube);
+    glEnable(GL_DEPTH_TEST);
     
-    // draw the VAO
+    // draw triangles
     glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
+    
+    
+    // Bind default framebuffer and draw contents of our framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindVertexArray(vaoQuad);
+    
+    glDisable(GL_DEPTH_TEST);
+    
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    
     
     // unbind the VAO
     glBindVertexArray(0);
     
+    //unbind texture
     glBindTexture(GL_TEXTURE_2D, 0);
     
     // unbind the program
@@ -404,13 +537,20 @@ void Update(float secondsElapsed) {
     while(gDegreesRotated > 360.0f) gDegreesRotated -= 360.0f;
 }
 
+static void OnKeyDown_callback( GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
+}  
+
 static void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
 
 int main(int argc, const char * argv[])  {
-    
+  
     // start GL context and O/S window using the GLFW helper library
     if (!glfwInit()) {
         fprintf(stderr, "ERROR: could not start GLFW3\n");
@@ -435,6 +575,8 @@ int main(int argc, const char * argv[])  {
     glfwMakeContextCurrent(window);
     
     glfwSetErrorCallback(error_callback);
+    
+    glfwSetKeyCallback(window, OnKeyDown_callback);
     
     // start GLEW extension handler
     glewExperimental = GL_TRUE;
@@ -461,29 +603,35 @@ int main(int argc, const char * argv[])  {
     std::cout << "Renderer: " << renderer << std::endl;
     std::cout << "Vendor: " << vendor << std::endl;
     
+    //3. Check for specific functionality
+    if (GLEW_ARB_vertex_array_object){
+        printf("genVertexArrays supported\n");
+    }
+    if (GLEW_APPLE_vertex_array_object){
+        printf("genVertexArrayAPPLE supported\n");
+    }
+    
+    GLint MaxTextureUnits;
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &MaxTextureUnits);
+    std::cout << "There are "<< MaxTextureUnits << " texture units supported by GPU. " << std::endl;
+    
     // OpenGL settings
     // tell GL to only draw onto a pixel if the shape is closer to the viewer
     glEnable(GL_DEPTH_TEST); // enable depth-testing
     glEnable(GL_CULL_FACE);//only front facinf poligons are rendered, forn facing have a clock wise or counter clock wise order
     //glDisable(GL_CULL_FACE);
     
-    glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
-    //loading shader
-    // load vertex and fragment shaders into opengl
-    shaderProgramID = loadShaderProgram(shaderFromResources(vertpath).c_str(), shaderFromResources(fragpath).c_str());
+//    glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
+//    glEnable(GL_BLEND);
+//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     // create buffer and fill it with the points of the object
-    loadCube(shaderProgramID);
-    
-    loadTexture(texturepath);
+    loadObjects();
     
     
     // Scale to window size
     GLint windowWidth, windowHeight;
-    glfwGetWindowSize(window, &windowWidth, &windowHeight);
+    //glfwGetWindowSize(window, &windowWidth, &windowHeight);
     glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
     if (windowHeight == 0) windowHeight = 1; // To prevent divide by 0
     
@@ -491,6 +639,11 @@ int main(int argc, const char * argv[])  {
     double lastTime = glfwGetTime();
     while(!glfwWindowShouldClose(window))
     {
+        // Clear the screen
+        glClearColor(0.1f, 0.4f, 0.4f, 1.0f); 
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        //set viewport
         glViewport(0.0f, 0.0f, windowWidth, windowHeight);
         
         // update the scene based on the time elapsed since last update
@@ -512,6 +665,19 @@ int main(int argc, const char * argv[])  {
         if(error != GL_NO_ERROR)
             std::cerr << "OpenGL Error " << error << std::endl;
     }
+    
+    glDeleteRenderbuffers(1, &rboDepthStencil);
+    glDeleteTextures(1, &texColorBuffer);
+    glDeleteFramebuffers(1, &frameBuffer);
+    
+    glDeleteTextures(2, textures);
+    glDeleteProgram(sceneShaderProgram);
+    glDeleteProgram(screenShaderProgram);
+    glDeleteBuffers(1, &vboCube);
+    glDeleteVertexArrays(1, &vaoCube);
+    
+    glDeleteBuffers(1, &vboQuad);
+    glDeleteVertexArrays(1, &vaoQuad);
     
     // close GL context and any other GLFW resources
     glfwDestroyWindow(window);

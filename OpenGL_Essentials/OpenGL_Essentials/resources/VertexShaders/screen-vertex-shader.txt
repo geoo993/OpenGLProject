@@ -1,0 +1,17 @@
+#version 400 core 
+
+layout (location = 0) in vec2 vert_position; 
+layout (location = 1) in vec2 vert_texCoord;
+
+out vec2 vTexCoord;
+
+void main() {
+
+    // Pass the tex coord straight through to the fragment shader
+    vTexCoord = vert_texCoord;
+
+    // Apply all matrix transformations to vert
+    gl_Position = vec4(vert_position, 0.0, 1.0);
+
+}
+

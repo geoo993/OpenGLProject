@@ -2,6 +2,7 @@
 
 uniform sampler2D tex, tex2;
 
+
 in vec3 vPosition;
 in vec2 vTexCoord;
 in vec3 vNormalColor;
