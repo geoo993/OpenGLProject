@@ -47,70 +47,66 @@
 
 std::string path = "/Users/GeorgeQuentin/Dev/OpenGL/OpenGLProject/OpenGL_Essentials/OpenGL_Essentials/resources/";
 
-GLuint frameBuffer, texColorBuffer, rboDepthStencil;
-GLuint sceneShaderProgram, screenShaderProgram;
-
-GLuint vaoCube, vaoQuad;
-GLuint vboCube, vboQuad;
-
-GLuint textures[2];
-glm::mat4 camera;
-glm::mat4 projection;
-glm::mat4 model;
 GLfloat gDegreesRotated = 0.0f;
-glm::vec3 position;
 
 
 // Make a cube out of triangles (two triangles per side), vertices
 static GLfloat cubeVertices[] = {
-    //  X     Y     Z     U     V
+    //  X     Y     Z     U     V       R     G     B
     // bottom
-    -1.0f,-1.0f,-1.0f,     0.0f, 0.0f,
-    1.0f,-1.0f,-1.0f,     1.0f, 0.0f,
-    -1.0f,-1.0f, 1.0f,     0.0f, 1.0f,
-    1.0f,-1.0f,-1.0f,     1.0f, 0.0f,
-    1.0f,-1.0f, 1.0f,     1.0f, 1.0f,
-    -1.0f,-1.0f, 1.0f,     0.0f, 1.0f,
+    -1.0f,-1.0f,-1.0f,     0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    1.0f,-1.0f,-1.0f,     1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f,-1.0f, 1.0f,     0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    1.0f,-1.0f,-1.0f,     1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    1.0f,-1.0f, 1.0f,     1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f,-1.0f, 1.0f,     0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
     
     // top
-    -1.0f, 1.0f,-1.0f,    0.0f, 0.0f,
-    -1.0f, 1.0f, 1.0f,    0.0f, 1.0f,
-    1.0f, 1.0f,-1.0f,    1.0f, 0.0f,
-    1.0f, 1.0f,-1.0f,    1.0f, 0.0f,
-    -1.0f, 1.0f, 1.0f,    0.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+    -1.0f, 1.0f,-1.0f,    0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f, 1.0f, 1.0f,    0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f,-1.0f,    1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f,-1.0f,    1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f, 1.0f, 1.0f,    0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,    1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
     
     // front
-    -1.0f,-1.0f, 1.0f,   1.0f, 0.0f,
-    1.0f,-1.0f, 1.0f,   0.0f, 0.0f,
-    -1.0f, 1.0f, 1.0f,   1.0f, 1.0f,
-    1.0f,-1.0f, 1.0f,   0.0f, 0.0f,
-    1.0f, 1.0f, 1.0f,   0.0f, 1.0f,
-    -1.0f, 1.0f, 1.0f,   1.0f, 1.0f,
+    -1.0f,-1.0f, 1.0f,   1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    1.0f,-1.0f, 1.0f,   0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    1.0f,-1.0f, 1.0f,   0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
     
     // back
-    -1.0f,-1.0f,-1.0f,    0.0f, 0.0f,
-    -1.0f, 1.0f,-1.0f,    0.0f, 1.0f,
-    1.0f,-1.0f,-1.0f,    1.0f, 0.0f,
-    1.0f,-1.0f,-1.0f,    1.0f, 0.0f,
-    -1.0f, 1.0f,-1.0f,    0.0f, 1.0f,
-    1.0f, 1.0f,-1.0f,    1.0f, 1.0f,
+    -1.0f,-1.0f,-1.0f,    0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f, 1.0f,-1.0f,    0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    1.0f,-1.0f,-1.0f,    1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    1.0f,-1.0f,-1.0f,    1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f, 1.0f,-1.0f,    0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f,-1.0f,    1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
     
     // left
-    -1.0f,-1.0f, 1.0f,    0.0f, 1.0f,
-    -1.0f, 1.0f,-1.0f,    1.0f, 0.0f,
-    -1.0f,-1.0f,-1.0f,    0.0f, 0.0f,
-    -1.0f,-1.0f, 1.0f,    0.0f, 1.0f,
-    -1.0f, 1.0f, 1.0f,    1.0f, 1.0f,
-    -1.0f, 1.0f,-1.0f,    1.0f, 0.0f,
+    -1.0f,-1.0f, 1.0f,    0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f, 1.0f,-1.0f,    1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f,-1.0f,-1.0f,    0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f,-1.0f, 1.0f,    0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f, 1.0f, 1.0f,    1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f, 1.0f,-1.0f,    1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
     
     // right
-    1.0f,-1.0f, 1.0f,    1.0f, 1.0f,
-    1.0f,-1.0f,-1.0f,    1.0f, 0.0f,
-    1.0f, 1.0f,-1.0f,    0.0f, 0.0f,
-    1.0f,-1.0f, 1.0f,    1.0f, 1.0f,
-    1.0f, 1.0f,-1.0f,    0.0f, 0.0f,
-    1.0f, 1.0f, 1.0f,    0.0f, 1.0f
+    1.0f,-1.0f, 1.0f,    1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    1.0f,-1.0f,-1.0f,    1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f,-1.0f,    0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    1.0f,-1.0f, 1.0f,    1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f,-1.0f,    0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,    0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+    
+    -2.0f, -2.0f, -1.0f,    0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+    2.0f, -2.0f, -1.0f,     1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+    2.0f,  2.0f, -1.0f,     1.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+    2.0f,  2.0f, -1.0f,     1.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+    -2.0f,  2.0f, -1.0f,    0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+    -2.0f, -2.0f, -1.0f,    0.0f, 0.0f, 0.0f, 0.0f, 0.0f 
     
 };
 
@@ -143,11 +139,11 @@ std::string shaderFromResources(std::string path){
 
 
 // loads the file "hazard.png" into gTexture
-static void loadTexture(std::string filePath) {
+GLuint loadTexture(std::string filePath) {
     
-
-    //glGenTextures(1, &texture);
-    //glBindTexture(GL_TEXTURE_2D, texture);
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
     
 //    Bitmap img(filePath.c_str());
 //    ////*-----------------------------------------------------------------------------
@@ -165,7 +161,7 @@ static void loadTexture(std::string filePath) {
         fif = FreeImage_GetFIFFromFilename(filePath.c_str());
     
     if(fif == FIF_UNKNOWN) // If still unknown, return failure
-        return;
+        return -1;
     
     if(FreeImage_FIFSupportsReading(fif)) // Check if the plugin has reading capabilities and load the file
         dib = FreeImage_Load(fif, filePath.c_str());
@@ -173,14 +169,14 @@ static void loadTexture(std::string filePath) {
     if(!dib) {
         char message[1024];
         sprintf(message, "Cannot load image\n%s\n",filePath.c_str());
-        return;
+        return -1;
     }
     
     BYTE* pData = FreeImage_GetBits(dib); // Retrieve the image data
     
     // If somehow one of these failed (they shouldn't), return failure
     if (pData == NULL || FreeImage_GetWidth(dib) == 0 || FreeImage_GetHeight(dib) == 0)
-        return;
+        return -1;
     
     int width = FreeImage_GetWidth(dib); 
     int height = FreeImage_GetHeight(dib);
@@ -225,25 +221,9 @@ static void loadTexture(std::string filePath) {
     ////*-----------------------------------------------------------------------------
     //glBindTexture(GL_TEXTURE_2D, 0);
     
+    return texture;
 }
 
-// binding the textures and set the uniform in the fragment shader
-static void createTextures() {
-    
-    // Load texture
-    glGenTextures(2, textures);
-    
-    // bind the texture and set the "tex" uniform in the fragment shader
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textures[0]);
-    loadTexture(path+"wooden-crate.jpg");
-    
-    // bind the texture and set the "tex2" uniform in the fragment shader
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, textures[1]);
-    loadTexture(path+"grid.jpg");
-    
-}
 
 
 GLuint loadShaderProgram(const char* vertexShaderSource, const char* fragmentShaderSource)
@@ -308,44 +288,14 @@ GLuint loadShaderProgram(const char* vertexShaderSource, const char* fragmentSha
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
     
-    
-    
     return shaderProgram;
 }
 
-static void projectionNcamera(const GLuint &shaderProgram){
-    
-    float aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
-    
-    // Projection matrix : 45∞ Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units.
-    //set the "projection" uniform in the vertex shader, because it's not going to change
-    projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 10.0f);
-    GLint projectionMatrixLocation = glGetUniformLocation(shaderProgram, "projection" );
-    glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projection));
-    
-    //set the "camera" uniform in the vertex shader, because it's also not going to change
-    //passing information to the vertext shader 
-    // Camera or view matrix
-    camera = glm::lookAt(
-                         glm::vec3(3,3,3), // Camera is at (4,3,-3), in World Space
-                         glm::vec3(0,0,0), // and looks at the origin
-                         glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
-                         );
-    GLint viewcameraMatrixLocation = glGetUniformLocation(shaderProgram, "camera" );
-    glUniformMatrix4fv(viewcameraMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera));
-    
-    
-    //stop using the shader program
-    glUseProgram(0);
-    
-}
 
 
 static void specifySceneVertexAttributes(const GLuint &shaderProgram)
 {    
-    GLsizei stride = 5 * sizeof(GLfloat); 
-    //GLsizei stride = 8 * sizeof(GLfloat);
-    
+    GLsizei stride = 8 * sizeof(GLfloat);
     
     // Specify the layout of the vertex data
     // connect the xyz to the "vert" attribute of the vertex shader
@@ -363,6 +313,7 @@ static void specifySceneVertexAttributes(const GLuint &shaderProgram)
     }
     // connect the uv coords to the "vertTexCoord" attribute of the vertex shader
     glEnableVertexAttribArray(textureAttribute);
+    //the last parameter means, stride after the 3rd floating point in float vertices array
     glVertexAttribPointer(textureAttribute, 2, GL_FLOAT, GL_TRUE,  stride, (const GLvoid*)(3 * sizeof(GLfloat)));
     
     // connect the normal to the "vertNormal" attribute of the vertex shader
@@ -371,12 +322,8 @@ static void specifySceneVertexAttributes(const GLuint &shaderProgram)
         throw std::runtime_error(std::string("Program attribute not found: ") + "vert_normal");
     }
     glEnableVertexAttribArray(normalAttribute);
+    //the last parameter means, strideafter the 5th floating point in float vertices array
     glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_TRUE,  stride, (const GLvoid*)(5 * sizeof(GLfloat)));
-    //glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_TRUE,  stride, (const GLvoid*)(6 * sizeof(GLfloat)));
-    
-    
-    //unbind the VAO
-    glBindVertexArray(0);
 }
 
 static void specifyScreenVertexAttributes(GLuint shaderProgram)
@@ -402,133 +349,6 @@ static void specifyScreenVertexAttributes(GLuint shaderProgram)
     
 }
 
-static void frameBufferObject(){
-    
-    // Create framebuffer
-    glGenFramebuffers(1, &frameBuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-    
-    // Create texture to hold color buffer
-    glGenTextures(1, &texColorBuffer);
-    glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
-    
-    // Create Renderbuffer Object to hold depth and stencil buffers
-//    glGenRenderbuffers(1, &rboDepthStencil);
-//    glBindRenderbuffer(GL_RENDERBUFFER, rboDepthStencil);
-//    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCREEN_WIDTH, SCREEN_HEIGHT);
-//    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboDepthStencil);
-//    
-}
-
-// loads a cube into the VAO and VBO globals: gVAO and gVBO
-static void loadObjects() {
-    // make and bind the VAO
-    glGenVertexArrays(1, &vaoCube);
-    glGenVertexArrays(1, &vaoQuad);
-    
-    // make and bind the VBO
-    glGenBuffers(1, &vboCube);
-    glGenBuffers(1, &vboQuad);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, vboCube);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, vboQuad);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
-    
-    
-    //loading shaders, load vertex and fragment shaders into opengl
-    std::string scene_vertpath = path+"vertex-shader.txt";
-    std::string scene_fragpath = path+"fragment-shader.txt";
-    std::string screen_vertpath = path+"screen-vertex-shader.txt";
-    std::string screen_fragpath = path+"screen-fragment-shader.txt";
-    sceneShaderProgram = loadShaderProgram(shaderFromResources(scene_vertpath).c_str(), shaderFromResources(scene_fragpath).c_str());
-    
-    screenShaderProgram = loadShaderProgram(shaderFromResources(screen_vertpath).c_str(), shaderFromResources(screen_fragpath).c_str());
-   
-    // Specify the layout of the vertex data
-    glBindVertexArray(vaoCube);
-    glBindBuffer(GL_ARRAY_BUFFER, vboCube);
-    specifySceneVertexAttributes(sceneShaderProgram);
-    
-    glBindVertexArray(vaoQuad);
-    glBindBuffer(GL_ARRAY_BUFFER, vboQuad);
-    specifyScreenVertexAttributes(screenShaderProgram);
-    
-    
-    // then we can call the user program to use the shader program
-    glUseProgram(sceneShaderProgram);
-    glUniform1i(glGetUniformLocation(sceneShaderProgram, "tex"), 0);
-    glUniform1i(glGetUniformLocation(sceneShaderProgram, "tex2"), 1);
-    
-    // then we can call the user program to use the shader program
-    glUseProgram(screenShaderProgram);
-    glUniform1i(glGetUniformLocation(screenShaderProgram, "texFramebuffer"), 0);
-    
-    
-    frameBufferObject();
-    
-    projectionNcamera(sceneShaderProgram);
-    
-}
-
-
-// draws object here
-static void Render() {
-    
-    glUseProgram(sceneShaderProgram);
-    glUseProgram(screenShaderProgram);
-    
-    // Model matrix : an identity matrix (model will be at the origin)
-    // set the "model" uniform in the vertex shader, based on the gDegreesRotated global
-    model = glm::rotate( glm::mat4(), glm::radians(gDegreesRotated), glm::vec3(0,1,0)  );
-    GLint modelMatrixLocation = glGetUniformLocation(sceneShaderProgram, "model" );
-    glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(model));
-    
-    
-    //create and load textures
-    createTextures();
-    
-    // Bind our framebuffer and draw 3D scene (spinning cube)
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-    
-    // bind the VAO (the triangle)
-    glBindVertexArray(vaoCube);
-    glEnable(GL_DEPTH_TEST);
-    
-    // draw triangles
-    glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
-    
-    
-    // Bind default framebuffer and draw contents of our framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindVertexArray(vaoQuad);
-    
-    glDisable(GL_DEPTH_TEST);
-    
-    
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    
-    
-    // unbind the VAO
-    glBindVertexArray(0);
-    
-    //unbind texture
-    glBindTexture(GL_TEXTURE_2D, 0);
-    
-    // unbind the program
-    glUseProgram(0);
-    
-}
 
 // update the scene based on the time elapsed since last update
 void Update(float secondsElapsed) {
@@ -617,17 +437,121 @@ int main(int argc, const char * argv[])  {
     
     // OpenGL settings
     // tell GL to only draw onto a pixel if the shape is closer to the viewer
-    glEnable(GL_DEPTH_TEST); // enable depth-testing
-    glEnable(GL_CULL_FACE);//only front facinf poligons are rendered, forn facing have a clock wise or counter clock wise order
+    //glEnable(GL_DEPTH_TEST); // enable depth-testing
+    //glEnable(GL_CULL_FACE);//only front facinf poligons are rendered, forn facing have a clock wise or counter clock wise order
     //glDisable(GL_CULL_FACE);
     
 //    glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
 //    glEnable(GL_BLEND);
 //    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
-    // create buffer and fill it with the points of the object
-    loadObjects();
+  
+//////////////////////////////INITIALISE///////////////////////////////////    
     
+    // loads a cube into the VAO and VBO globals: gVAO and gVBO
+    // make and bind the VAO
+    GLuint vaoCube, vaoQuad;
+    glGenVertexArrays(1, &vaoCube);
+    glGenVertexArrays(1, &vaoQuad);
+    
+    // make and bind the VBO
+    GLuint vboCube, vboQuad;
+    glGenBuffers(1, &vboCube);
+    glGenBuffers(1, &vboQuad);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, vboCube);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, vboQuad);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+    
+    
+    //loading shaders, load vertex and fragment shaders into opengl
+    std::string scene_vertpath = path+"vertex-shader.txt";
+    std::string scene_fragpath = path+"fragment-shader.txt";
+    std::string screen_vertpath = path+"screen-vertex-shader.txt";
+    std::string screen_fragpath = path+"screen-fragment-shader.txt";
+    GLuint sceneShaderProgram = loadShaderProgram(shaderFromResources(scene_vertpath).c_str(), shaderFromResources(scene_fragpath).c_str());
+    
+    GLuint screenShaderProgram = loadShaderProgram(shaderFromResources(screen_vertpath).c_str(), shaderFromResources(screen_fragpath).c_str());
+    
+    // Specify the layout of the vertex data
+    glBindVertexArray(vaoCube);
+    glBindBuffer(GL_ARRAY_BUFFER, vboCube);
+    specifySceneVertexAttributes(sceneShaderProgram);
+    
+    glBindVertexArray(vaoQuad);
+    glBindBuffer(GL_ARRAY_BUFFER, vboQuad);
+    specifyScreenVertexAttributes(screenShaderProgram);
+    
+    // Load textures
+    GLuint tex = loadTexture(path+"wooden-crate.jpg");
+    GLuint tex2 = loadTexture(path+"grid.jpg");
+    
+    // then we can call the user program to use the shader program
+    glUseProgram(sceneShaderProgram);
+    glUniform1i(glGetUniformLocation(sceneShaderProgram, "tex"), 0);
+    glUniform1i(glGetUniformLocation(sceneShaderProgram, "tex2"), 1);
+    
+    GLuint uniformColor = glGetUniformLocation(sceneShaderProgram, "overrideColor");
+    glUniform3f(uniformColor, 0.3f, 0.3f, 0.3f);
+    
+    // then we can call the user program to use the shader program
+    glUseProgram(screenShaderProgram);
+    glUniform1i(glGetUniformLocation(screenShaderProgram, "texFramebuffer"), 0);
+    
+    GLint modelMatrixLocation = glGetUniformLocation(sceneShaderProgram, "model" );
+    
+    //// Create framebuffer
+    GLuint frameBuffer, texColorBuffer, rboDepthStencil;
+    glGenFramebuffers(1, &frameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    
+    //// Create texture to hold color buffer
+    glGenTextures(1, &texColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
+    
+    
+    // Create Renderbuffer Object to hold depth and stencil buffers
+    glGenRenderbuffers(1, &rboDepthStencil);
+    glBindRenderbuffer(GL_RENDERBUFFER, rboDepthStencil);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCREEN_WIDTH, SCREEN_HEIGHT);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboDepthStencil);
+    
+    
+    glUseProgram(sceneShaderProgram);
+    float aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
+    
+    // Projection matrix : 45∞ Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units.
+    //set the "projection" uniform in the vertex shader, because it's not going to change
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspectRatio, 1.0f, 10.0f);
+    GLint projectionMatrixLocation = glGetUniformLocation(sceneShaderProgram, "projection" );
+    glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projection));
+    
+    //set the "camera" uniform in the vertex shader, because it's also not going to change
+    //passing information to the vertext shader 
+    // Camera or view matrix
+    glm::mat4 camera = glm::lookAt(
+                                   glm::vec3(5.0f,3.0f,5.0f), // Camera is at (4,3,-3), in World Space
+                                   glm::vec3(0.0f,0.0f,0.0f), // and looks at the origin
+                                   glm::vec3(0.0f,0.0f,1.0f)  // Head is up (set to 0,-1,0 to look upside-down)
+                                   );
+    GLint viewcameraMatrixLocation = glGetUniformLocation(sceneShaderProgram, "camera" );
+    glUniformMatrix4fv(viewcameraMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera));
+    
+    
+    //stop using the shader program
+    glUseProgram(0);
+        
+/////////////////END INITAILISING /////////////////////////////////    
+
     
     // Scale to window size
     GLint windowWidth, windowHeight;
@@ -639,8 +563,11 @@ int main(int argc, const char * argv[])  {
     double lastTime = glfwGetTime();
     while(!glfwWindowShouldClose(window))
     {
+        
+        
         // Clear the screen
-        glClearColor(0.1f, 0.4f, 0.4f, 1.0f); 
+        
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         //set viewport
@@ -651,8 +578,83 @@ int main(int argc, const char * argv[])  {
         Update((float)(thisTime - lastTime));
         lastTime = thisTime;
         
-        //Render objects
-        Render();
+///////////////////Render objects//////////////////////
+        
+        // Bind our framebuffer and draw 3D scene (spinning cube)
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+        
+        // bind the VAO (the triangle)
+        glBindVertexArray(vaoCube);
+        glEnable(GL_DEPTH_TEST);
+        glUseProgram(sceneShaderProgram);
+        
+        // bind the texture and set the "tex" uniform in the fragment shader
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        
+        // bind the texture and set the "tex2" uniform in the fragment shader
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, tex2);
+        
+        // Model matrix : an identity matrix (model will be at the origin)
+        // set the "model" uniform in the vertex shader, based on the gDegreesRotated global
+        glm::mat4 model = glm::rotate( glm::mat4(), glm::radians(gDegreesRotated), glm::vec3(0,0,1)  );
+        glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(model));
+        
+        // draw cube triangles
+        glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
+        
+        
+        glEnable(GL_STENCIL_TEST);
+        
+        // Draw floor
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+        glStencilMask(0xFF);
+        glDepthMask(GL_FALSE);
+        glClear(GL_STENCIL_BUFFER_BIT);
+        
+        glDrawArrays(GL_TRIANGLES, 36, 6);
+        
+        // Draw cube reflection
+        glStencilFunc(GL_EQUAL, 1, 0xFF);
+        glStencilMask(0x00);
+        glDepthMask(GL_TRUE);
+        
+        model = glm::scale(glm::translate(model, glm::vec3(0, 0, -1)), glm::vec3(1, 1, -1));
+        glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(model));
+        
+        
+        glUniform3f(uniformColor, 0.3f, 0.3f, 0.3f);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glUniform3f(uniformColor, 1.0f, 1.0f, 1.0f);
+        
+        glDisable(GL_STENCIL_TEST);
+        
+        
+        // Bind default framebuffer and draw contents of our framebuffer
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindVertexArray(vaoQuad);
+        glDisable(GL_DEPTH_TEST);
+        glUseProgram(screenShaderProgram);
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
+        
+        // unbind the VAO
+        glBindVertexArray(0);
+        
+        //unbind texture
+        glBindTexture(GL_TEXTURE_2D, 0);
+        
+        // unbind the program
+        glUseProgram(0);
+        
+///////////////////END Render objects//////////////////////        
+        
         
         // Update Screen, swap the display buffers (displays what was just drawn)
         glfwSwapBuffers(window);
@@ -670,9 +672,12 @@ int main(int argc, const char * argv[])  {
     glDeleteTextures(1, &texColorBuffer);
     glDeleteFramebuffers(1, &frameBuffer);
     
-    glDeleteTextures(2, textures);
+    glDeleteTextures(1, &tex);
+    glDeleteTextures(1, &tex2);
+    
     glDeleteProgram(sceneShaderProgram);
-    glDeleteProgram(screenShaderProgram);
+    //glDeleteProgram(screenShaderProgram);
+    
     glDeleteBuffers(1, &vboCube);
     glDeleteVertexArrays(1, &vaoCube);
     

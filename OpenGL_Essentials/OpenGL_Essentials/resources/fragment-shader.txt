@@ -17,6 +17,5 @@ void main() {
 
     vec4 texColor = mix(vTexColour, vTexColour1, 0.5);
 
-    //vOutputColour =  vec4(vNormalColor, 1.0f) * texColor;
-    vOutputColour =  texColor;
+    vOutputColour =  vec4(vNormalColor, 1.0f) * texColor;
 }
