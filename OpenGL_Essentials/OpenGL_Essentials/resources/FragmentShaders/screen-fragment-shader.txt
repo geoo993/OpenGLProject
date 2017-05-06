@@ -1,14 +1,33 @@
 #version 400 core
 
 uniform sampler2D texFramebuffer;
+uniform vec2 texOffset;
 
 in vec2 vTexCoord;
 
 out vec4 vOutputColour;
 
+const float kernel[9] = float[](
+    0.00481007202f,
+    0.0286864862f,
+    0.102712765f,
+    0.220796734f,
+    0.284958780f,
+    0.220796734f,
+    0.102712765f,
+    0.0286864862f,
+    0.00481007202f
+);
 
 void main() {
 
+    vec4 sum = vec4(0.0);
+    for (int i = -4; i <= 4; i++) {
+        sum += texture(texFramebuffer, vTexCoord + i * texOffset) * kernel[i + 4];
+    }
+
     //note: the texture function was called texture2D in older versions of GLSL
-    vOutputColour =  texture(texFramebuffer, vTexCoord);
+    //vOutputColour =  texture(texFramebuffer, vTexCoord);
+    vOutputColour =  sum;
 }
+

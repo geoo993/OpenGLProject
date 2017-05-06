@@ -43,6 +43,7 @@
 		C788938B1EBDF48400D3493C /* grid.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = grid.jpg; sourceTree = "<group>"; };
 		C788938C1EBE11B100D3493C /* screen-vertex-shader.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "screen-vertex-shader.txt"; sourceTree = "<group>"; };
 		C788938D1EBE11BD00D3493C /* screen-fragment-shader.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "screen-fragment-shader.txt"; sourceTree = "<group>"; };
+		C7B0887A1EBE6A48006B00BE /* crate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = crate.jpg; sourceTree = "<group>"; };
 		C7BDA6F11E54768500883194 /* libfreeimage.3.17.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreeimage.3.17.0.dylib; path = ../../../../../../opt/local/lib/libfreeimage.3.17.0.dylib; sourceTree = "<group>"; };
 		C7EE03801E5440A200ED906C /* OpenGL_Essentials */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OpenGL_Essentials; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7EE03831E5440A200ED906C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -54,7 +55,6 @@
 		C7EE03931E5440EE00ED906C /* libglib-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.0.dylib"; path = "../../../../../../opt/local/lib/libglib-2.0.0.dylib"; sourceTree = "<group>"; };
 		C7EE039E1E5445FE00ED906C /* vertex-shader.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = "vertex-shader.txt"; path = "../vertex-shader.txt"; sourceTree = "<group>"; };
 		C7EE039F1E54461A00ED906C /* fragment-shader.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = "fragment-shader.txt"; path = "../fragment-shader.txt"; sourceTree = "<group>"; };
-		C7EE03A21E5449D700ED906C /* wooden-crate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "wooden-crate.jpg"; sourceTree = "<group>"; };
 		C7EE03A71E544F1A00ED906C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		C7EE03A91E544F2400ED906C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		C7EE05581E54574800ED906C /* gl_data.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = gl_data.hpp; path = OpenGL_Essentials/gl_data.hpp; sourceTree = SOURCE_ROOT; };
@@ -128,7 +128,7 @@
 			children = (
 				C7EE03A51E544AA600ED906C /* FragmentShaders */,
 				C7EE03A61E544AA600ED906C /* VertexShaders */,
-				C7EE03A21E5449D700ED906C /* wooden-crate.jpg */,
+				C7B0887A1EBE6A48006B00BE /* crate.jpg */,
 				C788938B1EBDF48400D3493C /* grid.jpg */,
 			);
 			path = resources;

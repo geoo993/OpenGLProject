@@ -47,9 +47,6 @@
 
 std::string path = "/Users/GeorgeQuentin/Dev/OpenGL/OpenGLProject/OpenGL_Essentials/OpenGL_Essentials/resources/";
 
-GLfloat gDegreesRotated = 0.0f;
-
-
 // Make a cube out of triangles (two triangles per side), vertices
 static GLfloat cubeVertices[] = {
     //  X     Y     Z     U     V       R     G     B
@@ -350,13 +347,6 @@ static void specifyScreenVertexAttributes(GLuint shaderProgram)
 }
 
 
-// update the scene based on the time elapsed since last update
-void Update(float secondsElapsed) {
-    const GLfloat degreesPerSecond = 180.0f;
-    gDegreesRotated += secondsElapsed * degreesPerSecond;
-    while(gDegreesRotated > 360.0f) gDegreesRotated -= 360.0f;
-}
-
 static void OnKeyDown_callback( GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
@@ -448,6 +438,8 @@ int main(int argc, const char * argv[])  {
   
 //////////////////////////////INITIALISE///////////////////////////////////    
     
+    auto t_start = std::chrono::high_resolution_clock::now();
+    
     // loads a cube into the VAO and VBO globals: gVAO and gVBO
     // make and bind the VAO
     GLuint vaoCube, vaoQuad;
@@ -485,7 +477,7 @@ int main(int argc, const char * argv[])  {
     specifyScreenVertexAttributes(screenShaderProgram);
     
     // Load textures
-    GLuint tex = loadTexture(path+"wooden-crate.jpg");
+    GLuint tex = loadTexture(path+"crate.jpg");
     GLuint tex2 = loadTexture(path+"grid.jpg");
     
     // then we can call the user program to use the shader program
@@ -496,35 +488,50 @@ int main(int argc, const char * argv[])  {
     GLuint uniformColor = glGetUniformLocation(sceneShaderProgram, "overrideColor");
     glUniform3f(uniformColor, 0.3f, 0.3f, 0.3f);
     
+    GLint modelMatrixLocation = glGetUniformLocation(sceneShaderProgram, "model" );
+    
     // then we can call the user program to use the shader program
     glUseProgram(screenShaderProgram);
     glUniform1i(glGetUniformLocation(screenShaderProgram, "texFramebuffer"), 0);
     
-    GLint modelMatrixLocation = glGetUniformLocation(sceneShaderProgram, "model" );
+    GLint uniTexOffset = glGetUniformLocation(screenShaderProgram, "texOffset");
     
-    //// Create framebuffer
-    GLuint frameBuffer, texColorBuffer, rboDepthStencil;
-    glGenFramebuffers(1, &frameBuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    // Create two framebuffers
+    GLuint frameBuffers[2];
+    glGenFramebuffers(2, frameBuffers);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[1]);
     
-    //// Create texture to hold color buffer
-    glGenTextures(1, &texColorBuffer);
-    glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+    // Create two textures to hold color buffers
+    GLuint texColorBuffers[2];
+    glGenTextures(2, texColorBuffers);
+    glBindTexture(GL_TEXTURE_2D, texColorBuffers[1]);
     
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffers[1], 0);
     
     
-    // Create Renderbuffer Object to hold depth and stencil buffers
+    // Set up the first framebuffer's color buffer
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
+    glBindTexture(GL_TEXTURE_2D, texColorBuffers[0]);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffers[0], 0);
+    
+    
+    // Create first framebuffer's Renderbuffer Object to hold depth and stencil buffers
+    GLuint rboDepthStencil;
     glGenRenderbuffers(1, &rboDepthStencil);
     glBindRenderbuffer(GL_RENDERBUFFER, rboDepthStencil);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCREEN_WIDTH, SCREEN_HEIGHT);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboDepthStencil);
-    
     
     glUseProgram(sceneShaderProgram);
     float aspectRatio = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
@@ -547,9 +554,6 @@ int main(int argc, const char * argv[])  {
     glUniformMatrix4fv(viewcameraMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera));
     
     
-    //stop using the shader program
-    glUseProgram(0);
-        
 /////////////////END INITAILISING /////////////////////////////////    
 
     
@@ -564,24 +568,20 @@ int main(int argc, const char * argv[])  {
     while(!glfwWindowShouldClose(window))
     {
         
-        
         // Clear the screen
-        
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         //set viewport
         glViewport(0.0f, 0.0f, windowWidth, windowHeight);
         
-        // update the scene based on the time elapsed since last update
-        double thisTime = glfwGetTime();
-        Update((float)(thisTime - lastTime));
-        lastTime = thisTime;
+        // Calculate transformation
+        auto t_now = std::chrono::high_resolution_clock::now();
+        float time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
         
-///////////////////Render objects//////////////////////
         
         // Bind our framebuffer and draw 3D scene (spinning cube)
-        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+        //glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[0]);
         
         // bind the VAO (the triangle)
         glBindVertexArray(vaoCube);
@@ -596,13 +596,15 @@ int main(int argc, const char * argv[])  {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, tex2);
         
+        
         // Model matrix : an identity matrix (model will be at the origin)
         // set the "model" uniform in the vertex shader, based on the gDegreesRotated global
-        glm::mat4 model = glm::rotate( glm::mat4(), glm::radians(gDegreesRotated), glm::vec3(0,0,1)  );
+        glm::mat4 model = glm::rotate( glm::mat4(), time * glm::radians(180.0f), glm::vec3(0,0,1)  );
         glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(model));
         
+        
         // draw cube triangles
-        glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         
         
         glEnable(GL_STENCIL_TEST);
@@ -632,14 +634,22 @@ int main(int argc, const char * argv[])  {
         glDisable(GL_STENCIL_TEST);
         
         
-        // Bind default framebuffer and draw contents of our framebuffer
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        //// Bind second framebuffer and draw contents of first framebuffer, blurring horizontally
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[1]);
         glBindVertexArray(vaoQuad);
         glDisable(GL_DEPTH_TEST);
         glUseProgram(screenShaderProgram);
         
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+        glBindTexture(GL_TEXTURE_2D, texColorBuffers[0]);
+        glUniform2f(uniTexOffset, 1.0f / 300.0f, 0.0f);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
+        // Bind default framebuffer and draw contents of second framebuffer, blurring vertically
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindTexture(GL_TEXTURE_2D, texColorBuffers[1]);
+        glUniform2f(uniTexOffset, 0.0f, 1.0f / 200.0f);
         
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
@@ -651,10 +661,8 @@ int main(int argc, const char * argv[])  {
         glBindTexture(GL_TEXTURE_2D, 0);
         
         // unbind the program
-        glUseProgram(0);
-        
-///////////////////END Render objects//////////////////////        
-        
+        //glUseProgram(0);
+
         
         // Update Screen, swap the display buffers (displays what was just drawn)
         glfwSwapBuffers(window);
@@ -669,14 +677,14 @@ int main(int argc, const char * argv[])  {
     }
     
     glDeleteRenderbuffers(1, &rboDepthStencil);
-    glDeleteTextures(1, &texColorBuffer);
-    glDeleteFramebuffers(1, &frameBuffer);
+    glDeleteTextures(2, texColorBuffers);
+    glDeleteFramebuffers(2, frameBuffers);
     
     glDeleteTextures(1, &tex);
     glDeleteTextures(1, &tex2);
     
     glDeleteProgram(sceneShaderProgram);
-    //glDeleteProgram(screenShaderProgram);
+    glDeleteProgram(screenShaderProgram);
     
     glDeleteBuffers(1, &vboCube);
     glDeleteVertexArrays(1, &vaoCube);

@@ -4,7 +4,6 @@ layout (location = 0) in vec3 vert_position;
 layout (location = 1) in vec2 vert_texCoord;
 layout (location = 2) in vec3 vert_normal;
 
-out vec3 vPosition;
 out vec3 vNormalColor;
 out vec2 vTexCoord;
 
@@ -14,8 +13,6 @@ uniform mat4 model;
 uniform vec3 overrideColor;
 
 void main() {
-
-    vPosition = vert_position;
 
     // Pass the tex coord straight through to the fragment shader
     vTexCoord = vert_texCoord;
