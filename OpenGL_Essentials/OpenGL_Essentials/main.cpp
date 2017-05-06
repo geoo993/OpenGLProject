@@ -334,32 +334,24 @@ static void loadCube(const GLuint &shaderProgram) {
     glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
     
     // connect the uv coords to the "vertTexCoord" attribute of the vertex shader. 
-    GLint colorAttribute = glGetAttribLocation(shaderProgram, "color");
-    if(colorAttribute == -1){
-        throw std::runtime_error(std::string("Program attribute not found: ") + "color");
+    GLint textureAttribute = glGetAttribLocation(shaderProgram, "vert_texCoord");
+    if(textureAttribute == -1){
+        throw std::runtime_error(std::string("Program attribute not found: ") + "vert_texCoord");
     }
-    glEnableVertexAttribArray(colorAttribute);
-    glVertexAttribPointer(colorAttribute, 2, GL_FLOAT, GL_FALSE,  stride, (const GLvoid*)(3 * sizeof(GLfloat)));
+    // connect the uv coords to the "vertTexCoord" attribute of the vertex shader
+    glEnableVertexAttribArray(textureAttribute);
+    glVertexAttribPointer(textureAttribute, 2, GL_FLOAT, GL_TRUE,  stride, (const GLvoid*)(3 * sizeof(GLfloat)));
     
-    // connect the uv coords to the "vertTexCoord" attribute of the vertex shader. 
-//    GLint textureAttribute = glGetAttribLocation(shaderProgram, "vertTexCoord");
-//    if(textureAttribute == -1){
-//        throw std::runtime_error(std::string("Program attribute not found: ") + "vertTexCoord");
-//    }
-//    // connect the uv coords to the "vertTexCoord" attribute of the vertex shader
-//    glEnableVertexAttribArray(textureAttribute);
-//    glVertexAttribPointer(textureAttribute, 2, GL_FLOAT, GL_TRUE,  stride, (const GLvoid*)(3 * sizeof(GLfloat)));
-//    
-//    
-//    // connect the normal to the "vertNormal" attribute of the vertex shader
-//    GLint normalAttribute = glGetAttribLocation(shaderProgram, "vertNormal");
-//    if(normalAttribute == -1){
-//        throw std::runtime_error(std::string("Program attribute not found: ") + "vertNormal");
-//    }
-//    glEnableVertexAttribArray(normalAttribute);
-//    glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_TRUE,  stride, (const GLvoid*)(5 * sizeof(GLfloat)));
-//    
-//    
+    
+    // connect the normal to the "vertNormal" attribute of the vertex shader
+    GLint normalAttribute = glGetAttribLocation(shaderProgram, "vert_normal");
+    if(normalAttribute == -1){
+        throw std::runtime_error(std::string("Program attribute not found: ") + "vert_normal");
+    }
+    glEnableVertexAttribArray(normalAttribute);
+    glVertexAttribPointer(normalAttribute, 3, GL_FLOAT, GL_TRUE,  stride, (const GLvoid*)(5 * sizeof(GLfloat)));
+    
+    
     //unbind the VAO
     glBindVertexArray(0);
 }
@@ -381,18 +373,10 @@ static void Render() {
     GLint modelMatrixLocation = glGetUniformLocation(shaderProgramID, "model" );
     glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(model));
     
-//    
-//    GLint text = glGetUniformLocation(shaderProgramID, "tex" );
-//    
-//    GLint lightPosition = glGetUniformLocation(shaderProgramID, "light.position" );
-//    position = glm::vec3(0.0f, 0.0f, 1.0f);
-//    glUniformMatrix3fv(lightPosition, 1, GL_FALSE, glm::value_ptr(position) );
-//    
-//    GLint lightIntensities = glGetUniformLocation(shaderProgramID, "light.intensities" );
-//    intensities = glm::vec3(1,0,0); //red
-//    glUniformMatrix3fv(lightIntensities, 1, GL_FALSE, glm::value_ptr(intensities));
-//    
-//    
+    
+    //GLint text = glGetUniformLocation(shaderProgramID, "tex" );
+    
+    
     // bind the texture and set the "tex" uniform in the fragment shader
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -491,12 +475,10 @@ int main(int argc, const char * argv[])  {
     // load vertex and fragment shaders into opengl
     shaderProgramID = loadShaderProgram(shaderFromResources(vertpath).c_str(), shaderFromResources(fragpath).c_str());
     
-    
-    
     // create buffer and fill it with the points of the object
     loadCube(shaderProgramID);
     
-    //loadTexture(texturepath);
+    loadTexture(texturepath);
     
     
     // Scale to window size

@@ -1,11 +1,16 @@
 #version 400 core
 
-in vec3 vert_color;
+uniform sampler2D tex;
 
-out vec4 out_color;
+in vec3 vPosition;
+in vec2 vTexCoord;
+in vec3 vNormalColor;
 
-uniform int levels;
+out vec4 vOutputColour;
+
 
 void main() {
-    out_color = vec4(vert_color, 1.0);
+
+    //note: the texture function was called texture2D in older versions of GLSL
+    vOutputColour =  texture(tex, vTexCoord);
 }
