@@ -70,6 +70,12 @@
 		C74DB4F91F5189B9002938A8 /* screenShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = screenShader.frag; sourceTree = "<group>"; };
 		C74DB4FA1F5189B9002938A8 /* screenShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = screenShader.vert; sourceTree = "<group>"; };
 		C74DB4FB1F519D18002938A8 /* super-mario.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "super-mario.jpg"; sourceTree = "<group>"; };
+		C77B4BE31F531AB200AE7B09 /* container_specular.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = container_specular.png; sourceTree = "<group>"; };
+		C77B4BE41F531AB200AE7B09 /* container.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = container.png; sourceTree = "<group>"; };
+		C7CCAB231F5238CE0048D12B /* lightingShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lightingShader.frag; sourceTree = "<group>"; };
+		C7CCAB241F5238CE0048D12B /* lightingShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lightingShader.vert; sourceTree = "<group>"; };
+		C7CCAB251F523BEC0048D12B /* lampShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lampShader.frag; sourceTree = "<group>"; };
+		C7CCAB261F523BEC0048D12B /* lampShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lampShader.vert; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +161,10 @@
 		C700FB011F51650A00A9E4F3 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				C7CCAB251F523BEC0048D12B /* lampShader.frag */,
+				C7CCAB261F523BEC0048D12B /* lampShader.vert */,
+				C7CCAB231F5238CE0048D12B /* lightingShader.frag */,
+				C7CCAB241F5238CE0048D12B /* lightingShader.vert */,
 				C74DB4F91F5189B9002938A8 /* screenShader.frag */,
 				C74DB4FA1F5189B9002938A8 /* screenShader.vert */,
 				C700FB071F5170A700A9E4F3 /* basicShader.frag */,
@@ -166,6 +176,8 @@
 		C700FB021F51650A00A9E4F3 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				C77B4BE31F531AB200AE7B09 /* container_specular.png */,
+				C77B4BE41F531AB200AE7B09 /* container.png */,
 				C74DB4FB1F519D18002938A8 /* super-mario.jpg */,
 				C700FB141F51780400A9E4F3 /* bricks.jpg */,
 			);

@@ -51,6 +51,28 @@ void Shader::Create(const std::string &fileName){
     
     m_uniforms[USETEXTURE_U]  = glGetUniformLocation(m_program, "bUseTexture");
     
+    m_uniforms[VIEWPOSITION_U] = glGetUniformLocation(m_program, "viewPosition");
+    
+    m_uniforms[LIGHTCOLOR_U] = glGetUniformLocation(m_program, "light.color");
+    
+    m_uniforms[LIGHTPOSITION_U] = glGetUniformLocation(m_program, "light.position");
+    
+    m_uniforms[LIGHTAMBIENT_U] = glGetUniformLocation(m_program, "light.ambient");
+    
+    m_uniforms[LIGHTDIFFUSE_U] = glGetUniformLocation(m_program, "light.diffuse");
+    
+    m_uniforms[LIGHTSPECULAR_U] = glGetUniformLocation(m_program, "light.specular");
+    
+    
+    
+    m_uniforms[DIFFUSESAMPLER_U] = glGetUniformLocation(m_program, "material.diffuseSampler");
+    
+    m_uniforms[SPECULARSAMPLER_U] = glGetUniformLocation(m_program, "material.specularSampler");
+    
+    m_uniforms[SHININESS_U] = glGetUniformLocation(m_program, "material.shininess");
+    
+    
+    
     //m_uniforms[LIGHTDIRECTION_U] = glGetUniformLocation(m_program, "vLightDirection");
     
     //m_uniforms[DIFFUSECOLOR_U] = glGetUniformLocation(m_program, "vDiffuseColor");
@@ -106,7 +128,16 @@ void Shader::UnBind(){
     glUseProgram(0);
 }
 
-void Shader::Update(const Transform & transform, const Camera & camera, const bool & bUseTexture ){
+void Shader::Update(
+                    const Transform & transform, 
+                    Camera * camera, 
+                    const bool & bUseTexture, 
+                    //const GLfloat &angle, 
+                    //const glm::vec3 &position, 
+                    const glm::vec3 &lighColor,
+                    const glm::vec3 &lighPosition, 
+                    const glm::vec3 &viewPosition
+                    ){
     
     
     //here we model the mvp, meaning the model, view, and projection matrices of the shader
@@ -114,13 +145,15 @@ void Shader::Update(const Transform & transform, const Camera & camera, const bo
     //getting the model matrix
     glm::mat4 model =  transform.GetModel();
     
+    //model = glm::rotate(model, angle, position);
+    
     //getting the projection and view matrix
-    glm::mat4 view = camera.GetViewMatrix();
+    glm::mat4 view = camera->GetViewMatrix();
     
-    //float aspect = (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT;
-    //camera.SetPerspectiveProjectionMatrix(70,aspect, 0.1f, 5000.0f);
+    float aspect = (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT;
+    camera->SetPerspectiveProjectionMatrix(camera->GetZoom(),aspect, 0.1f, 5000.0f);
     
-    glm::mat4 projection = camera.GetPerspectiveProjectionMatrix();
+    glm::mat4 projection = camera->GetPerspectiveProjectionMatrix();
     
     glm::mat4 MVP = projection * view * model;
     
@@ -144,12 +177,36 @@ void Shader::Update(const Transform & transform, const Camera & camera, const bo
     //one is true and zero is false
     glUniform1i(m_uniforms[USETEXTURE_U], bUseTexture);
     
+    // light 
+    glUniform3fv(m_uniforms[LIGHTCOLOR_U], 1, glm::value_ptr(lighColor));
+    
+    glUniform3fv(m_uniforms[LIGHTPOSITION_U], 1, glm::value_ptr(lighPosition));
+    
+    glUniform3fv(m_uniforms[VIEWPOSITION_U], 1.0f, glm::value_ptr(viewPosition));
+    
+    glUniform3fv(m_uniforms[LIGHTAMBIENT_U], 1, glm::value_ptr(glm::vec3(0.3f, 0.3f, 0.3f)));
+    
+    glUniform3fv(m_uniforms[LIGHTDIFFUSE_U], 1, glm::value_ptr(glm::vec3(0.6f, 0.6f, 0.6f)));
+    
+    glUniform3fv(m_uniforms[LIGHTSPECULAR_U], 1.0f, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+    
+    // Material
+    glUniform1i( m_uniforms[DIFFUSESAMPLER_U],  0 );
+    
+    glUniform1i( m_uniforms[SPECULARSAMPLER_U], 1 );
+    
+    glUniform1f(m_uniforms[SHININESS_U], 52.0f);
+    
+    
+    
     //pass in light direction
     //glUniform3f(m_uniforms[LIGHTDIRECTION_U], 0.0f, 0.0f, 1.0f);
     
     //glUniform3f(m_uniforms[DIFFUSECOLOR_U], 0.0f, 1.0f, 1.0f);
     
     //glUniform1f(m_uniforms[TWIST_U], 0.5f);
+    
+    
 }
 
 std::string Shader::LoadShader(const std::string& fileName)

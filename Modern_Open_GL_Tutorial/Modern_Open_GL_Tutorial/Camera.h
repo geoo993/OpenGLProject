@@ -23,9 +23,9 @@ enum CameraMovement
 
 // Default camera values
 const GLfloat YAW        = -90.0f;
-const GLfloat PITCH      =  0.0f;
-const GLfloat ROLL      =  0.0f;
-const GLfloat SPEED      =  6.0f;
+const GLfloat PITCH      =  0.1f;
+const GLfloat ROLL      =  0.1f;
+const GLfloat SPEED      =  10.0f;
 const GLfloat SENSITIVTY =  0.25f;
 const GLfloat ZOOM       =  70.0f;
 
@@ -89,6 +89,7 @@ public:
     }
     
     void SetPerspectiveProjectionMatrix(const GLfloat &fieldOfView, const GLfloat &aspect, const GLfloat &zNear = 0.1f, const GLfloat &zFar = 5000.0f){
+        this->m_fieldOfView = fieldOfView;
         this->m_perspectiveProjectionMatrix = glm::perspective(fieldOfView, aspect, zNear, zFar);
     }
     void SetOrthographicProjectionMatrix(const GLfloat &width, const GLfloat height, const GLfloat &zNear = 0.1f, const GLfloat &zFar = 5000.0f){
@@ -140,54 +141,34 @@ public:
         xOffset *= this->m_mouseSensitivity;
         yOffset *= this->m_mouseSensitivity;
         
-        this->m_pitch += yOffset;
-        this->m_yaw   += xOffset;
-        //this->m_roll += 0.1f;
+        this->m_pitch += yOffset; // up down
+        this->m_yaw   += xOffset; //left right
+        //this->m_roll += yOffset; // up down
         
         // Make sure that when pitch is out of bounds, screen doesn't get flipped
         if ( constrainPitch )
         {
-            if ( this->m_pitch > 89.0f )
+            if ( this->m_pitch >= 90.0f )
             {
-                this->m_pitch = 89.0f;
+                this->m_pitch = -90.0f;
+                this->m_roll = 0;
             }
             
-            if ( this->m_pitch < -89.0f )
+            if ( this->m_pitch <= -90.0f )
             {
-                this->m_pitch = -89.0f;
+                this->m_pitch = -90.0f;
             }
+          
         }
         
         // Update Front, Right and Up Vectors using the updated Eular angles
         this->UpdateCameraVectors( );
     }
     
-    // Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
-    void ProcessZoom( const GLfloat &yOffset )
-    {
-        
-        GLfloat maxZoom = m_fieldOfView;
-        
-        if ( this->m_zoom >= 1.0f && this->m_zoom <= maxZoom )
-        {
-            this->m_zoom -= yOffset;
-        }
-        
-        if ( this->m_zoom <= 1.0f )
-        {
-            this->m_zoom = 1.0f;
-        }
-        
-        if ( this->m_zoom >= maxZoom )
-        {
-            this->m_zoom = maxZoom;
-        }
-    }
     
-    
+private:
     Camera(const Camera &other){}
     void operator=(const Camera &other){}
-private:
     
     //view and projection matrix
     glm::mat4 m_perspectiveProjectionMatrix;
@@ -202,6 +183,7 @@ private:
     glm::vec3 m_left;
     glm::vec3 m_right;
     glm::vec3 m_up;
+    glm::vec3 m_down;
     glm::vec3 m_worldUp;
     
     // Eular Angles
@@ -223,15 +205,14 @@ private:
         front.x = cos( glm::radians( this->m_yaw ) ) * cos( glm::radians( this->m_pitch ) );
         front.y = sin( glm::radians( this->m_pitch ) );
         front.z = sin( glm::radians( this->m_yaw ) ) * cos( glm::radians( this->m_pitch ) );
-        //this->m_front = glm::normalize( front );
-        this->m_front = glm::vec3(0.0f, 0.0f, 1.0f);
-        //this->m_back = 0.0f;
+        this->m_front = glm::normalize( front );
+        //this->m_front = glm::vec3(0.0f, 0.0f, 1.0f);
+       
         // Also re-calculate the Right and Up vector
         this->m_right = glm::normalize( glm::cross( this->m_front, this->m_worldUp ) );  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-        //this->m_up = glm::normalize( glm::cross( this->m_right, this->m_front ) );
-        this->m_up = glm::vec3(0.0f, 1.0f, 0.0f);
+        this->m_up = glm::normalize( glm::cross( this->m_right, this->m_front ) );
+        //this->m_up = glm::vec3(0.0f, 1.0f, 0.0f);
         
-        //this->m_left = 0.0f;
         this->m_view = m_position + m_front;
         this->m_viewMatrix = glm::lookAt(
                                          m_position, // what position you want the camera to be at when looking at something in World Space

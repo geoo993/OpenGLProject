@@ -9,47 +9,52 @@
 #include "Game.h"
 
 //keyboard and mouse controlls
-static int keyPressedCode = -1; 
-static int keyReleasedCode = -1; 
-static int keyPressedAction = -1; 
-static GLfloat mouseX = SCREEN_WIDTH / 2.0f;
-static GLfloat mouseY = SCREEN_HEIGHT / 2.0f;
+static bool keys[1024];
+static int keyPressedCode,keyReleasedCode,keyPressedAction = -1; 
+bool firstMouse = true;
+GLfloat lastX = SCREEN_WIDTH / 2.0f;
+GLfloat lastY = SCREEN_HEIGHT / 2.0f;
+static GLfloat mouseX, mouseY = 0.0f;
+static GLuint mouseHit, mouseAction = 0.0f;
 
 static void OnMouseDown_callback(GLFWwindow* window, int button, int action, int mode){
     //std::cout << "Mouse Down with button: " << button << " and with action: " << action << std::endl;
-    //onMouseDown(button,action);
-    
-    
-    
+    mouseHit = button;
+    mouseAction = action;
 }
 
-static void OnMouseMove_callback(GLFWwindow* window, double xPos, double yPos){
-    //std::cout << "Mouse Move x: " << xPos << " and y: " << yPos << std::endl;
-    //onMouseDown(button,action);
-    
-}
 
-static void OnKeyDown_callback( GLFWwindow* window, int key, int scancode, int action, int mode)
+static void OnMouseMove_callback(GLFWwindow* window, double xPosition, double yPosition){
+    //std::cout << "Mouse Move x: " << mouseX << " and y: " << mouseY << std::endl;
+    mouseX = (GLfloat)xPosition;
+    mouseY = (GLfloat)yPosition;
+}	
+
+void OnKeyDown_callback( GLFWwindow* window, int key, int scancode, int action, int mode)
 {
     keyPressedAction = action;
     
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
-    
-    switch (action) {
-        case GLFW_PRESS:
+
+    if ( key >= 0 && key < 1024 )
+    {
+        if( action == GLFW_PRESS )
+        {
+            keys[key] = true;
             keyPressedCode = key; 
-            break;
-        case GLFW_RELEASE:
+        }
+        else if( action == GLFW_RELEASE )
+        {
+            keys[key] = false;
             keyPressedCode = -1; 
             keyReleasedCode = key;
-            break;
-        default:
-            break;
+        }
     }
     
 }
+
 
 // Constructor
 Game::Game()
@@ -137,6 +142,7 @@ Game::Game()
 Game::~Game()
 {
     delete m_window;
+    delete m_camera;
 }
 
 void Game::Initialise(){
@@ -268,9 +274,23 @@ void Game::Initialise(){
     m_cubemesh.Create( cubeVertices.data(), 
                              cubeVertices.size()
                              );
+    m_lampmesh.Create( cubeVertices.data(), 
+                      cubeVertices.size()
+                      );
+    
+    m_lightmesh.Create( cubeVertices.data(), 
+                       cubeVertices.size()
+                       );
     
     //setup camera
-    m_camera.Create(glm::vec3(0.0f, 0.0f,-25.0f), glm::vec3(0.0f, 1.0f,0.0f), PITCH, YAW, ROLL, 70.0f, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, 0.1f, 5000.0f);
+    m_camera = new Camera();
+    m_camera->Create(glm::vec3(0.0f, 0.0f,50.0f), glm::vec3(0.0f, 1.0f,0.0f), PITCH, YAW, ROLL, 70.0f, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, 0.1f, 5000.0f);
+    
+    // setup light
+    m_lightPosition = glm::vec3(1.0f, 10.0f, 2.0f);
+    m_lightColor = glm::vec3(0.0f, 1.0f, 1.0f);
+    m_viewPosition = glm::vec3(10.0f, 10.0f, 22.0f);
+    
 }
 
 void Game::LoadFromResources(const std::string &resourcepath){
@@ -278,8 +298,13 @@ void Game::LoadFromResources(const std::string &resourcepath){
     //load shader program
     m_basicshader.Create(resourcepath + "/Resources/Shaders/basicShader");
     m_screenshader.Create(resourcepath + "/Resources/Shaders/screenShader");
-    m_texture.Create(resourcepath + "/Resources/Textures/bricks.jpg", true);
+    m_lightingshader.Create(resourcepath + "/Resources/Shaders/lightingShader");
+    m_lampshader.Create(resourcepath + "/Resources/Shaders/lampShader");
+    //m_texture.Create(resourcepath + "/Resources/Textures/bricks.jpg", true);
     //m_texture.Create(resourcepath + "/Resources/Textures/super-mario.jpg", true);
+    
+    //m_specularTexture.Create(RESOURCE_PATH + "/Resources/Textures/container_specular.png", true);
+    //m_specularTexture.CreateNewTexture(RESOURCE_PATH + "/Resources/Textures/container_specular.png", true, 0);
 }
 
 void Game::RenderTriangle(){
@@ -288,15 +313,9 @@ void Game::RenderTriangle(){
     m_screenshader.Bind();
     
     //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_screenshader.Update(m_trianglemesh.transform, m_camera, true);
+    m_screenshader.Update(m_trianglemesh.transform, m_camera, false, glm::vec3(1.0f), glm::vec3(1.0f));
     
-    //binding texture at zero unit
-    m_texture.Bind(0);
-    
-    m_trianglemesh.Draw();
-    
-    //unbind texture
-    m_texture.UnBind();
+    m_trianglemesh.Draw(0);
     
     // unbind the shader program
     m_screenshader.UnBind();
@@ -306,6 +325,7 @@ void Game::RenderTriangle(){
 void Game::RenderCube(){
     
     glm::vec3 cubesPosition[] = {
+        glm::vec3(-1.0f, 5.0f, 25.0f), 
         glm::vec3(-11.0f, 5.0f, 22.0f), 
         glm::vec3(-5.0f, 1.0f, -25.0f), 
         glm::vec3(10.0f, 15.0f, 5.0f), 
@@ -315,25 +335,24 @@ void Game::RenderCube(){
         glm::vec3(-8.0f, 12.0f, 8.0f)
     };
     
-    // bind the shader program
-    m_basicshader.Bind();
     
-    m_cubemesh.transform.SetPositions(glm::vec3(-1.0f, 5.0f, 25.0f) );
-    m_cubemesh.transform.SetScale(glm::vec3(2,2,2));
-    
-    //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_basicshader.Update(m_cubemesh.transform, m_camera, true);
-    
-    //binding texture at zero unit
-    m_texture.Bind(0);
-    
-    m_cubemesh.Draw();
-    
-    //unbind texture
-    m_texture.UnBind();
-    
-    // unbind the shader program
-    m_basicshader.UnBind();
+    for ( GLuint i = 0; i < 10; ++i){
+        // bind the shader program
+        m_basicshader.Bind();
+        
+        m_cubemesh.transform.SetPositions(cubesPosition[i] );
+        m_cubemesh.transform.SetScale(glm::vec3(2));
+        
+        GLfloat angle = 20.0f * (GLfloat)i;
+        
+        //update shader, including the tranform of our mesh, and the camera view of the mesh
+        m_basicshader.Update(m_cubemesh.transform, m_camera, true,glm::vec3(1.0f), glm::vec3(1.0f));
+        
+        m_cubemesh.Draw(0);
+        
+        // unbind the shader program
+        m_basicshader.UnBind();
+    }
 }
 
 void Game::RenderPyramid(){
@@ -342,29 +361,59 @@ void Game::RenderPyramid(){
     m_basicshader.Bind();
     
     m_pyramidmesh.transform.SetPositions(glm::vec3(10.0f, 8.0f, 10.0f) );
-    m_pyramidmesh.transform.SetScale(glm::vec3(2,2,2));
+    m_pyramidmesh.transform.SetScale(glm::vec3(3));
     
     //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_basicshader.Update(m_pyramidmesh.transform, m_camera, true);
+    m_basicshader.Update(m_pyramidmesh.transform, m_camera, true,glm::vec3(1.0f), glm::vec3(1.0f));
     
-    //binding texture at zero unit
-    m_texture.Bind(0);
-    
-    m_pyramidmesh.Draw();
-    
-    //unbind texture
-    m_texture.UnBind();
+    m_pyramidmesh.Draw(0);
     
     // unbind the shader program
     m_basicshader.UnBind();
 }
 
+void Game::RenderLamp(){
+    // bind the shader program
+    m_lampshader.Bind();
+    
+    m_lampmesh.transform.SetPositions(m_lightPosition );
+    
+    //update shader, including the tranform of our mesh, and the camera view of the mesh
+    m_lampshader.Update(m_lampmesh.transform, m_camera, false, m_lightColor, m_lightPosition, m_camera->GetPosition() );
+ 
+    m_lampmesh.Draw(0);
+    
+    // unbind the shader program
+    m_lampshader.UnBind();
+    
+}
+
+void Game::RenderLight(){
+    
+    m_lightingshader.Bind();
+    
+    m_lightmesh.transform.SetPositions(glm::vec3(-10.0f,0.2f,0.4f) );
+    m_lightmesh.transform.SetScale(glm::vec3(5.0f));
+    
+    m_viewPosition = m_camera->GetPosition();
+    
+    //update shader, including the tranform of our mesh, and the camera view of the mesh
+    m_lightingshader.Update(m_lightmesh.transform, m_camera, false, m_lightColor, m_lightPosition, m_viewPosition);
+    
+    m_lightmesh.Draw(0);
+    
+    // unbind the shader program
+    m_lightingshader.UnBind();
+    
+}
 
 void Game::Render(){
     
-    RenderPyramid();
+    //RenderPyramid();
     //RenderTriangle();
-    RenderCube();
+    //RenderCube();
+    RenderLamp();
+    RenderLight();
 }
 
 void Game::Update(){
@@ -379,32 +428,93 @@ void Game::GameLoop(){
 
 void Game::GameTimer(){
     
-    
     GLfloat currentframe = glfwGetTime();
     m_deltaTime = currentframe - m_elapsedTime;// detecting time between frame
     
     // Increase the elapsed time and frame counter
-    m_elapsedTime += m_deltaTime;
-    //    ++m_frameCount;
-    //    
-    //    m_time += (float) (0.01f * m_deltaTime);
-    //    
-    //    // Now we want to subtract the current time by the last time that was stored
-    //    // to see if the time elapsed has been over a second, which means we found our FPS.
-    //    if (m_elapsedTime > 1000)
-    //    {
-    //        m_elapsedTime = 0;
-    //        m_framesPerSecond = m_frameCount;
-    //        
-    //        // Reset the frames per second
-    //        m_frameCount = 0;
-    //    }
-    //    
-}
-
-void Game::DoMovement(){
+    m_elapsedTime = currentframe;
     
 }
+
+void Game::DoKeysMovement(bool *selectedkeys){
+ 
+    // Camera controls
+    if( selectedkeys[GLFW_KEY_UP] )
+    {
+        m_camera->ProcessKeyboard( FORWARD, m_deltaTime );
+    }
+    
+    if( selectedkeys[GLFW_KEY_DOWN] )
+    {
+        m_camera->ProcessKeyboard( BACKWARD, m_deltaTime );
+    }
+    
+    if( selectedkeys[GLFW_KEY_LEFT] )
+    {
+        m_camera->ProcessKeyboard( LEFT, m_deltaTime );
+    }
+    
+    if( selectedkeys[GLFW_KEY_RIGHT] )
+    {
+        m_camera->ProcessKeyboard( RIGHT, m_deltaTime );
+    }
+    
+    
+    if( selectedkeys[GLFW_KEY_W])
+    {
+        m_lightPosition = glm::vec3(m_lightPosition.x, m_lightPosition.y + 0.1f, m_lightPosition.z);
+    }
+    
+    if( selectedkeys[GLFW_KEY_S] )
+    {
+        m_lightPosition = glm::vec3(m_lightPosition.x, m_lightPosition.y - 0.1f, m_lightPosition.z);
+    }
+    
+    if( selectedkeys[GLFW_KEY_A] )
+    {
+        m_lightPosition = glm::vec3(m_lightPosition.x - 0.1f, m_lightPosition.y, m_lightPosition.z);
+    }
+    
+    if( selectedkeys[GLFW_KEY_D] )
+    {
+        m_lightPosition = glm::vec3(m_lightPosition.x + 0.1f, m_lightPosition.y, m_lightPosition.z);
+    }
+    
+    if( selectedkeys[GLFW_KEY_Z] )
+    {
+        m_lightPosition = glm::vec3(m_lightPosition.x, m_lightPosition.y, m_lightPosition.z + 0.1f);
+    }
+    
+    if( selectedkeys[GLFW_KEY_X] )
+    {
+        m_lightPosition = glm::vec3(m_lightPosition.x , m_lightPosition.y, m_lightPosition.z - 0.1f);
+    }
+    
+}
+
+void Game::DoMouseMovement(const GLfloat &mouseX, const GLfloat &mouseY){
+    
+    if( firstMouse )
+    {
+        lastX = mouseX;
+        lastY = mouseY;
+        firstMouse = false;
+    }
+    
+    GLfloat xOffset = mouseX - lastX;
+    GLfloat yOffset = lastY - mouseY;  // Reversed since y-coordinates go from bottom to left
+    
+    lastX = mouseX;
+    lastY = mouseY;
+    
+    m_camera->ProcessMouseMovement( xOffset, yOffset );
+    
+}
+
+void Game::DoMouseHit(const GLuint &hit, const GLuint &action){
+    
+}
+
 
 void Game::Execute(const std::string &filepath)
 {
@@ -428,7 +538,9 @@ void Game::Execute(const std::string &filepath)
         // Check for any input, or window movement
         glfwPollEvents();
         
-        DoMovement();
+        DoKeysMovement(keys);
+        DoMouseMovement(mouseX, mouseY);
+        DoMouseHit(mouseHit, mouseAction);
         
         // Clear the screen
         glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
@@ -439,7 +551,6 @@ void Game::Execute(const std::string &filepath)
 
         // Update Screen, swap the display buffers (displays what was just drawn)
         glfwSwapBuffers(m_window);
-        
         
         // check for errors
         GLenum error = glGetError();

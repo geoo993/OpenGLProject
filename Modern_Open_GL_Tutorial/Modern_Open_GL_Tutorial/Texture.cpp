@@ -11,6 +11,98 @@ Texture::Texture(){
     
 }
 
+GLuint Texture::CreateNewTexture(const std::string &filepath, const bool &generateMipMaps, GLint textureUnitAt) {
+    
+    //    Bitmap img(filePath.c_str());
+    //    ////*-----------------------------------------------------------------------------
+    //    ////*  Make some rgba data (can also load a file here)
+    //    ////*-----------------------------------------------------------------------------
+    
+    //    int tw = img.width; 
+    //    int th = img.height;
+    FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
+    FIBITMAP* dib(0);
+    
+    fif = FreeImage_GetFileType(filepath.c_str(), 0); // Check the file signature and deduce its format
+    
+    if(fif == FIF_UNKNOWN) // If still unknown, try to guess the file format from the file extension
+        fif = FreeImage_GetFIFFromFilename(filepath.c_str());
+    
+    if(fif == FIF_UNKNOWN) // If still unknown, return failure
+        return -1;
+    
+    if(FreeImage_FIFSupportsReading(fif)) // Check if the plugin has reading capabilities and load the file
+        dib = FreeImage_Load(fif, filepath.c_str());
+    
+    if(!dib) {
+        char message[1024];
+        sprintf(message, "Cannot load image\n%s\n",filepath.c_str());
+        return -1;
+    }
+    
+    BYTE* imageData = FreeImage_GetBits(dib); // Retrieve the image data
+    
+    // If somehow one of these failed (they shouldn't), return failure
+    if (imageData == nullptr || FreeImage_GetWidth(dib) == 0 || FreeImage_GetHeight(dib) == 0){
+        std::cout << "Texture Loading failed: for texture " << filepath << std::endl;
+        return -1;
+    }
+    
+    GLint width = FreeImage_GetWidth(dib); 
+    GLint height = FreeImage_GetHeight(dib);
+    GLint bpp = FreeImage_GetBPP(dib);// bytes per pixel
+    
+    GLenum format;
+    if(FreeImage_GetBPP(dib) == 32)format = GL_BGRA;
+    if(FreeImage_GetBPP(dib) == 24)format = GL_BGR;
+    if(FreeImage_GetBPP(dib) == 8)format = GL_LUMINANCE;
+    
+    // Generate an OpenGL texture ID for this texture
+    //GLuint texture;
+    m_texture = textureUnitAt;
+    glGenTextures(1, &m_texture);
+    glBindTexture(GL_TEXTURE_2D, m_texture);
+    
+    // set wrap mode
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    
+    //float color[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+    //glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color);
+    
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    
+    
+    if(format == GL_RGBA || format == GL_BGRA)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, format, GL_UNSIGNED_BYTE, imageData);
+    // We must handle this because of internal format parameter
+    else if(format == GL_RGB || format == GL_BGR)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, imageData);
+    else
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, imageData);
+    
+    
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format,GL_UNSIGNED_BYTE, imageData);
+    
+    if(generateMipMaps)glGenerateMipmap(GL_TEXTURE_2D);
+    
+    if(generateMipMaps)glGenerateMipmap(GL_TEXTURE_2D);
+    m_sampler = textureUnitAt;
+    glGenSamplers(1, &m_sampler);
+    
+    m_path = "";
+    m_mipMapsGenerated = generateMipMaps;
+    m_width = width;
+    m_height = height;
+    m_bpp = bpp;
+    
+    
+    return m_texture;
+}
+
+
+
 void Texture::Create(const std::string &filepath, const bool &generateMipMaps){
     
     
@@ -86,7 +178,8 @@ void Texture::CreateFromData(BYTE* imageData, int width, int height, int bpp, GL
     //GL_LINEAR means it will linearly interpolate the existing pixels and try to produce the most accurate image possible
     //Mag filtering is the exact opposite of Min filtering, so when a texture takes more pixels, it will try to linear interpolate so the texture is reproduced accurately
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
     //glGenerateMipmap(GL_TEXTURE_2D);
     

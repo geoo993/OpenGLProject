@@ -13,10 +13,8 @@ int main(int argc, const char * argv[]) {
     
     srand ( time(nullptr) );
     
-    static std::string resource_path = "/Users/GeorgeQuentin/Dev/OpenGL/OpenGLProject/Modern_Open_GL_Tutorial/Modern_Open_GL_Tutorial";
-    
     Game game;
-    game.Execute(resource_path);
+    game.Execute(RESOURCE_PATH);
     
     return 0;
 }

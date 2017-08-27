@@ -24,8 +24,8 @@ public:
     void Create(Vertex * vertices, const unsigned int &numVertices);
     
     void Create(Vertex * uniqueVertices, const unsigned int &numUniqueVertices, unsigned int * indices, const unsigned int & numIndices);
-    void Create(const std::string &fileName);
-    void Draw();
+    void Create(const std::string &modelPath);
+    void Draw(const unsigned int &textureUnit);
     void Release();
 
     Transform transform;
@@ -53,6 +53,8 @@ private:
     unsigned int m_drawCount;
     
     bool usingIndices;
+    Texture m_diffuseTexture;
+    Texture m_specularTexture;
     
 };
 

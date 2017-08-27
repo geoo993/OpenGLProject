@@ -17,7 +17,7 @@ public:
     Texture();
     void Create(const std::string &filepath, const bool &generateMipMaps = true);
     void CreateFromData(BYTE* imageData, int width, int height, int bpp, GLenum format, bool generateMipMaps = false);
-    
+    GLuint CreateNewTexture(const std::string &filepath, const bool &generateMipMaps, GLint textureUnitAt);
     void SetSamplerObjectParameter(GLenum parameter, GLenum value);
     void SetSamplerObjectParameterf(GLenum parameter, float value);
     

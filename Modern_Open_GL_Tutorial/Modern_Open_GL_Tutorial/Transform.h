@@ -19,12 +19,15 @@ public:
     Transform(const glm::vec3 &position = glm::vec3(0.0f, 0.0f, 0.0f), 
               const glm::vec3 &rotation = glm::vec3(0.0f, 0.0f, 0.0f), 
               const glm::vec3 &scale = glm::vec3(1.0f, 1.0f, 1.0f)   
-              ): m_position(position), m_rotation(rotation), m_scale(scale) {}
+              ): 
+    m_position(position), 
+    m_rotation(rotation), 
+    m_scale(scale) {}
     
     inline glm::mat4 GetModel() const { 
         
         //this generates a 4x4 matrix with a position vector
-        glm::mat4 positionMatrix = glm::translate(m_position) ;//translation matrix
+        glm::mat4 m_positionMatrix = glm::translate(m_position) ;//translation matrix
         
         //this generates a 4x4 matrix with a rotation vector, but these takes some angle
         //these are rotations to represent the axis and we use vec3(1,0,0) on x for suggesting the x axis
@@ -33,21 +36,21 @@ public:
         glm::mat4 rotationZmatrix = glm::rotate(m_rotation.z, glm::vec3(0,0,1));
         
         //combining the rotation matrices into one rotion matrix, because of te way matrices are reepresented, you must write the multiplication in reverse order.
-        glm::mat4 rotationMatrix = rotationZmatrix * rotationYmatrix * rotationXmatrix;
+        glm::mat4 m_rotationMatrix = rotationZmatrix * rotationYmatrix * rotationXmatrix;
         
         //this generates a 4x4 matrix with a scale vector
-        glm::mat4 scaleMatrix = glm::scale(m_scale);
+        glm::mat4 m_scaleMatrix = glm::scale(m_scale);
         
         //must becareful with the order of multiplication, because you can get different result doing it differently
-        return positionMatrix * rotationMatrix * scaleMatrix;
+        return m_positionMatrix * m_rotationMatrix * m_scaleMatrix;
     }
     
     inline glm::mat4 GetMVP(const Camera& camera) const
     {
-        glm::mat4 ViewPrpojection = camera.GetViewProjection();
+        glm::mat4 ViewProjection = camera.GetViewProjection();
         glm::mat4 Model = GetModel();
         
-        return ViewPrpojection * Model;
+        return ViewProjection * Model;
     }
     
     inline glm::vec3 * GetPositions() { return &m_position; }

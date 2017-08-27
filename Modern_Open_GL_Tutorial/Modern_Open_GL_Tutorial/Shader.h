@@ -21,8 +21,15 @@ public:
     void Bind();
     void UnBind();
     
-    void Update(const Transform & transform, const Camera & camera, const bool & bUseTexture);
-    
+    void Update(const Transform & transform, 
+                Camera * camera, 
+                const bool & bUseTexture, 
+                //const GLfloat & angle , 
+                //const glm::vec3 &position,
+                const glm::vec3 &lighColor = glm::vec3(0),
+                const glm::vec3 &lighPosition = glm::vec3(0), 
+                const glm::vec3 &viewPosition = glm::vec3(0) );
+        
     GLuint CreateShader (const std::string &text, GLenum shadertype);
     std::string LoadShader(const std::string& fileName);
     void CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const std::string& errorMessage);
@@ -38,6 +45,16 @@ private:
         VIEW_U,
         PROJECTION_U,
         USETEXTURE_U,
+        
+        LIGHTCOLOR_U,
+        LIGHTPOSITION_U,
+        LIGHTAMBIENT_U,
+        LIGHTDIFFUSE_U,
+        LIGHTSPECULAR_U,
+        VIEWPOSITION_U,
+        SPECULARSAMPLER_U,
+        DIFFUSESAMPLER_U,
+        SHININESS_U,
         //LIGHTDIRECTION_U,
         //DIFFUSECOLOR_U,
         //TWIST_U,

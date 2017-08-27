@@ -11,17 +11,17 @@
 
 #include "Common.h"
 #include "Vertex.h"
-#include "Transform.h"
-#include "Texture.h"
 #include "Camera.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "Texture.h"
 
 class Game {
 private:
     
     GLFWwindow* m_window;
-
+    Camera *m_camera;
+    
     void Initialise();
     void LoadFromResources(const std::string &resourcepath);
     void Render();
@@ -35,11 +35,20 @@ private:
     
     Shader m_basicshader;
     Shader m_screenshader;
+    Shader m_lightingshader;
+    Shader m_lampshader;
     Mesh m_trianglemesh;
     Mesh m_pyramidmesh;
     Mesh m_cubemesh;
-    Camera m_camera;
-    Texture m_texture;
+    Mesh m_lightmesh;
+    Mesh m_lampmesh;
+    
+    // Light
+    glm::vec3 m_lightPosition;
+    glm::vec3 m_lightColor;
+    glm::vec3 m_viewPosition;
+    
+    //Texture m_specularTexture;
     
 public:
     Game();
@@ -51,7 +60,13 @@ public:
     void RenderPyramid();
     void RenderTriangle();
     void RenderCube();
-    void DoMovement();
+    void RenderLamp();
+    void RenderLight();
+    
+    //call back
+    void DoKeysMovement(bool *selectedkeys);
+    void DoMouseMovement(const GLfloat &mouseX, const GLfloat &mouseY);
+    void DoMouseHit(const GLuint &hit, const GLuint &action);
     
 };
 

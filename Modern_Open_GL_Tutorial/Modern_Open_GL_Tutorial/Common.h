@@ -27,6 +27,7 @@
 
 // GLM
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -57,6 +58,8 @@
 #define SCREEN_HEIGHT 720
 
 using namespace std;
+
+static std::string RESOURCE_PATH = "/Users/GeorgeQuentin/Dev/OpenGL/OpenGLProject/Modern_Open_GL_Tutorial/Modern_Open_GL_Tutorial";
 
 #endif /* Common_h */
 

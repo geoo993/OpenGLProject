@@ -43,26 +43,26 @@ void Mesh::Create(Vertex * uniqueVertices, const unsigned int &numUniqueVertices
     GenerateAndBindMeshData(model, true);
 }
 
-
-
-void Mesh::Create(const std::string &fileName){
-    
+void Mesh::Create(const std::string &modelPath)
+{
     usingIndices = false;
     
     //load object from a file
-    IndexedModel model = GameObjectModel(fileName).ToIndexedModel();
+    IndexedModel model = GameObjectModel(modelPath).ToIndexedModel();
     GenerateAndBindMeshData(model, true);
 }
 
 void Mesh::GenerateAndBindMeshData(const IndexedModel & model, const bool & withIndices)
 {
     
+    m_diffuseTexture.CreateNewTexture(RESOURCE_PATH + "/Resources/Textures/container.png", true, 0);
+    m_specularTexture.CreateNewTexture(RESOURCE_PATH + "/Resources/Textures/container_specular.png", true, 1);
+    
     m_drawCount = withIndices ? model.indices.size() : model.positions.size(); 
     
     // create and use Vertex Array Object via binding
     glGenVertexArrays(1, &m_vertexArrayObject);
     glBindVertexArray(m_vertexArrayObject);
-    
     
     //the way openGL refers to data in the gpu is with Buffer Objects, which is just any block of data in the gpu
     //so to handle data in openGL, we need Vertex Buffer Objects
@@ -114,10 +114,13 @@ void Mesh::GenerateAndBindMeshData(const IndexedModel & model, const bool & with
     glBindVertexArray(0);
 }
 
-void Mesh::Draw(){
+void Mesh::Draw(const unsigned int &textureUnit){
     
     //bind attribute array
     glBindVertexArray(m_vertexArrayObject);
+    
+    m_diffuseTexture.Bind(textureUnit);
+    m_specularTexture.Bind(textureUnit+1);
     
     if (usingIndices){
         
@@ -147,7 +150,9 @@ void Mesh::Release(){
     
     glDeleteBuffers(NUM_BUFFERS, m_vertexArrayBuffers);
     glDeleteVertexArrays(1, &m_vertexArrayObject);
-
+    
+    m_diffuseTexture.UnBind();
+    m_specularTexture.UnBind();
 }
 
 
