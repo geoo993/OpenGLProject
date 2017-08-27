@@ -49,6 +49,8 @@ void Shader::Create(const std::string &fileName){
     
     m_uniforms[PROJECTION_U] = glGetUniformLocation(m_program, "projection");
     
+    m_uniforms[SAMPLER_U] = glGetUniformLocation(m_program, "sampler");
+    
     m_uniforms[USETEXTURE_U]  = glGetUniformLocation(m_program, "bUseTexture");
     
     m_uniforms[VIEWPOSITION_U] = glGetUniformLocation(m_program, "viewPosition");
@@ -174,6 +176,8 @@ void Shader::Update(
     
     glUniformMatrix4fv(m_uniforms[PROJECTION_U], 1, GL_FALSE, &projection[0][0]);
     
+    glUniform1i( m_uniforms[SAMPLER_U],  0 );
+    
     //one is true and zero is false
     glUniform1i(m_uniforms[USETEXTURE_U], bUseTexture);
     
@@ -184,9 +188,9 @@ void Shader::Update(
     
     glUniform3fv(m_uniforms[VIEWPOSITION_U], 1.0f, glm::value_ptr(viewPosition));
     
-    glUniform3fv(m_uniforms[LIGHTAMBIENT_U], 1, glm::value_ptr(glm::vec3(0.3f, 0.3f, 0.3f)));
+    glUniform3fv(m_uniforms[LIGHTAMBIENT_U], 1, glm::value_ptr(glm::vec3(0.2f, 0.2f, 0.2f)));
     
-    glUniform3fv(m_uniforms[LIGHTDIFFUSE_U], 1, glm::value_ptr(glm::vec3(0.6f, 0.6f, 0.6f)));
+    glUniform3fv(m_uniforms[LIGHTDIFFUSE_U], 1, glm::value_ptr(glm::vec3(0.5f, 0.5f, 0.5f)));
     
     glUniform3fv(m_uniforms[LIGHTSPECULAR_U], 1.0f, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
     
@@ -195,9 +199,7 @@ void Shader::Update(
     
     glUniform1i( m_uniforms[SPECULARSAMPLER_U], 1 );
     
-    glUniform1f(m_uniforms[SHININESS_U], 52.0f);
-    
-    
+    glUniform1f(m_uniforms[SHININESS_U], 35.0f);
     
     //pass in light direction
     //glUniform3f(m_uniforms[LIGHTDIRECTION_U], 0.0f, 0.0f, 1.0f);

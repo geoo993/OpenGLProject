@@ -48,8 +48,6 @@ private:
     glm::vec3 m_lightColor;
     glm::vec3 m_viewPosition;
     
-    //Texture m_specularTexture;
-    
 public:
     Game();
     Game(const Game &other);

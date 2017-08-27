@@ -288,7 +288,7 @@ void Game::Initialise(){
     
     // setup light
     m_lightPosition = glm::vec3(1.0f, 10.0f, 2.0f);
-    m_lightColor = glm::vec3(0.0f, 1.0f, 1.0f);
+    m_lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
     m_viewPosition = glm::vec3(10.0f, 10.0f, 22.0f);
     
 }
@@ -303,8 +303,6 @@ void Game::LoadFromResources(const std::string &resourcepath){
     //m_texture.Create(resourcepath + "/Resources/Textures/bricks.jpg", true);
     //m_texture.Create(resourcepath + "/Resources/Textures/super-mario.jpg", true);
     
-    //m_specularTexture.Create(RESOURCE_PATH + "/Resources/Textures/container_specular.png", true);
-    //m_specularTexture.CreateNewTexture(RESOURCE_PATH + "/Resources/Textures/container_specular.png", true, 0);
 }
 
 void Game::RenderTriangle(){
@@ -373,6 +371,12 @@ void Game::RenderPyramid(){
 }
 
 void Game::RenderLamp(){
+    
+    
+    m_lightColor.r = sin( glfwGetTime() * 2.0f );
+    m_lightColor.g = sin( glfwGetTime() * 0.7f );
+    m_lightColor.b = sin( glfwGetTime() * 1.3f );
+    
     // bind the shader program
     m_lampshader.Bind();
     
@@ -398,7 +402,7 @@ void Game::RenderLight(){
     m_viewPosition = m_camera->GetPosition();
     
     //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_lightingshader.Update(m_lightmesh.transform, m_camera, false, m_lightColor, m_lightPosition, m_viewPosition);
+    m_lightingshader.Update(m_lightmesh.transform, m_camera, true, m_lightColor, m_lightPosition, m_viewPosition);
     
     m_lightmesh.Draw(0);
     
@@ -543,7 +547,7 @@ void Game::Execute(const std::string &filepath)
         DoMouseHit(mouseHit, mouseAction);
         
         // Clear the screen
-        glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//enable and clear the color and depth buffer
         
         //Render

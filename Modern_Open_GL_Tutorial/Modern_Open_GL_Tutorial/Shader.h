@@ -44,6 +44,7 @@ private:
         MODEL_U,
         VIEW_U,
         PROJECTION_U,
+        SAMPLER_U,
         USETEXTURE_U,
         
         LIGHTCOLOR_U,
