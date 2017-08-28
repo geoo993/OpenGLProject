@@ -52,14 +52,13 @@ public:
     Game();
     Game(const Game &other);
     Game &operator=(const Game &other);
-    
     ~Game();
+    
     void Execute(const std::string &resourcepath);
     void RenderPyramid();
     void RenderTriangle();
     void RenderCube();
     void RenderLamp();
-    void RenderLight();
     
     //call back
     void DoKeysMovement(bool *selectedkeys);

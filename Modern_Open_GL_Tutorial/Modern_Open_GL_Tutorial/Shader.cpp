@@ -54,44 +54,80 @@ void Shader::Create(const std::string &fileName){
     m_uniforms[VIEWPOSITION_U] = glGetUniformLocation(m_program, "viewPosition");
     
     
-    //Light 
-    m_uniforms[LIGHTCOLOR_U] = glGetUniformLocation(m_program, "light.color");
+    // DIRECTIONAL LIGHT
+    m_uniforms[LIGHTCOLOR_U] = glGetUniformLocation(m_program, "directionallight.base.color");
     
-    m_uniforms[LIGHTPOSITION_U] = glGetUniformLocation(m_program, "light.position");
+    m_uniforms[LIGHTINTENSITY_U] = glGetUniformLocation(m_program, "directionallight.base.intensity");
     
-    m_uniforms[LIGHTDIRECTION_U] = glGetUniformLocation(m_program, "light.direction");
+    m_uniforms[DIRECTIONALLIGHTWORLDDIRECTION_U] = glGetUniformLocation(m_program, "directionallight.worldDirection");
     
-    m_uniforms[LIGHTWORLDDIRECTION_U] = glGetUniformLocation(m_program, "light.worldDirection");
+    m_uniforms[DIRECTIONALLIGHTAMBIENT_U] = glGetUniformLocation(m_program, "directionallight.ambient");
     
-    m_uniforms[LIGHTCUTOFF_U] = glGetUniformLocation(m_program, "light.cutOff");
+    m_uniforms[DIRECTIONALLIGHTDIFFUSE_U] = glGetUniformLocation(m_program, "directionallight.diffuse");
     
-    m_uniforms[LIGHTOUTERCUTOFF_U] = glGetUniformLocation(m_program, "light.outerCutOff");
+    m_uniforms[DIRECTIONALLIGHTSPECULAR_U] = glGetUniformLocation(m_program, "directionallight.specular");
     
-    m_uniforms[LIGHTAMBIENT_U] = glGetUniformLocation(m_program, "light.ambient");
     
-    m_uniforms[LIGHTDIFFUSE_U] = glGetUniformLocation(m_program, "light.diffuse");
+    // POINT LIGHT 
+    m_uniforms[LIGHTCOLOR_U] = glGetUniformLocation(m_program, "pointlights[0].base.color");
     
-    m_uniforms[LIGHTSPECULAR_U] = glGetUniformLocation(m_program, "light.specular");
+    m_uniforms[LIGHTINTENSITY_U] = glGetUniformLocation(m_program, "pointlights[0].base.intensity");
     
-    m_uniforms[LIGHTCONSTANT_U] = glGetUniformLocation(m_program, "light.constant");
+    m_uniforms[POINTLIGHTPOSITION_A_U] = glGetUniformLocation(m_program, "pointlight[0].position");
+    m_uniforms[POINTLIGHTPOSITION_B_U] = glGetUniformLocation(m_program, "pointlight[1].position");
+    m_uniforms[POINTLIGHTPOSITION_C_U] = glGetUniformLocation(m_program, "pointlight[2].position");
+    m_uniforms[POINTLIGHTPOSITION_D_U] = glGetUniformLocation(m_program, "pointlight[3].position");
     
-    m_uniforms[LIGHTLINEAR_U] = glGetUniformLocation(m_program, "light.linear");
+    m_uniforms[POINTLIGHTAMBIENT_U] = glGetUniformLocation(m_program, "pointlights[0].ambient");
     
-    m_uniforms[LIGHTQUADRATIC_U] = glGetUniformLocation(m_program, "light.quadratic");
+    m_uniforms[POINTLIGHTDIFFUSE_U] = glGetUniformLocation(m_program, "pointlights[0].diffuse");
+    
+    m_uniforms[POINTLIGHTSPECULAR_U] = glGetUniformLocation(m_program, "pointlights[0].specular");
+    
+    m_uniforms[POINTLIGHTCONSTANT_U] = glGetUniformLocation(m_program, "pointlights[0].constant");
+    
+    m_uniforms[POINTLIGHTLINEAR_U] = glGetUniformLocation(m_program, "pointlights[0].linear");
+    
+    m_uniforms[POINTLIGHTQUADRATIC_U] = glGetUniformLocation(m_program, "pointlights[0].quadratic");
+    
+    // SPOT LIGHT
+    m_uniforms[SPOTLIGHTPOSITION_U] = glGetUniformLocation(m_program, "spotlight.position");
+    
+    m_uniforms[SPOTLIGHTDIRECTION_U] = glGetUniformLocation(m_program, "spotlight.direction");
+    
+    m_uniforms[POINTLIGHTAMBIENT_U] = glGetUniformLocation(m_program, "spotlight.ambient");
+    
+    m_uniforms[POINTLIGHTDIFFUSE_U] = glGetUniformLocation(m_program, "spotlight.diffuse");
+    
+    m_uniforms[POINTLIGHTSPECULAR_U] = glGetUniformLocation(m_program, "spotlight.specular");
+    
+    m_uniforms[POINTLIGHTCONSTANT_U] = glGetUniformLocation(m_program, "spotlight.constant");
+    
+    m_uniforms[POINTLIGHTLINEAR_U] = glGetUniformLocation(m_program, "spotlight.linear");
+    
+    m_uniforms[POINTLIGHTQUADRATIC_U] = glGetUniformLocation(m_program, "spotlight.quadratic");
+    
+    m_uniforms[SPOTLIGHTCUTOFF_U] = glGetUniformLocation(m_program, "spotlight.cutOff");
+    
+    m_uniforms[SPOTLIGHTOUTERCUTOFF_U] = glGetUniformLocation(m_program, "spotlight.outerCutOff");
     
     
     //Material
     m_uniforms[SAMPLER_U] = glGetUniformLocation(m_program, "material.sampler");
     
-    m_uniforms[NORMALSAMPLER_U] = glGetUniformLocation(m_program, "material.normalSampler");
+    m_uniforms[MATERIALNORMALSAMPLER_U] = glGetUniformLocation(m_program, "material.normalSampler");
     
-    m_uniforms[DIFFUSESAMPLER_U] = glGetUniformLocation(m_program, "material.diffuseSampler");
+    m_uniforms[MATERIALDIFFUSESAMPLER_U] = glGetUniformLocation(m_program, "material.diffuseSampler");
     
-    m_uniforms[SPECULARSAMPLER_U] = glGetUniformLocation(m_program, "material.specularSampler");
+    m_uniforms[MATERIALSPECULARSAMPLER_U] = glGetUniformLocation(m_program, "material.specularSampler");
     
-    m_uniforms[SHININESS_U] = glGetUniformLocation(m_program, "material.shininess");
+    m_uniforms[MATERIALSHININESS_U] = glGetUniformLocation(m_program, "material.shininess");
     
-    m_uniforms[INTENSITY_U] = glGetUniformLocation(m_program, "material.intensity");
+    m_uniforms[MATERIALAMBIENT_U] = glGetUniformLocation(m_program, "material.ambient");
+    
+    m_uniforms[MATERIALDIFFUSE_U] = glGetUniformLocation(m_program, "material.diffuse");
+    
+    m_uniforms[MATERIALSPECULAR_U] = glGetUniformLocation(m_program, "material.specular");
     
 }
 
@@ -189,43 +225,73 @@ void Shader::Update(
     
     glUniform3fv(m_uniforms[LIGHTCOLOR_U], 1, glm::value_ptr(lighColor));
     
-    glUniform3fv(m_uniforms[LIGHTPOSITION_U], 1, glm::value_ptr(lighPosition)); // for point light
-    //glUniform3fv(m_uniforms[LIGHTPOSITION_U], 1, glm::value_ptr(camera->GetPosition())); //for spot light
+    glUniform1f(m_uniforms[LIGHTINTENSITY_U], 20.0f);
     
-    glUniform3f(m_uniforms[LIGHTWORLDDIRECTION_U], -0.2f, 1.0f, -0.3f); // for directional light
+    // Directional light
+    glUniform3f(m_uniforms[DIRECTIONALLIGHTWORLDDIRECTION_U], -0.2f, -1.0f, -0.3f); // for directional light
     
-    glUniform3fv(m_uniforms[LIGHTDIRECTION_U], 1, glm::value_ptr(camera->GetForward()));
+    glUniform3fv(m_uniforms[DIRECTIONALLIGHTAMBIENT_U], 1, glm::value_ptr(glm::vec3(0.05f, 0.05f, 0.05f)));
     
-    glUniform1f(m_uniforms[LIGHTCUTOFF_U], glm::cos(glm::radians(12.5f)));
+    glUniform3fv(m_uniforms[DIRECTIONALLIGHTDIFFUSE_U], 1, glm::value_ptr(glm::vec3(0.4f, 0.4f, 0.4f)));
     
-    glUniform1f(m_uniforms[LIGHTOUTERCUTOFF_U], glm::cos(glm::radians(17.5f)));
+    glUniform3fv(m_uniforms[DIRECTIONALLIGHTSPECULAR_U], 1, glm::value_ptr(glm::vec3(0.6f, 0.6f, 0.6f)));
     
-    glUniform3fv(m_uniforms[LIGHTAMBIENT_U], 1, glm::value_ptr(glm::vec3(0.2f, 0.2f, 0.2f)));
+    // Point Light
+    // Positions of the point lights
+    glm::vec3 pointLightPositions[] = {
+        glm::vec3(  0.7f,  0.2f,  2.0f      ),
+        glm::vec3(  2.3f, -3.3f, -4.0f      ),
+        glm::vec3(  -4.0f,  2.0f, -12.0f    ),
+        glm::vec3(  0.0f,  0.0f, -3.0f      )
+    };
     
-    glUniform3fv(m_uniforms[LIGHTDIFFUSE_U], 1, glm::value_ptr(glm::vec3(0.9f, 0.9f, 0.9f)));
+    ////glUniform3fv(m_uniforms[POINTLIGHTPOSITION_U], 1, glm::value_ptr(lighPosition)); // for point light
+    glUniform3fv(m_uniforms[POINTLIGHTPOSITION_A_U], 1, glm::value_ptr(pointLightPositions[0]));
     
-    glUniform3fv(m_uniforms[LIGHTSPECULAR_U], 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+    glUniform3fv(m_uniforms[POINTLIGHTPOSITION_B_U], 1, glm::value_ptr(pointLightPositions[1]));
     
-    glUniform1f(m_uniforms[LIGHTCONSTANT_U], 1.0f);
+    glUniform3fv(m_uniforms[POINTLIGHTPOSITION_C_U], 1, glm::value_ptr(pointLightPositions[2]));
     
-    glUniform1f(m_uniforms[LIGHTLINEAR_U], 0.09f);
+    glUniform3fv(m_uniforms[POINTLIGHTPOSITION_D_U], 1, glm::value_ptr(pointLightPositions[3]));
     
-    glUniform1f(m_uniforms[LIGHTQUADRATIC_U], 0.032f);
+    glUniform3fv(m_uniforms[POINTLIGHTAMBIENT_U], 1, glm::value_ptr(glm::vec3(0.2f, 0.2f, 0.2f)));
+    
+    glUniform3fv(m_uniforms[POINTLIGHTDIFFUSE_U], 1, glm::value_ptr(glm::vec3(0.9f, 0.9f, 0.9f)));
+    
+    glUniform3fv(m_uniforms[POINTLIGHTSPECULAR_U], 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+    
+    glUniform1f(m_uniforms[POINTLIGHTCONSTANT_U], 1.0f);
+    
+    glUniform1f(m_uniforms[POINTLIGHTLINEAR_U], 0.09f);
+    
+    glUniform1f(m_uniforms[POINTLIGHTQUADRATIC_U], 0.032f);
+    
+    // Spot Light
+    glUniform3fv(m_uniforms[SPOTLIGHTPOSITION_U], 1, glm::value_ptr(camera->GetPosition())); //for spot light
+    
+    glUniform3fv(m_uniforms[SPOTLIGHTDIRECTION_U], 1, glm::value_ptr(camera->GetForward()));
+    
+    glUniform1f(m_uniforms[SPOTLIGHTCUTOFF_U], glm::cos(glm::radians(12.5f)));
+    
+    glUniform1f(m_uniforms[SPOTLIGHTOUTERCUTOFF_U], glm::cos(glm::radians(17.5f)));
     
     
     // Material
     glUniform1i( m_uniforms[SAMPLER_U],  0 );
     
-    glUniform1i( m_uniforms[NORMALSAMPLER_U],  1 );
+    glUniform1i( m_uniforms[MATERIALNORMALSAMPLER_U],  1 );
     
-    glUniform1i( m_uniforms[DIFFUSESAMPLER_U], 2 );
+    glUniform1i( m_uniforms[MATERIALDIFFUSESAMPLER_U], 2 );
     
-    glUniform1i( m_uniforms[SPECULARSAMPLER_U], 3 );
+    glUniform1i( m_uniforms[MATERIALSPECULARSAMPLER_U], 3 );
     
-    glUniform1f(m_uniforms[SHININESS_U], 32.0f);
+    glUniform1f(m_uniforms[MATERIALSHININESS_U], 32.0f);
     
-    glUniform1f(m_uniforms[INTENSITY_U], 20.0f);
+    glUniform3fv(m_uniforms[MATERIALAMBIENT_U], 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.31f)));
     
+    glUniform3fv(m_uniforms[MATERIALDIFFUSE_U], 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.31f)));
+    
+    glUniform3fv(m_uniforms[MATERIALSPECULAR_U], 1, glm::value_ptr(glm::vec3(0.5f, 0.5f, 0.5f)));
     
 }
 

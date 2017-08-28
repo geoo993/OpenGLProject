@@ -341,7 +341,7 @@ void Game::RenderPyramid(){
     m_pyramidmesh.transform.SetScale(glm::vec3(3));
     
     //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_basicshader.Update(m_pyramidmesh.transform, m_camera, true,glm::vec3(1.0f), glm::vec3(1.0f));
+    m_basicshader.Update(m_pyramidmesh.transform, m_camera, true, glm::vec3(1.0f), glm::vec3(1.0f));
     
     m_pyramidmesh.Draw(0);
     
@@ -356,37 +356,30 @@ void Game::RenderLamp(){
     //m_lightColor.g = sin( glfwGetTime() * 0.7f );
     //m_lightColor.b = sin( glfwGetTime() * 1.3f );
     
-    // bind the shader program
-    m_lampshader.Bind();
+    vector<glm::vec3> pointLightPositions = {
+        glm::vec3(  0.7f,  0.2f,  2.0f      ),
+        glm::vec3(  2.3f, -3.3f, -4.0f      ),
+        glm::vec3(  -4.0f,  2.0f, -12.0f    ),
+        glm::vec3(  0.0f,  0.0f, -3.0f      )
+    };
     
-    m_lampmesh.transform.SetPositions(m_lightPosition );
-    m_lampmesh.transform.SetScale(glm::vec3(0.4f));
+    for ( GLuint i = 0; i < pointLightPositions.size(); ++i){
+        
+        // bind the shader program
+        m_lampshader.Bind();
+        
+        m_lampmesh.transform.SetPositions(pointLightPositions[i]);//m_lightPosition );
+        m_lampmesh.transform.SetScale(glm::vec3(0.4f));
+        
+        //update shader, including the tranform of our mesh, and the camera view of the mesh
+        m_lampshader.Update(m_lampmesh.transform, m_camera, false, m_lightColor, m_lightPosition );
+     
+        m_lampmesh.Draw(0);
+        
+        // unbind the shader program
+        m_lampshader.UnBind();
     
-    //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_lampshader.Update(m_lampmesh.transform, m_camera, false, m_lightColor, m_lightPosition );
- 
-    m_lampmesh.Draw(0);
-    
-    // unbind the shader program
-    m_lampshader.UnBind();
-    
-}
-
-void Game::RenderLight(){
-    
-    m_lightingshader.Bind();
-    
-    m_lightmesh.transform.SetPositions(glm::vec3(-10.0f,0.2f,0.4f) );
-    m_lightmesh.transform.SetScale(glm::vec3(5.0f));
-    
-    //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_lightingshader.Update(m_lightmesh.transform, m_camera, true, m_lightColor, m_lightPosition);
-    
-    m_lightmesh.Draw(0);
-    
-    // unbind the shader program
-    m_lightingshader.UnBind();
-    
+    }
 }
 
 void Game::RenderCube(){
@@ -414,7 +407,7 @@ void Game::RenderCube(){
         m_cubemesh.transform.SetScale(glm::vec3(2.0f));
         
         //update shader, including the tranform of our mesh, and the camera view of the mesh
-        m_lightingshader.Update(m_cubemesh.transform, m_camera, true, m_lightColor, m_lightPosition);
+        m_lightingshader.Update(m_cubemesh.transform, m_camera, false, m_lightColor, m_lightPosition);
         
         m_cubemesh.Draw(0);
         
@@ -426,11 +419,10 @@ void Game::RenderCube(){
 
 void Game::Render(){
     
-    RenderPyramid();
+    //RenderPyramid();
     //RenderTriangle();
     RenderCube();
     RenderLamp();
-    //RenderLight();
 }
 
 void Game::Update(){
