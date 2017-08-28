@@ -45,6 +45,13 @@ private:
         NUM_BUFFERS
     };
     
+    enum { // texture units 
+        SAMPLER = 0, 
+        NORMAL = 1, 
+        DIFFUSE = 2, 
+        SPECULAR = 3
+    };
+    
     //this is the modern openGL way of refering to mesh data on the gpu, only officially indtrouced in openGL 3.0
     GLuint m_vertexArrayObject;
     GLuint m_vertexArrayBuffers[NUM_BUFFERS];
@@ -53,6 +60,9 @@ private:
     unsigned int m_drawCount;
     
     bool usingIndices;
+    
+    Texture m_samplerTexture;
+    Texture m_normalTexture;
     Texture m_diffuseTexture;
     Texture m_specularTexture;
     

@@ -1,6 +1,10 @@
 #version 410 core
 
-uniform sampler2D sampler;
+struct Material
+{
+    sampler2D sampler;
+};
+uniform Material material;
 uniform bool bUseTexture;    // A flag indicating if texture-mapping should be applied
 
 in vec3 colour;	
@@ -11,7 +15,7 @@ out vec4 fOutputColor;		// The output colour
 
 void main() {
     
-    vec4 vTexColour = texture(sampler, texCoord); 
+    vec4 vTexColour = texture(material.sampler, texCoord); 
     
     if (bUseTexture){
         fOutputColor = vTexColour;

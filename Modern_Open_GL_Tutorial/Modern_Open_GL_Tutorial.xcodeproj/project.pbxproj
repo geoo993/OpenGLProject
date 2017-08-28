@@ -66,7 +66,6 @@
 		C700FB0F1F51752E00A9E4F3 /* Mesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mesh.cpp; sourceTree = "<group>"; };
 		C700FB101F51754D00A9E4F3 /* GameObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameObject.cpp; sourceTree = "<group>"; };
 		C700FB111F51754D00A9E4F3 /* GameObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameObject.h; sourceTree = "<group>"; };
-		C700FB141F51780400A9E4F3 /* bricks.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bricks.jpg; sourceTree = "<group>"; };
 		C74DB4F91F5189B9002938A8 /* screenShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = screenShader.frag; sourceTree = "<group>"; };
 		C74DB4FA1F5189B9002938A8 /* screenShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = screenShader.vert; sourceTree = "<group>"; };
 		C74DB4FB1F519D18002938A8 /* super-mario.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "super-mario.jpg"; sourceTree = "<group>"; };
@@ -76,6 +75,7 @@
 		C7CCAB241F5238CE0048D12B /* lightingShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lightingShader.vert; sourceTree = "<group>"; };
 		C7CCAB251F523BEC0048D12B /* lampShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lampShader.frag; sourceTree = "<group>"; };
 		C7CCAB261F523BEC0048D12B /* lampShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lampShader.vert; sourceTree = "<group>"; };
+		C7FABAB21F544C3300618AA5 /* tree.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = tree.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,10 +176,10 @@
 		C700FB021F51650A00A9E4F3 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				C7FABAB21F544C3300618AA5 /* tree.jpg */,
 				C77B4BE31F531AB200AE7B09 /* container_specular.png */,
 				C77B4BE41F531AB200AE7B09 /* container.png */,
 				C74DB4FB1F519D18002938A8 /* super-mario.jpg */,
-				C700FB141F51780400A9E4F3 /* bricks.jpg */,
 			);
 			path = Textures;
 			sourceTree = "<group>";

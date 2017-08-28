@@ -54,9 +54,10 @@ void Mesh::Create(const std::string &modelPath)
 
 void Mesh::GenerateAndBindMeshData(const IndexedModel & model, const bool & withIndices)
 {
-    
-    m_diffuseTexture.CreateNewTexture(RESOURCE_PATH + "/Resources/Textures/container.png", true, 0);
-    m_specularTexture.CreateNewTexture(RESOURCE_PATH + "/Resources/Textures/container_specular.png", true, 1);
+    m_samplerTexture.CreateNewTexture(RESOURCE_PATH + "/Resources/Textures/tree.jpg", true, SAMPLER);
+    //m_normalTexture.CreateNewTexture(RESOURCE_PATH + "/Resources/Textures/container.png", true, NORMAL);
+    m_diffuseTexture.CreateNewTexture(RESOURCE_PATH + "/Resources/Textures/container.png", true, DIFFUSE);
+    m_specularTexture.CreateNewTexture(RESOURCE_PATH + "/Resources/Textures/container_specular.png", true, SPECULAR);
     
     m_drawCount = withIndices ? model.indices.size() : model.positions.size(); 
     
@@ -119,8 +120,10 @@ void Mesh::Draw(const unsigned int &textureUnit){
     //bind attribute array
     glBindVertexArray(m_vertexArrayObject);
     
-    m_diffuseTexture.Bind(textureUnit);
-    m_specularTexture.Bind(textureUnit+1);
+    m_samplerTexture.Bind(SAMPLER);//0
+    //m_normalTexture.Bind(NORMAL);//1
+    m_diffuseTexture.Bind(DIFFUSE);
+    m_specularTexture.Bind(SPECULAR);
     
     if (usingIndices){
         
@@ -151,6 +154,8 @@ void Mesh::Release(){
     glDeleteBuffers(NUM_BUFFERS, m_vertexArrayBuffers);
     glDeleteVertexArrays(1, &m_vertexArrayObject);
     
+    m_samplerTexture.UnBind();
+    m_normalTexture.UnBind();
     m_diffuseTexture.UnBind();
     m_specularTexture.UnBind();
 }

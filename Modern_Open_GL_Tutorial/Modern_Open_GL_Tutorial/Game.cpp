@@ -148,6 +148,18 @@ Game::~Game()
 void Game::Initialise(){
 
     float size = 1.0f;
+    
+    //////////////////////////////////////////////////////////////////////////
+    ///////////////////////////PYRAMID MODEL/////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    /////---- 4-------
+    ////    . . .  .
+    //    .  .   .  .
+    //   .  .     .   .
+    //  .  .       .    .
+    // .   2......... |  /3
+    //.              . //
+    //0--------------/1
     vector<Vertex> pyramidVertices = {
         //vertices positions                          //texture             //colors
         //bottom 0,2,3  3,1,0
@@ -159,9 +171,9 @@ void Game::Initialise(){
         Vertex( glm::vec3( -size, -size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 5
         
         //front   4,0,1
-        Vertex( glm::vec3( 0.0f, size, 0.0f ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 6
-        Vertex( glm::vec3( -size, -size, size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 7
-        Vertex( glm::vec3(  size, -size,size ), glm::vec2(0.0f,1.0f), glm::vec3(1.0f, 1.0f, 1.0f ) ), // 8
+        Vertex( glm::vec3( 0.0f, size, 0.0f ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 6
+        Vertex( glm::vec3( -size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 7
+        Vertex( glm::vec3(  size, -size,size ), glm::vec2(1.0f,0.0f), glm::vec3(1.0f, 1.0f, 1.0f ) ), // 8
         
         //back    4,3,2
         Vertex( glm::vec3( 0.0f, size, 0.0f ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f) ), // 9
@@ -284,7 +296,7 @@ void Game::Initialise(){
     
     //setup camera
     m_camera = new Camera();
-    m_camera->Create(glm::vec3(0.0f, 0.0f,50.0f), glm::vec3(0.0f, 1.0f,0.0f), PITCH, YAW, ROLL, 70.0f, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, 0.1f, 5000.0f);
+    m_camera->Create(glm::vec3(0.0f, 0.0f,10.0f), glm::vec3(0.0f, 1.0f,0.0f), PITCH, YAW, ROLL, 45.0f, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
     
     // setup light
     m_lightPosition = glm::vec3(1.0f, 10.0f, 2.0f);
@@ -320,39 +332,6 @@ void Game::RenderTriangle(){
     
 }
 
-void Game::RenderCube(){
-    
-    glm::vec3 cubesPosition[] = {
-        glm::vec3(-1.0f, 5.0f, 25.0f), 
-        glm::vec3(-11.0f, 5.0f, 22.0f), 
-        glm::vec3(-5.0f, 1.0f, -25.0f), 
-        glm::vec3(10.0f, 15.0f, 5.0f), 
-        glm::vec3(-4.0f, 3.0f, -9.0f), 
-        glm::vec3(2.0f, -5.0f, 2.0f), 
-        glm::vec3(9.0f, -9.0f, 13.0f), 
-        glm::vec3(-8.0f, 12.0f, 8.0f)
-    };
-    
-    
-    for ( GLuint i = 0; i < 10; ++i){
-        // bind the shader program
-        m_basicshader.Bind();
-        
-        m_cubemesh.transform.SetPositions(cubesPosition[i] );
-        m_cubemesh.transform.SetScale(glm::vec3(2));
-        
-        GLfloat angle = 20.0f * (GLfloat)i;
-        
-        //update shader, including the tranform of our mesh, and the camera view of the mesh
-        m_basicshader.Update(m_cubemesh.transform, m_camera, true,glm::vec3(1.0f), glm::vec3(1.0f));
-        
-        m_cubemesh.Draw(0);
-        
-        // unbind the shader program
-        m_basicshader.UnBind();
-    }
-}
-
 void Game::RenderPyramid(){
     
     // bind the shader program
@@ -373,17 +352,18 @@ void Game::RenderPyramid(){
 void Game::RenderLamp(){
     
     
-    m_lightColor.r = sin( glfwGetTime() * 2.0f );
-    m_lightColor.g = sin( glfwGetTime() * 0.7f );
-    m_lightColor.b = sin( glfwGetTime() * 1.3f );
+    //m_lightColor.r = sin( glfwGetTime() * 2.0f );
+    //m_lightColor.g = sin( glfwGetTime() * 0.7f );
+    //m_lightColor.b = sin( glfwGetTime() * 1.3f );
     
     // bind the shader program
     m_lampshader.Bind();
     
     m_lampmesh.transform.SetPositions(m_lightPosition );
+    m_lampmesh.transform.SetScale(glm::vec3(0.4f));
     
     //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_lampshader.Update(m_lampmesh.transform, m_camera, false, m_lightColor, m_lightPosition, m_camera->GetPosition() );
+    m_lampshader.Update(m_lampmesh.transform, m_camera, false, m_lightColor, m_lightPosition );
  
     m_lampmesh.Draw(0);
     
@@ -399,10 +379,8 @@ void Game::RenderLight(){
     m_lightmesh.transform.SetPositions(glm::vec3(-10.0f,0.2f,0.4f) );
     m_lightmesh.transform.SetScale(glm::vec3(5.0f));
     
-    m_viewPosition = m_camera->GetPosition();
-    
     //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_lightingshader.Update(m_lightmesh.transform, m_camera, true, m_lightColor, m_lightPosition, m_viewPosition);
+    m_lightingshader.Update(m_lightmesh.transform, m_camera, true, m_lightColor, m_lightPosition);
     
     m_lightmesh.Draw(0);
     
@@ -411,13 +389,48 @@ void Game::RenderLight(){
     
 }
 
+void Game::RenderCube(){
+    
+    vector<glm::vec3> cubesPosition = {
+        glm::vec3(-1.0f, -4.0f, -1.0f),
+        glm::vec3(-8.0f, 7.0f, 5.0f),
+        glm::vec3(-5.0f, 3.0f, -2.0f),
+        glm::vec3(2.0f, 5.0f, 8.0f),
+        glm::vec3(-2.0f, 8.0f, -9.0f),
+        glm::vec3(4.0f, -1.0f, -2.0f),
+        glm::vec3(9.0f, -5.0f, 3.0f),
+        glm::vec3(-8.0f, 2.0f, 8.0f)
+    };
+    
+    
+    for ( GLuint i = 0; i < cubesPosition.size(); ++i){
+        // bind the shader program
+        m_lightingshader.Bind();
+        
+        GLfloat angle = 20.0f * (GLfloat)i;
+        
+        m_cubemesh.transform.SetPositions(cubesPosition[i] );
+        m_cubemesh.transform.SetRotation(glm::vec3(1.0f, angle, 1.0f));
+        m_cubemesh.transform.SetScale(glm::vec3(2.0f));
+        
+        //update shader, including the tranform of our mesh, and the camera view of the mesh
+        m_lightingshader.Update(m_cubemesh.transform, m_camera, true, m_lightColor, m_lightPosition);
+        
+        m_cubemesh.Draw(0);
+        
+        // unbind the shader program
+        m_lightingshader.UnBind();
+    }
+    
+}
+
 void Game::Render(){
     
-    //RenderPyramid();
+    RenderPyramid();
     //RenderTriangle();
-    //RenderCube();
+    RenderCube();
     RenderLamp();
-    RenderLight();
+    //RenderLight();
 }
 
 void Game::Update(){
@@ -547,7 +560,7 @@ void Game::Execute(const std::string &filepath)
         DoMouseHit(mouseHit, mouseAction);
         
         // Clear the screen
-        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//enable and clear the color and depth buffer
         
         //Render

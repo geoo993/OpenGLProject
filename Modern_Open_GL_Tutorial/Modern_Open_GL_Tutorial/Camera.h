@@ -27,7 +27,7 @@ const GLfloat PITCH      =  0.1f;
 const GLfloat ROLL      =  0.1f;
 const GLfloat SPEED      =  10.0f;
 const GLfloat SENSITIVTY =  0.25f;
-const GLfloat ZOOM       =  70.0f;
+const GLfloat ZOOM       =  45.0f;
 
 
 //Camera setup
@@ -44,11 +44,11 @@ public:
                 const GLfloat &pitch = PITCH, 
                 const GLfloat &yaw = YAW, 
                 const GLfloat &roll = ROLL, 
-                const GLfloat &fieldOfView = 70.0f, 
+                const GLfloat &fieldOfView = 45.0f, 
                 const GLfloat &width = (float)SCREEN_WIDTH,
                 const GLfloat &height = (float)SCREEN_HEIGHT, 
                 const GLfloat &zNear = 0.1f, 
-                const GLfloat &zFar = 5000.0f) {
+                const GLfloat &zFar = 1000.0f) {
         
         this->m_position = position;
         this->m_worldUp = worldUp;

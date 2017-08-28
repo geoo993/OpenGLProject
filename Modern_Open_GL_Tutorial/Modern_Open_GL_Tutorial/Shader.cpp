@@ -49,15 +49,23 @@ void Shader::Create(const std::string &fileName){
     
     m_uniforms[PROJECTION_U] = glGetUniformLocation(m_program, "projection");
     
-    m_uniforms[SAMPLER_U] = glGetUniformLocation(m_program, "sampler");
-    
     m_uniforms[USETEXTURE_U]  = glGetUniformLocation(m_program, "bUseTexture");
     
     m_uniforms[VIEWPOSITION_U] = glGetUniformLocation(m_program, "viewPosition");
     
+    
+    //Light 
     m_uniforms[LIGHTCOLOR_U] = glGetUniformLocation(m_program, "light.color");
     
     m_uniforms[LIGHTPOSITION_U] = glGetUniformLocation(m_program, "light.position");
+    
+    m_uniforms[LIGHTDIRECTION_U] = glGetUniformLocation(m_program, "light.direction");
+    
+    m_uniforms[LIGHTWORLDDIRECTION_U] = glGetUniformLocation(m_program, "light.worldDirection");
+    
+    m_uniforms[LIGHTCUTOFF_U] = glGetUniformLocation(m_program, "light.cutOff");
+    
+    m_uniforms[LIGHTOUTERCUTOFF_U] = glGetUniformLocation(m_program, "light.outerCutOff");
     
     m_uniforms[LIGHTAMBIENT_U] = glGetUniformLocation(m_program, "light.ambient");
     
@@ -65,7 +73,17 @@ void Shader::Create(const std::string &fileName){
     
     m_uniforms[LIGHTSPECULAR_U] = glGetUniformLocation(m_program, "light.specular");
     
+    m_uniforms[LIGHTCONSTANT_U] = glGetUniformLocation(m_program, "light.constant");
     
+    m_uniforms[LIGHTLINEAR_U] = glGetUniformLocation(m_program, "light.linear");
+    
+    m_uniforms[LIGHTQUADRATIC_U] = glGetUniformLocation(m_program, "light.quadratic");
+    
+    
+    //Material
+    m_uniforms[SAMPLER_U] = glGetUniformLocation(m_program, "material.sampler");
+    
+    m_uniforms[NORMALSAMPLER_U] = glGetUniformLocation(m_program, "material.normalSampler");
     
     m_uniforms[DIFFUSESAMPLER_U] = glGetUniformLocation(m_program, "material.diffuseSampler");
     
@@ -73,13 +91,7 @@ void Shader::Create(const std::string &fileName){
     
     m_uniforms[SHININESS_U] = glGetUniformLocation(m_program, "material.shininess");
     
-    
-    
-    //m_uniforms[LIGHTDIRECTION_U] = glGetUniformLocation(m_program, "vLightDirection");
-    
-    //m_uniforms[DIFFUSECOLOR_U] = glGetUniformLocation(m_program, "vDiffuseColor");
-    
-    //m_uniforms[TWIST_U] = glGetUniformLocation(m_program, "fTwist");
+    m_uniforms[INTENSITY_U] = glGetUniformLocation(m_program, "material.intensity");
     
 }
 
@@ -134,26 +146,19 @@ void Shader::Update(
                     const Transform & transform, 
                     Camera * camera, 
                     const bool & bUseTexture, 
-                    //const GLfloat &angle, 
-                    //const glm::vec3 &position, 
                     const glm::vec3 &lighColor,
-                    const glm::vec3 &lighPosition, 
-                    const glm::vec3 &viewPosition
+                    const glm::vec3 &lighPosition
                     ){
-    
-    
     //here we model the mvp, meaning the model, view, and projection matrices of the shader
     
     //getting the model matrix
     glm::mat4 model =  transform.GetModel();
     
-    //model = glm::rotate(model, angle, position);
-    
     //getting the projection and view matrix
     glm::mat4 view = camera->GetViewMatrix();
     
     float aspect = (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT;
-    camera->SetPerspectiveProjectionMatrix(camera->GetZoom(),aspect, 0.1f, 5000.0f);
+    camera->SetPerspectiveProjectionMatrix(camera->GetZoom(),aspect, 0.1f, 1000.0f);
     
     glm::mat4 projection = camera->GetPerspectiveProjectionMatrix();
     
@@ -176,37 +181,50 @@ void Shader::Update(
     
     glUniformMatrix4fv(m_uniforms[PROJECTION_U], 1, GL_FALSE, &projection[0][0]);
     
-    glUniform1i( m_uniforms[SAMPLER_U],  0 );
-    
     //one is true and zero is false
     glUniform1i(m_uniforms[USETEXTURE_U], bUseTexture);
     
     // light 
+    glUniform3fv(m_uniforms[VIEWPOSITION_U], 1, glm::value_ptr(camera->GetPosition()));
+    
     glUniform3fv(m_uniforms[LIGHTCOLOR_U], 1, glm::value_ptr(lighColor));
     
-    glUniform3fv(m_uniforms[LIGHTPOSITION_U], 1, glm::value_ptr(lighPosition));
+    glUniform3fv(m_uniforms[LIGHTPOSITION_U], 1, glm::value_ptr(lighPosition)); // for point light
+    //glUniform3fv(m_uniforms[LIGHTPOSITION_U], 1, glm::value_ptr(camera->GetPosition())); //for spot light
     
-    glUniform3fv(m_uniforms[VIEWPOSITION_U], 1.0f, glm::value_ptr(viewPosition));
+    glUniform3f(m_uniforms[LIGHTWORLDDIRECTION_U], -0.2f, 1.0f, -0.3f); // for directional light
+    
+    glUniform3fv(m_uniforms[LIGHTDIRECTION_U], 1, glm::value_ptr(camera->GetForward()));
+    
+    glUniform1f(m_uniforms[LIGHTCUTOFF_U], glm::cos(glm::radians(12.5f)));
+    
+    glUniform1f(m_uniforms[LIGHTOUTERCUTOFF_U], glm::cos(glm::radians(17.5f)));
     
     glUniform3fv(m_uniforms[LIGHTAMBIENT_U], 1, glm::value_ptr(glm::vec3(0.2f, 0.2f, 0.2f)));
     
-    glUniform3fv(m_uniforms[LIGHTDIFFUSE_U], 1, glm::value_ptr(glm::vec3(0.5f, 0.5f, 0.5f)));
+    glUniform3fv(m_uniforms[LIGHTDIFFUSE_U], 1, glm::value_ptr(glm::vec3(0.9f, 0.9f, 0.9f)));
     
-    glUniform3fv(m_uniforms[LIGHTSPECULAR_U], 1.0f, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+    glUniform3fv(m_uniforms[LIGHTSPECULAR_U], 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+    
+    glUniform1f(m_uniforms[LIGHTCONSTANT_U], 1.0f);
+    
+    glUniform1f(m_uniforms[LIGHTLINEAR_U], 0.09f);
+    
+    glUniform1f(m_uniforms[LIGHTQUADRATIC_U], 0.032f);
+    
     
     // Material
-    glUniform1i( m_uniforms[DIFFUSESAMPLER_U],  0 );
+    glUniform1i( m_uniforms[SAMPLER_U],  0 );
     
-    glUniform1i( m_uniforms[SPECULARSAMPLER_U], 1 );
+    glUniform1i( m_uniforms[NORMALSAMPLER_U],  1 );
     
-    glUniform1f(m_uniforms[SHININESS_U], 35.0f);
+    glUniform1i( m_uniforms[DIFFUSESAMPLER_U], 2 );
     
-    //pass in light direction
-    //glUniform3f(m_uniforms[LIGHTDIRECTION_U], 0.0f, 0.0f, 1.0f);
+    glUniform1i( m_uniforms[SPECULARSAMPLER_U], 3 );
     
-    //glUniform3f(m_uniforms[DIFFUSECOLOR_U], 0.0f, 1.0f, 1.0f);
+    glUniform1f(m_uniforms[SHININESS_U], 32.0f);
     
-    //glUniform1f(m_uniforms[TWIST_U], 0.5f);
+    glUniform1f(m_uniforms[INTENSITY_U], 20.0f);
     
     
 }
