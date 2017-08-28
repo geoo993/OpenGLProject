@@ -290,10 +290,6 @@ void Game::Initialise(){
                       cubeVertices.size()
                       );
     
-    m_pointlightmesh.Create( cubeVertices.data(), 
-                       cubeVertices.size()
-                       );
-    
     //setup camera
     m_camera = new Camera();
     m_camera->Create(glm::vec3(0.0f, 0.0f,10.0f), glm::vec3(0.0f, 1.0f,0.0f), PITCH, YAW, ROLL, 45.0f, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
@@ -363,33 +359,15 @@ void Game::RenderLamp(){
         glm::vec3(  0.0f,  0.0f, -3.0f      )
     };
     
-    for ( GLuint i = 0; i < pointLightPositions.size(); ++i){
-        
-        // bind the shader program
-        m_lampshader.Bind();
-        
-        m_lampmesh.transform.SetPositions(pointLightPositions[i]);
-        //m_lampmesh.transform.SetPositions(m_lightPosition );
-        m_lampmesh.transform.SetScale(glm::vec3(0.2f));
-        
-        //update shader, including the tranform of our mesh, and the camera view of the mesh
-        m_lampshader.Update(m_lampmesh.transform, m_camera, false, m_lightColor, pointLightPositions[i] );
-     
-        m_lampmesh.Draw(0);
-        
-        // unbind the shader program
-        m_lampshader.UnBind();
-    
-    }
-    
+    // bind the shader program
     m_lampshader.Bind();
     
-    m_pointlightmesh.transform.SetPositions(m_lightPosition );
-    m_pointlightmesh.transform.SetScale(glm::vec3(0.6f));
+    m_lampmesh.transform.SetPositions(m_lightPosition);
+    m_lampmesh.transform.SetScale(glm::vec3(0.4f));
     
     //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_lampshader.Update(m_pointlightmesh.transform, m_camera, false, m_lightColor, m_lightPosition );
-    
+    m_lampshader.Update(m_lampmesh.transform, m_camera, false, m_lightColor, m_lightPosition );
+   
     m_lampmesh.Draw(0);
     
     // unbind the shader program

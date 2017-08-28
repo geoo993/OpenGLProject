@@ -2,9 +2,6 @@
 
 // from https://www.youtube.com/watch?v=vnUQOIODAKc&index=25&list=PLRtjMdoYXLf6zUMDJVRZYV-6g6n62vet8
 
-
-#define NUMBER_OF_POINT_LIGHTS 4
-
 struct Material
 {
     sampler2D sampler;
@@ -52,13 +49,9 @@ struct PointLight
 
 struct SpotLight
 {
-    PointLight pointlight;
-    
+    BaseLight base;
     vec3 position;
     vec3 direction;
-    
-    float cutOff;
-    float outerCutOff;
     
     vec3 ambient;
     vec3 diffuse;
@@ -67,11 +60,15 @@ struct SpotLight
     float constant;
     float linear;
     float quadratic;
+    
+    float cutOff;
+    float outerCutOff;
+    
 };
 
 uniform Material material;
 uniform DirectionalLight directionallight;
-uniform PointLight pointlights[NUMBER_OF_POINT_LIGHTS];
+uniform PointLight pointlight;
 uniform SpotLight spotlight;
 
 uniform vec3 viewPosition;
@@ -85,14 +82,16 @@ out vec4 fOutputColor;		// The output colour
 
 bool bUseDark = false;
 
-bool bUseDirectional = false;  ///directional light else basic lamp illumination
+//bool bUseDirectional = false;  ///directional light else basic lamp illumination
 
-bool bUsePointLight = true; //point light, uses Attenuation and illuminates objects closer to lamp
+//bool bUsePointLight = true; //point light, uses Attenuation and illuminates objects closer to lamp
 
-bool bUseSpotLight = true; //spot light, emitting light from camera
+//bool bUseSpotLight = true; //spot light, emitting light from camera
 
 // Calculates the color when using a directional light.
 vec3 CalculateDirectionalLight( DirectionalLight light, vec3 normal, vec3 viewDirection){
+    
+    vec3 lightColor = light.base.color;
     
     // Diffuse shading
     vec3 lightDirection = normalize(-light.worldDirection);
@@ -107,9 +106,9 @@ vec3 CalculateDirectionalLight( DirectionalLight light, vec3 normal, vec3 viewDi
     vec3 diffuse = vec3(0.0f);
     vec3 specular = vec3(0.0f);
     
-    vec3 diffuseColor = light.ambient * light.base.color ;
+    vec3 diffuseColor = light.ambient * lightColor ;
     vec3 ambientColor = bUseDark ? light.diffuse * diffuseColor : light.diffuse ;
-    vec3 specularColor = light.specular * light.base.color;
+    vec3 specularColor = light.specular * lightColor;
     
     if (bUseTexture) {
         ambient = ambientColor * vec3( texture( material.diffuseSampler, texCoord ) );
@@ -125,11 +124,12 @@ vec3 CalculateDirectionalLight( DirectionalLight light, vec3 normal, vec3 viewDi
 }
 
 
-// Pointlight, emitting from lamp  
-vec3 CalculatePointLight( PointLight light, vec3 normal, vec3 fragPosition, vec3 viewDirection, bool useViewPosition){
+// Calculates the color when using a point light, emitting from lamp  
+vec3 CalculatePointLight( PointLight light, vec3 normal, vec3 fragPosition, vec3 viewDirection){
     
-    // if true, we wicth to camera position instead of light position
-    vec3 lightPosition = useViewPosition ? viewPosition : light.position;
+    vec3 lightColor = light.base.color;
+    
+    vec3 lightPosition = light.position;
     
     // Diffuse shading
     vec3 lightDirection = normalize(lightPosition - fragPosition);
@@ -145,9 +145,9 @@ vec3 CalculatePointLight( PointLight light, vec3 normal, vec3 fragPosition, vec3
     vec3 diffuse = vec3(0.0f);
     vec3 specular = vec3(0.0f);
     
-    vec3 diffuseColor = light.ambient * light.base.color ;
+    vec3 diffuseColor = light.ambient * lightColor ;
     vec3 ambientColor = bUseDark ? light.diffuse * diffuseColor : light.diffuse ;
-    vec3 specularColor = light.specular * light.base.color;
+    vec3 specularColor = light.specular * lightColor;
     
     if (bUseTexture) {
         ambient = ambientColor * vec3( texture( material.diffuseSampler, texCoord ) );
@@ -171,20 +171,13 @@ vec3 CalculatePointLight( PointLight light, vec3 normal, vec3 fragPosition, vec3
 }
 
 // Spotlight (soft edges) which requires Pointlight, emitting from camera
-vec3 CalculateSpotLight( SpotLight light, vec3 normal, vec3 fragPosition, vec3 viewDirection, bool useViewPosition)
+vec3 CalculateSpotLight( SpotLight light, vec3 normal, vec3 fragPosition, vec3 viewDirection)
 {
-    
-//    float theta = dot(lightDir, normalize(-light.direction));
-//    float epsilon = (light.cutOff - light.outerCutOff);
-//    float intensity = clamp( (theta - light.outerCutOff) / epsilon, 0.0f, 1.0f);
-//    
-//    diffuse  *= intensity;
-//    specular *= intensity;
-    
-    vec3 lColor = vec3(1.0f, 1.0f, 1.0f);
+   
+    vec3 lightColor = light.base.color;
     
     // if true, we wicth to camera position instead of light position
-    vec3 lightPosition = useViewPosition ? viewPosition : light.position;
+    vec3 lightPosition = light.position; 
     
     // Diffuse shading
     vec3 lightDirection = normalize(lightPosition - fragPosition);
@@ -200,9 +193,9 @@ vec3 CalculateSpotLight( SpotLight light, vec3 normal, vec3 fragPosition, vec3 v
     vec3 diffuse = vec3(0.0f);
     vec3 specular = vec3(0.0f);
     
-    vec3 diffuseColor = light.ambient * lColor ;
+    vec3 diffuseColor = light.ambient * lightColor ;
     vec3 ambientColor = bUseDark ? light.diffuse * diffuseColor : light.diffuse ;
-    vec3 specularColor = light.specular * lColor;
+    vec3 specularColor = light.specular * lightColor;
     
     if (bUseTexture) {
         ambient = ambientColor * vec3( texture( material.diffuseSampler, texCoord ) );
@@ -229,7 +222,6 @@ vec3 CalculateSpotLight( SpotLight light, vec3 normal, vec3 fragPosition, vec3 v
     diffuse  *= intensity;
     specular *= intensity;
     
-    
     return ( ambient + diffuse + specular );
 }
 
@@ -241,30 +233,11 @@ void main() {
     vec3 normal = normalize(localNormal);
     vec3 viewDirection = normalize(viewPosition - worldPosition);
     
-    vec3 result = CalculateDirectionalLight( directionallight, normal, viewDirection);
+    vec3 directionalL = CalculateDirectionalLight( directionallight, normal, viewDirection);
     
-    for (int i = 0; i < NUMBER_OF_POINT_LIGHTS; i++){
-     
-       
-        PointLight firstpl = pointlights[0];
-        PointLight pl = pointlights[i];
-        
-        pl.base = firstpl.base;
-        pl.ambient = firstpl.ambient;
-        pl.diffuse = firstpl.diffuse;
-        pl.specular = firstpl.specular;
-                 
-        pl.constant = firstpl.constant;
-        pl.linear = firstpl.linear;
-        pl.quadratic = firstpl.quadratic;
-                
-        result += CalculatePointLight(pl, normal, worldPosition, viewDirection, false);
-    }
+    vec3 pointL = CalculatePointLight(pointlight, normal, worldPosition, viewDirection);
     
+    vec3 spotL = CalculateSpotLight( spotlight, normal, worldPosition, viewDirection);
     
-    
-    vec3 spotl = CalculateSpotLight( spotlight, normal, worldPosition, viewDirection, true);
-    result += spotl;
-    
-    fOutputColor = vec4( result, 1.0f);
+    fOutputColor = vec4( spotL, 1.0f);
 }
