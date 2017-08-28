@@ -40,7 +40,7 @@ private:
     Mesh m_trianglemesh;
     Mesh m_pyramidmesh;
     Mesh m_cubemesh;
-    Mesh m_lightmesh;
+    Mesh m_pointlightmesh;
     Mesh m_lampmesh;
     
     // Light

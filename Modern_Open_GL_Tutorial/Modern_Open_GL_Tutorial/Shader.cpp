@@ -95,17 +95,17 @@ void Shader::Create(const std::string &fileName){
     
     m_uniforms[SPOTLIGHTDIRECTION_U] = glGetUniformLocation(m_program, "spotlight.direction");
     
-    m_uniforms[POINTLIGHTAMBIENT_U] = glGetUniformLocation(m_program, "spotlight.ambient");
+    m_uniforms[SPOTLIGHTAMBIENT_U] = glGetUniformLocation(m_program, "spotlight.ambient");
     
-    m_uniforms[POINTLIGHTDIFFUSE_U] = glGetUniformLocation(m_program, "spotlight.diffuse");
+    m_uniforms[SPOTLIGHTDIFFUSE_U] = glGetUniformLocation(m_program, "spotlight.diffuse");
     
-    m_uniforms[POINTLIGHTSPECULAR_U] = glGetUniformLocation(m_program, "spotlight.specular");
+    m_uniforms[SPOTLIGHTSPECULAR_U] = glGetUniformLocation(m_program, "spotlight.specular");
     
-    m_uniforms[POINTLIGHTCONSTANT_U] = glGetUniformLocation(m_program, "spotlight.constant");
+    m_uniforms[SPOTLIGHTCONSTANT_U] = glGetUniformLocation(m_program, "spotlight.constant");
     
-    m_uniforms[POINTLIGHTLINEAR_U] = glGetUniformLocation(m_program, "spotlight.linear");
+    m_uniforms[SPOTLIGHTLINEAR_U] = glGetUniformLocation(m_program, "spotlight.linear");
     
-    m_uniforms[POINTLIGHTQUADRATIC_U] = glGetUniformLocation(m_program, "spotlight.quadratic");
+    m_uniforms[SPOTLIGHTQUADRATIC_U] = glGetUniformLocation(m_program, "spotlight.quadratic");
     
     m_uniforms[SPOTLIGHTCUTOFF_U] = glGetUniformLocation(m_program, "spotlight.cutOff");
     
@@ -254,9 +254,9 @@ void Shader::Update(
     
     glUniform3fv(m_uniforms[POINTLIGHTPOSITION_D_U], 1, glm::value_ptr(pointLightPositions[3]));
     
-    glUniform3fv(m_uniforms[POINTLIGHTAMBIENT_U], 1, glm::value_ptr(glm::vec3(0.2f, 0.2f, 0.2f)));
+    glUniform3fv(m_uniforms[POINTLIGHTAMBIENT_U], 1, glm::value_ptr(glm::vec3(0.05f, 0.05f, 0.05f)));
     
-    glUniform3fv(m_uniforms[POINTLIGHTDIFFUSE_U], 1, glm::value_ptr(glm::vec3(0.9f, 0.9f, 0.9f)));
+    glUniform3fv(m_uniforms[POINTLIGHTDIFFUSE_U], 1, glm::value_ptr(glm::vec3(0.8f, 0.8f, 0.8f)));
     
     glUniform3fv(m_uniforms[POINTLIGHTSPECULAR_U], 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
     
@@ -270,6 +270,19 @@ void Shader::Update(
     glUniform3fv(m_uniforms[SPOTLIGHTPOSITION_U], 1, glm::value_ptr(camera->GetPosition())); //for spot light
     
     glUniform3fv(m_uniforms[SPOTLIGHTDIRECTION_U], 1, glm::value_ptr(camera->GetForward()));
+    
+    
+    glUniform3fv(m_uniforms[SPOTLIGHTAMBIENT_U], 1, glm::value_ptr(glm::vec3(0.01f, 0.01f, 0.01f)));
+    
+    glUniform3fv(m_uniforms[SPOTLIGHTDIFFUSE_U], 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+    
+    glUniform3fv(m_uniforms[SPOTLIGHTSPECULAR_U], 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 1.0f)));
+    
+    glUniform1f(m_uniforms[SPOTLIGHTCONSTANT_U], 1.0f);
+    
+    glUniform1f(m_uniforms[SPOTLIGHTLINEAR_U], 0.09f);
+    
+    glUniform1f(m_uniforms[SPOTLIGHTQUADRATIC_U], 0.032f);
     
     glUniform1f(m_uniforms[SPOTLIGHTCUTOFF_U], glm::cos(glm::radians(12.5f)));
     
