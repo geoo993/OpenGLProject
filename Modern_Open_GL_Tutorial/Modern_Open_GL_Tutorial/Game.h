@@ -33,16 +33,20 @@ private:
     GLfloat m_deltaTime, m_elapsedTime = 0.0f;
     std::string m_resources_path;
     
+    // Lights
     Shader m_basicshader;
     Shader m_screenshader;
     Shader m_lightingshader;
+    Shader m_lightsshader;
     Shader m_lampshader;
+    
+    // Mesh
     Mesh m_trianglemesh;
     Mesh m_pyramidmesh;
     Mesh m_cubemesh;
     Mesh m_lampmesh;
     
-    // Light
+    // Settings
     glm::vec3 m_lightPosition;
     glm::vec3 m_lightColor;
     glm::vec3 m_viewPosition;
@@ -57,6 +61,7 @@ public:
     void RenderPyramid();
     void RenderTriangle();
     void RenderCube();
+    void RenderCubes();
     void RenderLamp();
     
     //call back

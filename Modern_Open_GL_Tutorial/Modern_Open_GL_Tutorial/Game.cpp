@@ -289,13 +289,12 @@ void Game::Initialise(){
     m_lampmesh.Create( cubeVertices.data(), 
                       cubeVertices.size()
                       );
-    
     //setup camera
     m_camera = new Camera();
     m_camera->Create(glm::vec3(0.0f, 0.0f,10.0f), glm::vec3(0.0f, 1.0f,0.0f), PITCH, YAW, ROLL, 45.0f, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
     
     // setup light
-    m_lightPosition = glm::vec3(1.0f, 10.0f, 2.0f);
+    m_lightPosition = glm::vec3(1.0f, 4.0f, 2.0f);
     m_lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
     m_viewPosition = glm::vec3(10.0f, 10.0f, 22.0f);
     
@@ -304,12 +303,11 @@ void Game::Initialise(){
 void Game::LoadFromResources(const std::string &resourcepath){
     
     //load shader program
-    m_basicshader.Create(resourcepath + "/Resources/Shaders/basicShader");
-    m_screenshader.Create(resourcepath + "/Resources/Shaders/screenShader");
-    m_lightingshader.Create(resourcepath + "/Resources/Shaders/lightingShader");
-    m_lampshader.Create(resourcepath + "/Resources/Shaders/lampShader");
-    //m_texture.Create(resourcepath + "/Resources/Textures/bricks.jpg", true);
-    //m_texture.Create(resourcepath + "/Resources/Textures/super-mario.jpg", true);
+    //m_basicshader.Create(resourcepath + "/Resources/Shaders/basicShader");
+    //m_screenshader.Create(resourcepath + "/Resources/Shaders/screenShader");
+    //m_lightingshader.Create(resourcepath + "/Resources/Shaders/lightingShader");
+    //m_lampshader.Create(resourcepath + "/Resources/Shaders/lampShader");
+    //m_lightsshader.Create(resourcepath + "/Resources/Shaders/lightsShader");
     
 }
 
@@ -377,6 +375,25 @@ void Game::RenderLamp(){
 
 void Game::RenderCube(){
     
+    // bind the shader program
+    m_lightsshader.Bind();
+    
+    glm::vec3 cubePosition(-5.0f,0.0f, 9.0f);
+    
+    m_cubemesh.transform.SetPositions( cubePosition );
+    
+    //update shader, including the tranform of our mesh, and the camera view of the mesh
+    m_lightsshader.Update(m_cubemesh.transform, m_camera, false, m_lightColor, cubePosition);
+    
+    m_cubemesh.Draw(0);
+    
+    // unbind the shader program
+    m_lightsshader.UnBind();
+    
+}
+
+void Game::RenderCubes(){
+    
     vector<glm::vec3> cubesPosition = {
         glm::vec3(-1.0f, -4.0f, -1.0f),
         glm::vec3(-8.0f, 7.0f, 5.0f),
@@ -414,7 +431,7 @@ void Game::Render(){
     
     //RenderPyramid();
     //RenderTriangle();
-    RenderCube();
+    //RenderCube();
     RenderLamp();
 }
 
@@ -556,8 +573,9 @@ void Game::Execute(const std::string &filepath)
         
         // check for errors
         GLenum error = glGetError();
-        if(error != GL_NO_ERROR)
+        if(error != GL_NO_ERROR) {
             std::cerr << "OpenGL Error: " << error << std::endl;
+        }
     }
     
     // close GL context and any other GLFW resources

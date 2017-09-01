@@ -51,8 +51,9 @@ void Shader::Create(const std::string &fileName){
     
     m_uniforms[USETEXTURE_U]  = glGetUniformLocation(m_program, "bUseTexture");
     
-    m_uniforms[VIEWPOSITION_U] = glGetUniformLocation(m_program, "viewPosition");
     
+    /*
+    m_uniforms[VIEWPOSITION_U] = glGetUniformLocation(m_program, "viewPosition");
     
     // DIRECTIONAL LIGHT
     m_uniforms[LIGHTCOLOR_U] = glGetUniformLocation(m_program, "directionallight.base.color");
@@ -111,6 +112,27 @@ void Shader::Create(const std::string &fileName){
     m_uniforms[SPOTLIGHTCUTOFF_U] = glGetUniformLocation(m_program, "spotlight.cutOff");
     
     m_uniforms[SPOTLIGHTOUTERCUTOFF_U] = glGetUniformLocation(m_program, "spotlight.outerCutOff");
+     */
+    
+    /*
+    m_uniforms[LIGHTCOLOR_U] = glGetUniformLocation(m_program, "spotlight.pointLight.base.color");
+    
+    m_uniforms[LIGHTINTENSITY_U] = glGetUniformLocation(m_program, "spotlight.pointLight.base.intensity");
+    
+    m_uniforms[SPOTLIGHTCONSTANT_U] = glGetUniformLocation(m_program, "spotlight.pointLight.attenuation.constant");
+    
+    m_uniforms[SPOTLIGHTLINEAR_U] = glGetUniformLocation(m_program, "spotlight.pointLight.attenuation.linear");
+    
+    m_uniforms[SPOTLIGHTQUADRATIC_U] = glGetUniformLocation(m_program, "spotlight.pointLight.attenuation.exponent");
+    
+    m_uniforms[SPOTLIGHTPOSITION_U] = glGetUniformLocation(m_program, "spotlight.pointLight.position");
+    
+    m_uniforms[SPOTLIGHTRANGE_U] = glGetUniformLocation(m_program, "spotlight.pointLight.range");
+    
+    m_uniforms[SPOTLIGHTDIRECTION_U] = glGetUniformLocation(m_program, "spotlight.direction");
+    
+    m_uniforms[SPOTLIGHTCUTOFF_U] = glGetUniformLocation(m_program, "spotlight.cutOff");
+    
     
     
     //Material
@@ -129,6 +151,8 @@ void Shader::Create(const std::string &fileName){
     m_uniforms[MATERIALDIFFUSE_U] = glGetUniformLocation(m_program, "material.diffuse");
     
     m_uniforms[MATERIALSPECULAR_U] = glGetUniformLocation(m_program, "material.specular");
+    
+     */
     
 }
 
@@ -219,6 +243,8 @@ void Shader::Update(
     //one is true and zero is false
     glUniform1i(m_uniforms[USETEXTURE_U], bUseTexture);
     
+    
+    /*
     // light 
     glUniform3fv(m_uniforms[VIEWPOSITION_U], 1, glm::value_ptr(camera->GetPosition()));
     
@@ -281,6 +307,8 @@ void Shader::Update(
     
     glUniform1f(m_uniforms[SPOTLIGHTOUTERCUTOFF_U], glm::cos(glm::radians(17.5f)));
     
+    glUniform1f(m_uniforms[SPOTLIGHTRANGE_U], 40.0f);
+    
     
     // Material
     glUniform1i( m_uniforms[SAMPLER_U],  0 );
@@ -298,7 +326,7 @@ void Shader::Update(
     glUniform3fv(m_uniforms[MATERIALDIFFUSE_U], 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.31f)));
     
     glUniform3fv(m_uniforms[MATERIALSPECULAR_U], 1, glm::value_ptr(glm::vec3(0.5f, 0.5f, 0.5f)));
-    
+    */
 }
 
 std::string Shader::LoadShader(const std::string& fileName)

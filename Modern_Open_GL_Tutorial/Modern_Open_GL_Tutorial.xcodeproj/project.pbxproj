@@ -66,6 +66,8 @@
 		C700FB0F1F51752E00A9E4F3 /* Mesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mesh.cpp; sourceTree = "<group>"; };
 		C700FB101F51754D00A9E4F3 /* GameObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameObject.cpp; sourceTree = "<group>"; };
 		C700FB111F51754D00A9E4F3 /* GameObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameObject.h; sourceTree = "<group>"; };
+		C70DE11E1F56DF2000E5C964 /* lightsShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lightsShader.frag; sourceTree = "<group>"; };
+		C70DE11F1F56DF2000E5C964 /* lightsShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lightsShader.vert; sourceTree = "<group>"; };
 		C74DB4F91F5189B9002938A8 /* screenShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = screenShader.frag; sourceTree = "<group>"; };
 		C74DB4FA1F5189B9002938A8 /* screenShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = screenShader.vert; sourceTree = "<group>"; };
 		C74DB4FB1F519D18002938A8 /* super-mario.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "super-mario.jpg"; sourceTree = "<group>"; };
@@ -161,6 +163,8 @@
 		C700FB011F51650A00A9E4F3 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				C70DE11E1F56DF2000E5C964 /* lightsShader.frag */,
+				C70DE11F1F56DF2000E5C964 /* lightsShader.vert */,
 				C7CCAB251F523BEC0048D12B /* lampShader.frag */,
 				C7CCAB261F523BEC0048D12B /* lampShader.vert */,
 				C7CCAB231F5238CE0048D12B /* lightingShader.frag */,
