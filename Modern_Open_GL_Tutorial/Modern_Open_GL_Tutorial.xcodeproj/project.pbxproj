@@ -23,6 +23,7 @@
 		C700FB0D1F51734B00A9E4F3 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C700FAFC1F51631800A9E4F3 /* Texture.cpp */; };
 		C700FB121F51755C00A9E4F3 /* GameObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C700FB101F51754D00A9E4F3 /* GameObject.cpp */; };
 		C700FB131F51755F00A9E4F3 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C700FB0F1F51752E00A9E4F3 /* Mesh.cpp */; };
+		C7ECC3541F5ACD5D004E1D17 /* Lighting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7ECC3521F5ACD5D004E1D17 /* Lighting.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -77,6 +78,8 @@
 		C7CCAB261F523BEC0048D12B /* lampShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lampShader.vert; sourceTree = "<group>"; };
 		C7ECC3501F5AC8AF004E1D17 /* lightShader.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lightShader.vert; sourceTree = "<group>"; };
 		C7ECC3511F5AC8AF004E1D17 /* lightShader.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lightShader.frag; sourceTree = "<group>"; };
+		C7ECC3521F5ACD5D004E1D17 /* Lighting.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Lighting.cpp; sourceTree = "<group>"; };
+		C7ECC3531F5ACD5D004E1D17 /* Lighting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lighting.h; sourceTree = "<group>"; };
 		C7FABAB21F544C3300618AA5 /* tree.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = tree.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -120,6 +123,8 @@
 				C700FAF81F51626100A9E4F3 /* Resources */,
 				C700FB101F51754D00A9E4F3 /* GameObject.cpp */,
 				C700FB111F51754D00A9E4F3 /* GameObject.h */,
+				C7ECC3521F5ACD5D004E1D17 /* Lighting.cpp */,
+				C7ECC3531F5ACD5D004E1D17 /* Lighting.h */,
 				C700FB0F1F51752E00A9E4F3 /* Mesh.cpp */,
 				C700FB0E1F51752E00A9E4F3 /* Mesh.h */,
 				C700FAF91F51631800A9E4F3 /* Common.h */,
@@ -253,6 +258,7 @@
 			files = (
 				C700FB131F51755F00A9E4F3 /* Mesh.cpp in Sources */,
 				C700FAE31F5160DA00A9E4F3 /* main.cpp in Sources */,
+				C7ECC3541F5ACD5D004E1D17 /* Lighting.cpp in Sources */,
 				C700FB0D1F51734B00A9E4F3 /* Texture.cpp in Sources */,
 				C700FB0C1F51734600A9E4F3 /* Shader.cpp in Sources */,
 				C700FB061F51667000A9E4F3 /* Game.cpp in Sources */,

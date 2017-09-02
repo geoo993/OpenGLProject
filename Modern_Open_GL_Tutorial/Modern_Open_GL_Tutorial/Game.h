@@ -36,7 +36,10 @@ private:
     Shader m_basicshader;
     Shader m_screenshader;
     Shader m_lightingshader;
+    Shader m_lightshader;
     Shader m_lampshader;
+    
+    
     Mesh m_trianglemesh;
     Mesh m_pyramidmesh;
     Mesh m_cubemesh;
@@ -57,6 +60,7 @@ public:
     void RenderPyramid();
     void RenderTriangle();
     void RenderCube();
+    void RenderCubes();
     void RenderLamp();
     
     //call back

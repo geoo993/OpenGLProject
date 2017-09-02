@@ -36,7 +36,6 @@
 
 
 #include <iostream>
-
 #include <algorithm>
 #include <assert.h>
 #include <string>

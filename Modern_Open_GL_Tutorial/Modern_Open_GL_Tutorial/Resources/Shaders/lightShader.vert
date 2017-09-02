@@ -8,19 +8,21 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-out vec3 worldPosition;
-out vec2 texCoord;
-out vec3 localNormal;
-
+out vec3 vWorldPosition;
+out vec2 vTexCoord;
+out vec3 vLocalNormal;
 
 void main() {
     
     gl_Position = projection * view * model * vec4(inPosition, 1.0f);
     
-    worldPosition = vec3(model * vec4(inPosition, 1.0f));
+    vWorldPosition = vec3(model * vec4(inPosition, 1.0f));
     
-    texCoord = inTexCoord;
+    vTexCoord = inTexCoord;
     
-    localNormal = mat3(transpose(inverse(model))) * inNormal;
+    //vLocalNormal = vec3(model * vec4(inNormal, 1.0f));
+    //vLocalNormal = (model * vec4(normal, 0.0)).xyz;
+    
+    vLocalNormal = mat3(transpose(inverse(model))) * inNormal;
     
 }

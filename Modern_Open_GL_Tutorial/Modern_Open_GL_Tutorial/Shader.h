@@ -10,6 +10,8 @@
 
 #include "Common.h"
 #include "Transform.h"
+#include "Lighting.h"
+#include "Camera.h"
 
 class Shader {
     
@@ -31,10 +33,11 @@ public:
     std::string LoadShader(const std::string& fileName);
     void CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const std::string& errorMessage);
     
+    
 private:
     Shader(const Shader &other){}
     void operator=(const Shader &other){}
-    
+  
     //numbers to refer to our different uniform variables
     enum {
         MVP_U,
@@ -44,7 +47,9 @@ private:
         SAMPLER_U,
         USETEXTURE_U,
         
-        DIRECTIONALLIGHTWORLDDIRECTION_U,
+        DIRECTIONALLIGHTCOLOR_U,
+        DIRECTIONALLIGHTINTENSITY_U,
+        DIRECTIONALLIGHTDIRECTION_U,
         DIRECTIONALLIGHTAMBIENT_U,
         DIRECTIONALLIGHTDIFFUSE_U,
         DIRECTIONALLIGHTSPECULAR_U,
@@ -52,13 +57,16 @@ private:
         LIGHTCOLOR_U,
         LIGHTINTENSITY_U,
         
+        POINTLIGHTCOLOR_U,
+        POINTLIGHTINTENSITY_U,
         POINTLIGHTPOSITION_U,
         POINTLIGHTAMBIENT_U,
         POINTLIGHTDIFFUSE_U,
         POINTLIGHTSPECULAR_U,
         POINTLIGHTCONSTANT_U,
         POINTLIGHTLINEAR_U,
-        POINTLIGHTQUADRATIC_U,
+        POINTLIGHTEXPONENT_U,
+        POINTLIGHTRANGE_U,
         
         SPOTLIGHTPOSITION_U,
         SPOTLIGHTDIRECTION_U,
@@ -77,6 +85,7 @@ private:
         MATERIALDIFFUSESAMPLER_U,
         MATERIALSPECULARSAMPLER_U,
         MATERIALSHININESS_U,
+        MATERIALINTENSITY_U,
         MATERIALAMBIENT_U,
         MATERIALDIFFUSE_U,
         MATERIALSPECULAR_U,
@@ -91,6 +100,17 @@ private:
     GLuint m_shaders[NUM_SHADERS];
     GLuint m_uniforms[NUM_UNIFORMS];
     
+    std::string m_dirLightName, m_pointLightName, m_spotLightName;
+    
+    Camera *m_camera;
+    glm::vec3 m_mainlightColor;
+    glm::vec3 m_mainlightPosition;
+    
+    void CreateDirectionalLightUniform(const std::string & uniformName);
+    void CreatePointLightUniform(const std::string & uniformName);
+    
+    void SetDirectionalLightUniform(const std::string& uniformName, const DirectionalLight & directionalLight);
+    void SetPointLightUniform(const std::string& uniformName, const PointLight& pointLight);
 };
 
 #endif /* Shader_h */
