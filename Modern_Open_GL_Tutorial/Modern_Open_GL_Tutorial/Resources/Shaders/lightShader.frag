@@ -1,4 +1,6 @@
 #version 410 core
+// https://github.com/BennyQBD/3DGameEngineCpp_60/tree/master/3DEngineCpp/res/shaders
+// https://github.com/BennyQBD/3DGameEngineCpp_60/blob/master/3DEngineCpp/res/shaders/lighting.glh
 
 struct Material
 {
@@ -130,23 +132,17 @@ vec4 CalcDirectionalLight(DirectionalLight directionalLight, vec3 normal, vec3 w
     return CalcLight(directionalLight.base, -directionalLight.direction, normal, worldPosition);
 }
 
-
-
-//vec4 CalcLightingEffect(vec3 normal, vec3 worldPosition)
-//{
-//    return CalcDirectionalLight(R_directionallight, normal, worldPosition);
-//}
-
-
-vec4 CalcLightingEffect(vec3 normal, vec3 worldPosition)
+vec4 CalcLightingEffect(int type, vec3 normal, vec3 worldPosition)
 {
-    return CalcPointLight(R_pointlight, normal, worldPosition);
-}
+    if (type == 0)
+        return CalcDirectionalLight(R_directionallight, normal, worldPosition);
+    
+    if (type == 1)
+        return CalcPointLight(R_pointlight, normal, worldPosition);
 
-//vec4 CalcLightingEffect(vec3 normal, vec3 worldPosition)
-//{
-//    return CalcSpotLight(R_spotlight, normal, worldPosition);
-//}
+    if (type == 2)
+        return CalcSpotLight(R_spotlight, normal, worldPosition);
+}
 
 in vec3 vWorldPosition;
 in vec2 vTexCoord;
@@ -157,8 +153,24 @@ out vec4 fOutputColor;        // The output colour
 
 void main() {
     
-    vec4 texColor = texture( material.diffuseSampler, vTexCoord );
-    fOutputColor = texColor * CalcLightingEffect(normalize(vLocalNormal), vWorldPosition);
+    //Combining Lights
     
-    //fOutputColor = vec4( 1.0f);
+    // Properties
+    vec4 texColor = texture( material.diffuseSampler, vTexCoord );
+    vec3 normal = normalize(vLocalNormal);
+    vec4 result = vec4(0.0f);
+    
+    // Directional lighting
+    vec4 directionalL = CalcDirectionalLight(R_directionallight, normal, vWorldPosition);
+    result += directionalL;
+    
+    // Point light
+    vec4 pointL = CalcPointLight(R_pointlight, normal, vWorldPosition);
+    result += pointL;
+    
+    // Spot light
+    vec4 spotL = CalcSpotLight(R_spotlight, normal, vWorldPosition);
+    result += spotL;
+    
+    fOutputColor = texColor * result;
 }
