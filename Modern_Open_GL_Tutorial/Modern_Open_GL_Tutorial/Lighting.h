@@ -32,7 +32,7 @@ private:
 
 struct DirectionalLight : public BaseLight
 {
-    DirectionalLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0);
+    DirectionalLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0.0f);
 };
 
 struct Attenuation
@@ -41,7 +41,7 @@ struct Attenuation
     float linear;
     float exponent;
     
-    Attenuation(float constant = 0, float linear = 0, float exponent = 1) :
+    Attenuation(float constant = 0.0f, float linear = 0.0f, float exponent = 1.0f) :
     constant(constant),
     linear(linear),
     exponent(exponent) {}
@@ -52,14 +52,15 @@ struct PointLight : public BaseLight
     Attenuation atten;
     float range;
     
-    PointLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0, const Attenuation& atten = Attenuation());
+    PointLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0.0f, const Attenuation& atten = Attenuation());
 };
 
 struct SpotLight : public PointLight
 {
-    float cutoff;
+    float cutoff;         // between 0 - 1
+    float outerCutoff;    // between 0 - 1
     
-    SpotLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0, const Attenuation& atten = Attenuation(), float cutoff = 0);
+    SpotLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0.0f, const Attenuation& atten = Attenuation(), float cutoff = 0.0f, float outerCutoff = 0.0f);
 };
 
 #endif /* Lighting_h */

@@ -46,9 +46,32 @@ private:
     Mesh m_lampmesh;
     
     // Light
-    glm::vec3 m_lightPosition;
     glm::vec3 m_lightColor;
     glm::vec3 m_viewPosition;
+    
+    std::string m_dirLightsName, m_pointLightsName, m_spotLightsName;
+    
+    vector<glm::vec3> m_cubesPosition = {
+        glm::vec3(-1.0f, -4.0f, -1.0f),
+        glm::vec3(-8.0f, 7.0f, 5.0f),
+        glm::vec3(-5.0f, 3.0f, -2.0f),
+        glm::vec3(2.0f, 5.0f, 8.0f),
+        glm::vec3(-2.0f, 8.0f, -9.0f),
+        glm::vec3(4.0f, -1.0f, -2.0f),
+        glm::vec3(9.0f, -5.0f, 3.0f),
+        glm::vec3(-8.0f, 2.0f, 8.0f)
+    };
+    
+    GLuint m_pointLightPositionsIndex = 0;
+    vector<glm::vec3> m_pointLightPositions = {
+        glm::vec3(  1.0f,  3.0f,  -2.0f      ),
+        glm::vec3(  -5.7f,  0.2f,  2.0f      )
+//        glm::vec3(  2.3f, -3.3f, -4.0f      ),
+//        glm::vec3(  -4.0f,  2.0f, -12.0f    ),
+//        glm::vec3(  0.0f,  0.0f, -3.0f      )
+    };
+    
+
     
 public:
     Game();
@@ -58,7 +81,6 @@ public:
     
     void Execute(const std::string &resourcepath);
     void RenderPyramid();
-    void RenderTriangle();
     void RenderCube();
     void RenderCubes();
     void RenderLamp();

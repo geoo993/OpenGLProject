@@ -36,14 +36,15 @@ atten(atten)
     float b = atten.linear;
     float c = atten.constant - COLOR_DEPTH * intensity * colorMax;
     
-    this->range = (-b + sqrtf(b*b - 4.0f*a*c))/(2.0f*a);
+    this->range = (-b + sqrtf( b * b - 4.0f * a * c)) / ( 2.0f * a);
     
     //SetShader(new Shader("forward-point"));
 }
 
-SpotLight::SpotLight(const glm::vec3 & color, float intensity, const Attenuation& atten, float cutoff) :
+SpotLight::SpotLight(const glm::vec3 & color, float intensity, const Attenuation& atten, float cutoff, float outerCutoff) :
 PointLight(color, intensity, atten),
-cutoff(cutoff)
+cutoff(cutoff),
+outerCutoff(outerCutoff)
 {
     //SetShader(new Shader("forward-spot"));
 }

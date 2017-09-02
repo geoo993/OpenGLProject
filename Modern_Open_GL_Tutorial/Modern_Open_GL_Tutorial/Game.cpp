@@ -295,7 +295,6 @@ void Game::Initialise(){
     m_camera->Create(glm::vec3(0.0f, 0.0f,10.0f), glm::vec3(0.0f, 1.0f,0.0f), PITCH, YAW, ROLL, 45.0f, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
     
     // setup light
-    m_lightPosition = glm::vec3(1.0f, 3.0f, 2.0f);
     m_lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
     m_viewPosition = glm::vec3(10.0f, 10.0f, 22.0f);
     
@@ -307,27 +306,10 @@ void Game::LoadFromResources(const std::string &resourcepath){
     m_basicshader.Create(resourcepath + "/Resources/Shaders/basicShader");
     m_screenshader.Create(resourcepath + "/Resources/Shaders/screenShader");
     m_lightingshader.Create(resourcepath + "/Resources/Shaders/lightingShader");
-    m_lightshader.Create(resourcepath + "/Resources/Shaders/lightShader");
     m_lampshader.Create(resourcepath + "/Resources/Shaders/lampShader");
-    //m_texture.Create(resourcepath + "/Resources/Textures/bricks.jpg", true);
-    //m_texture.Create(resourcepath + "/Resources/Textures/super-mario.jpg", true);
-    
+    m_lightshader.Create(resourcepath + "/Resources/Shaders/lightShader", 1, m_pointLightPositions.size(), 1);
 }
 
-void Game::RenderTriangle(){
-    
-    // bind the shader program
-    m_screenshader.Bind();
-    
-    //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_screenshader.Update(m_trianglemesh.transform, m_camera, false, glm::vec3(1.0f), glm::vec3(1.0f));
-    
-    m_trianglemesh.Draw(0);
-    
-    // unbind the shader program
-    m_screenshader.UnBind();
-    
-}
 
 void Game::RenderPyramid(){
     
@@ -335,10 +317,11 @@ void Game::RenderPyramid(){
     m_basicshader.Bind();
     
     m_pyramidmesh.transform.SetPositions(glm::vec3(10.0f, 8.0f, 10.0f) );
-    m_pyramidmesh.transform.SetScale(glm::vec3(3));
+    m_pyramidmesh.transform.SetScale(glm::vec3(3.0f));
     
     //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_basicshader.Update(m_pyramidmesh.transform, m_camera, true, glm::vec3(1.0f), glm::vec3(1.0f));
+    m_basicshader.SetTransfromUniform(m_pyramidmesh.transform, m_camera);
+    m_basicshader.SetMaterialUniform( true);
     
     m_pyramidmesh.Draw(0);
     
@@ -353,61 +336,65 @@ void Game::RenderLamp(){
     //m_lightColor.g = sin( glfwGetTime() * 0.7f );
     //m_lightColor.b = sin( glfwGetTime() * 1.3f );
     
-    vector<glm::vec3> pointLightPositions = {
-        glm::vec3(  0.7f,  0.2f,  2.0f      ),
-        glm::vec3(  2.3f, -3.3f, -4.0f      ),
-        glm::vec3(  -4.0f,  2.0f, -12.0f    ),
-        glm::vec3(  0.0f,  0.0f, -3.0f      )
-    };
-    
-    // bind the shader program
-    m_lampshader.Bind();
-    
-    m_lampmesh.transform.SetPositions(m_lightPosition);
-    m_lampmesh.transform.SetScale(glm::vec3(0.4f));
-    
-    //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_lampshader.Update(m_lampmesh.transform, m_camera, false, m_lightColor, m_lightPosition );
-   
-    m_lampmesh.Draw(0);
-    
-    // unbind the shader program
-    m_lampshader.UnBind();
+    for ( GLuint i = 0; i < m_pointLightPositions.size(); ++i){
+        
+        // bind the shader program
+        m_lampshader.Bind();
+        
+        m_lampmesh.transform.SetPositions(m_pointLightPositions[i]);//m_lightPosition );
+        m_lampmesh.transform.SetScale(glm::vec3(0.4f));
+        
+        //update shader, including the tranform of our mesh, and the camera view of the mesh
+        m_lampshader.SetTransfromUniform(m_lampmesh.transform, m_camera);
+        m_lampshader.SetMaterialUniform( false);
+        
+        m_lampmesh.Draw(0);
+        
+        // unbind the shader program
+        m_lampshader.UnBind();
+        
+    }
     
 }
 
 void Game::RenderCubes(){
     
-    vector<glm::vec3> cubesPosition = {
-        glm::vec3(-1.0f, -4.0f, -1.0f),
-        glm::vec3(-8.0f, 7.0f, 5.0f),
-        glm::vec3(-5.0f, 3.0f, -2.0f),
-        glm::vec3(2.0f, 5.0f, 8.0f),
-        glm::vec3(-2.0f, 8.0f, -9.0f),
-        glm::vec3(4.0f, -1.0f, -2.0f),
-        glm::vec3(9.0f, -5.0f, 3.0f),
-        glm::vec3(-8.0f, 2.0f, 8.0f)
-    };
+    // bind the shader program
+    m_lightshader.Bind();
     
-    
-    for ( GLuint i = 0; i < cubesPosition.size(); ++i){
-        // bind the shader program
-        m_lightingshader.Bind();
+    for ( GLuint i = 0; i < m_cubesPosition.size(); ++i){
         
         GLfloat angle = 20.0f * (GLfloat)i;
         
-        m_cubemesh.transform.SetPositions(cubesPosition[i] );
+        m_cubemesh.transform.SetPositions(m_cubesPosition[i] );
         m_cubemesh.transform.SetRotation(glm::vec3(1.0f, angle, 1.0f));
         m_cubemesh.transform.SetScale(glm::vec3(2.0f));
         
         //update shader, including the tranform of our mesh, and the camera view of the mesh
-        m_lightingshader.Update(m_cubemesh.transform, m_camera, false, m_lightColor, m_lightPosition);
+        m_lightshader.SetTransfromUniform(m_cubemesh.transform, m_camera);
+        m_lightshader.SetMaterialUniform( false);
         
         m_cubemesh.Draw(0);
         
-        // unbind the shader program
-        m_lightingshader.UnBind();
     }
+    
+    for ( GLuint i = 0; i < 1; ++i){
+        // Directional light
+        DirectionalLight dirLight(m_lightColor, 0.2f);
+        m_lightshader.SetDirectionalLightUniform(dirLight);
+    }
+    
+    //for ( GLuint i = 0; i < m_pointLightPositions.size(); ++i){
+        //m_lightColor
+        PointLight pointLight(m_lightColor, 3.7f, Attenuation(1.0f, 0.09f, 0.32f));
+        m_lightshader.SetPointLightUniform(pointLight, m_pointLightPositions[0]);
+    //}
+    
+    SpotLight spotLight(m_lightColor, 24.5f, Attenuation(1.0f, 0.09f, 0.32f), 0.6f, 0.85f);
+    m_lightshader.SetSpotLightUniform( spotLight);
+    
+    // unbind the shader program
+    m_lightshader.UnBind();
     
 }
 
@@ -422,7 +409,8 @@ void Game::RenderCube(){
     //m_cubemesh.transform.SetScale(glm::vec3(2.0f));
     
     //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_lightshader.Update(m_cubemesh.transform, m_camera, false, m_lightColor, m_lightPosition);
+    m_lightshader.SetTransfromUniform(m_cubemesh.transform, m_camera);
+    m_lightshader.SetMaterialUniform( false);
     
     m_cubemesh.Draw(0);
     
@@ -435,7 +423,7 @@ void Game::Render(){
     
     //RenderPyramid();
     //RenderTriangle();
-    RenderCube();
+    RenderCubes();
     RenderLamp();
 }
 
@@ -482,35 +470,69 @@ void Game::DoKeysMovement(bool *selectedkeys){
         m_camera->ProcessKeyboard( RIGHT, m_deltaTime );
     }
     
-    
+    if( selectedkeys[GLFW_KEY_1])
+    {
+        m_pointLightPositionsIndex += 1;
+        if (m_pointLightPositionsIndex > m_pointLightPositions.size() - 1) {
+            m_pointLightPositionsIndex = 0;
+        }
+    }
+   
     if( selectedkeys[GLFW_KEY_W])
     {
-        m_lightPosition = glm::vec3(m_lightPosition.x, m_lightPosition.y + 0.1f, m_lightPosition.z);
+        glm::vec3 pos(
+                 m_pointLightPositions[m_pointLightPositionsIndex].x, 
+                 m_pointLightPositions[m_pointLightPositionsIndex].y + 0.1f, 
+                 m_pointLightPositions[m_pointLightPositionsIndex].z);
+        m_pointLightPositions[m_pointLightPositionsIndex] = pos;
     }
     
     if( selectedkeys[GLFW_KEY_S] )
     {
-        m_lightPosition = glm::vec3(m_lightPosition.x, m_lightPosition.y - 0.1f, m_lightPosition.z);
+        glm::vec3 pos(
+                      m_pointLightPositions[m_pointLightPositionsIndex].x,
+                      m_pointLightPositions[m_pointLightPositionsIndex].y - 0.1f,
+                      m_pointLightPositions[m_pointLightPositionsIndex].z);
+        m_pointLightPositions[m_pointLightPositionsIndex] = pos;
+        
     }
     
     if( selectedkeys[GLFW_KEY_A] )
     {
-        m_lightPosition = glm::vec3(m_lightPosition.x - 0.1f, m_lightPosition.y, m_lightPosition.z);
+        glm::vec3 pos(
+                      m_pointLightPositions[m_pointLightPositionsIndex].x - 0.1f,
+                      m_pointLightPositions[m_pointLightPositionsIndex].y,
+                      m_pointLightPositions[m_pointLightPositionsIndex].z);
+        m_pointLightPositions[m_pointLightPositionsIndex] = pos;
+        
     }
     
     if( selectedkeys[GLFW_KEY_D] )
     {
-        m_lightPosition = glm::vec3(m_lightPosition.x + 0.1f, m_lightPosition.y, m_lightPosition.z);
+        glm::vec3 pos(
+                      m_pointLightPositions[m_pointLightPositionsIndex].x + 0.1f,
+                      m_pointLightPositions[m_pointLightPositionsIndex].y,
+                      m_pointLightPositions[m_pointLightPositionsIndex].z);
+        m_pointLightPositions[m_pointLightPositionsIndex] = pos;
+        
     }
     
     if( selectedkeys[GLFW_KEY_Z] )
     {
-        m_lightPosition = glm::vec3(m_lightPosition.x, m_lightPosition.y, m_lightPosition.z + 0.1f);
+        glm::vec3 pos(
+                      m_pointLightPositions[m_pointLightPositionsIndex].x,
+                      m_pointLightPositions[m_pointLightPositionsIndex].y,
+                      m_pointLightPositions[m_pointLightPositionsIndex].z + 0.1f);
+        m_pointLightPositions[m_pointLightPositionsIndex] = pos;
     }
     
     if( selectedkeys[GLFW_KEY_X] )
     {
-        m_lightPosition = glm::vec3(m_lightPosition.x , m_lightPosition.y, m_lightPosition.z - 0.1f);
+        glm::vec3 pos(
+                      m_pointLightPositions[m_pointLightPositionsIndex].x,
+                      m_pointLightPositions[m_pointLightPositionsIndex].y,
+                      m_pointLightPositions[m_pointLightPositionsIndex].z - 0.1f);
+        m_pointLightPositions[m_pointLightPositionsIndex] = pos;
     }
     
 }

@@ -7,7 +7,10 @@
 
 #include "Shader.h"
 
-void Shader::Create(const std::string &fileName){
+void Shader::Create(const std::string &fileName, 
+                    const GLuint & numberOfDirectionalLights,
+                    const GLuint & numberOfPointLights,
+                    const GLuint & numberOfSpottLights){
     //creating a new rogram, create some space in the gpu for our shader program, 
     //open gl will give us some number to refer to it by
     //to think of it, there are actually shader files that exist on the hard drive
@@ -55,14 +58,15 @@ void Shader::Create(const std::string &fileName){
     
     
     // DIRECTIONAL LIGHT
-    m_dirLightName = "R_directionallight";
-    CreateDirectionalLightUniform(m_dirLightName);
 
-    m_pointLightName = "R_pointlight";
-    CreatePointLightUniform(m_pointLightName);
+    CreateDirectionalLights("R_directionallight[0]", numberOfDirectionalLights);
+
+    // POINT LIGHT
+    CreatePointLights("R_pointlight", numberOfPointLights);
     
-    m_spotLightName = "R_spotlight";
-    CreateSpotLightUniform(m_spotLightName);
+    // SPOT LIGHT
+    CreateSpotLights("R_spotlight", numberOfSpottLights);
+    
     
     //Material
     m_uniforms[SAMPLER_U] = glGetUniformLocation(m_program, "material.sampler");
@@ -83,8 +87,31 @@ void Shader::Create(const std::string &fileName){
     
     m_uniforms[MATERIALSPECULAR_U] = glGetUniformLocation(m_program, "material.specular");
     
+}
+
+void Shader::CreateDirectionalLights(const std::string &directionalLightName, const GLuint & numberOfDirectionalLights ){
     
+    //for (unsigned int i = 0; i < numberOfDirectionalLights; ++i){
+        // DIRECTIONAL LIGHT
+        CreateDirectionalLightUniform(directionalLightName);
+    //}
+}
+
+
+void Shader::CreatePointLights(const std::string &pointLightName, const GLuint & numberOfPointLights ){
     
+    //for (unsigned int i = 0; i < numberOfPointLights; i++){
+        // POINT LIGHT
+    CreatePointLightUniform(pointLightName);
+    //}
+    
+}
+
+
+void Shader::CreateSpotLights(const std::string &spotLightName, const GLuint & numberOfSpottLights ){
+    
+    // SPOT LIGHT
+    CreateSpotLightUniform(spotLightName);
 }
 
 Shader::~Shader(){
@@ -133,18 +160,12 @@ void Shader::UnBind(){
     glUseProgram(0);
 }
 
-void Shader::Update(
-                    const Transform & transform, 
-                    Camera * camera, 
-                    const bool & bUseTexture, 
-                    const glm::vec3 &lighColor,
-                    const glm::vec3 &lighPosition
-                    ){
+void Shader::SetTransfromUniform(const Transform & transform,
+                         Camera * camera){
+    
     //here we model the mvp, meaning the model, view, and projection matrices of the shader
     
     m_camera = camera;
-    m_mainlightColor = lighColor;
-    m_mainlightPosition = lighPosition;
     
     //getting the model matrix
     glm::mat4 model =  transform.GetModel();
@@ -175,22 +196,16 @@ void Shader::Update(
     glUniformMatrix4fv(m_uniforms[VIEW_U], 1, GL_FALSE, &view[0][0]);
     
     glUniformMatrix4fv(m_uniforms[PROJECTION_U], 1, GL_FALSE, &projection[0][0]);
-    
+
+}
+
+void Shader::SetMaterialUniform(const bool & bUseTexture){
+
     //one is true and zero is false
     glUniform1i(m_uniforms[USETEXTURE_U], bUseTexture);
     
     // light 
-    glUniform3fv(m_uniforms[VIEWPOSITION_U], 1, glm::value_ptr(camera->GetPosition()));
-    
-    // Directional light
-    DirectionalLight dirLight(lighColor, 0.9f);
-    SetDirectionalLightUniform(m_dirLightName,dirLight);
-    
-    PointLight pointLight(lighColor, 10.7f, Attenuation(1.0f, 0.09f, 0.32f));
-    SetPointLightUniform(m_pointLightName, pointLight);
-    
-    SpotLight spotLight(lighColor, 14.5f, Attenuation(1.0f, 0.09f, 0.32f), 0.7f);
-    SetSpotLightUniform(m_spotLightName, spotLight);
+    glUniform3fv(m_uniforms[VIEWPOSITION_U], 1, glm::value_ptr(m_camera->GetPosition()));
     
     // Material
     glUniform1i( m_uniforms[SAMPLER_U],  0 );
@@ -309,10 +324,12 @@ void Shader::CreateSpotLightUniform(const std::string& uniformName)
     
     m_uniforms[SPOTLIGHTCUTOFF_U] = glGetUniformLocation(m_program, (uniformName + ".cutoff").c_str());
     
+    m_uniforms[SPOTLIGHTOUTERCUTOFF_U] = glGetUniformLocation(m_program, (uniformName + ".outerCutoff").c_str());
+    
 }
 
 
-void Shader::SetDirectionalLightUniform(const std::string & uniformName, const DirectionalLight& directionalLight)
+void Shader::SetDirectionalLightUniform(const DirectionalLight& directionalLight)
 {
     glUniform3fv(m_uniforms[DIRECTIONALLIGHTCOLOR_U], 1, glm::value_ptr(directionalLight.color));
     
@@ -322,14 +339,14 @@ void Shader::SetDirectionalLightUniform(const std::string & uniformName, const D
     //glUniform3fv(m_uniforms[DIRECTIONALLIGHTDIRECTION_U], 1, glm::value_ptr( m_mainlightPosition) ); 
 }
  
-void Shader::SetPointLightUniform(const std::string& uniformName, const PointLight& pointLight)
+void Shader::SetPointLightUniform(const PointLight& pointLight, const glm::vec3& position)
 {
 
     glUniform3fv(m_uniforms[POINTLIGHTCOLOR_U], 1, glm::value_ptr(pointLight.color));
     
     glUniform1f(m_uniforms[POINTLIGHTINTENSITY_U], pointLight.intensity);
     
-    glUniform3fv(m_uniforms[POINTLIGHTPOSITION_U], 1, glm::value_ptr( m_mainlightPosition) );
+    glUniform3fv(m_uniforms[POINTLIGHTPOSITION_U], 1, glm::value_ptr( position) );
     
     glUniform1f(m_uniforms[POINTLIGHTCONSTANT_U], pointLight.atten.constant);
     
@@ -342,7 +359,7 @@ void Shader::SetPointLightUniform(const std::string& uniformName, const PointLig
 }
 
 
-void Shader::SetSpotLightUniform(const std::string& uniformName, const SpotLight& spotLight)
+void Shader::SetSpotLightUniform(const SpotLight& spotLight)
 {
 
     glUniform3fv(m_uniforms[SPOTTLIGHTCOLOR_U], 1, glm::value_ptr(spotLight.color));
@@ -362,5 +379,7 @@ void Shader::SetSpotLightUniform(const std::string& uniformName, const SpotLight
     glUniform3fv(m_uniforms[SPOTLIGHTDIRECTION_U], 1, glm::value_ptr(m_camera->GetForward()) );
     
     glUniform1f(m_uniforms[SPOTLIGHTCUTOFF_U], spotLight.cutoff);
+    
+    glUniform1f(m_uniforms[SPOTLIGHTOUTERCUTOFF_U], spotLight.outerCutoff);
     
 }

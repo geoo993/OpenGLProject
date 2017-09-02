@@ -19,20 +19,28 @@ public:
     Shader(){}
     ~Shader();
     
-    void Create(const std::string &fileName);
+    void Create(const std::string &fileName,
+                const GLuint & numberOfDirectionalLights = 0,
+                const GLuint & numberOfPointLights = 0,
+                const GLuint & numberOfSpottLights = 0);
     void Bind();
     void UnBind();
     
-    void Update(const Transform & transform, 
-                Camera * camera, 
-                const bool & bUseTexture, 
-                const glm::vec3 &lighColor = glm::vec3(0),
-                const glm::vec3 &lighPosition = glm::vec3(0) );
+    void SetTransfromUniform(const Transform & transform, 
+                             Camera * camera);
+    void SetMaterialUniform(const bool & bUseTexture );
         
     GLuint CreateShader (const std::string &text, GLenum shadertype);
     std::string LoadShader(const std::string& fileName);
     void CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const std::string& errorMessage);
     
+    void CreateDirectionalLights(const std::string &directionalLightName, const GLuint & numberOfDirectionalLights );
+    void CreatePointLights(const std::string &pointLightName, const GLuint & numberOfPointLights );
+    void CreateSpotLights(const std::string &spotLightName, const GLuint & numberOfSpottLights );
+        
+    void SetDirectionalLightUniform(const DirectionalLight & directionalLight);
+    void SetPointLightUniform(const PointLight& pointLight, const glm::vec3& position);
+    void SetSpotLightUniform(const SpotLight& spotLight);
     
 private:
     Shader(const Shader &other){}
@@ -65,6 +73,7 @@ private:
         SPOTLIGHTPOSITION_U,
         SPOTLIGHTDIRECTION_U,
         SPOTLIGHTCUTOFF_U,
+        SPOTLIGHTOUTERCUTOFF_U,
         SPOTLIGHTCONSTANT_U,
         SPOTLIGHTLINEAR_U,
         SPOTLIGHTEXPONENT_U,
@@ -89,8 +98,6 @@ private:
     GLuint m_shaders[NUM_SHADERS];
     GLuint m_uniforms[NUM_UNIFORMS];
     
-    std::string m_dirLightName, m_pointLightName, m_spotLightName;
-    
     Camera *m_camera;
     glm::vec3 m_mainlightColor;
     glm::vec3 m_mainlightPosition;
@@ -99,9 +106,6 @@ private:
     void CreatePointLightUniform(const std::string & uniformName);
     void CreateSpotLightUniform(const std::string& uniformName);
     
-    void SetDirectionalLightUniform(const std::string& uniformName, const DirectionalLight & directionalLight);
-    void SetPointLightUniform(const std::string& uniformName, const PointLight& pointLight);
-    void SetSpotLightUniform(const std::string& uniformName, const SpotLight& spotLight);
     
 };
 
