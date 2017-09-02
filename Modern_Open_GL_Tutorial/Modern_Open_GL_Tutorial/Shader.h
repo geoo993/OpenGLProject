@@ -46,40 +46,29 @@ private:
         PROJECTION_U,
         SAMPLER_U,
         USETEXTURE_U,
+        VIEWPOSITION_U,
         
         DIRECTIONALLIGHTCOLOR_U,
         DIRECTIONALLIGHTINTENSITY_U,
         DIRECTIONALLIGHTDIRECTION_U,
-        DIRECTIONALLIGHTAMBIENT_U,
-        DIRECTIONALLIGHTDIFFUSE_U,
-        DIRECTIONALLIGHTSPECULAR_U,
-        
-        LIGHTCOLOR_U,
-        LIGHTINTENSITY_U,
         
         POINTLIGHTCOLOR_U,
         POINTLIGHTINTENSITY_U,
         POINTLIGHTPOSITION_U,
-        POINTLIGHTAMBIENT_U,
-        POINTLIGHTDIFFUSE_U,
-        POINTLIGHTSPECULAR_U,
         POINTLIGHTCONSTANT_U,
         POINTLIGHTLINEAR_U,
         POINTLIGHTEXPONENT_U,
         POINTLIGHTRANGE_U,
         
+        SPOTTLIGHTCOLOR_U,
+        SPOTLIGHTINTENSITY_U,
         SPOTLIGHTPOSITION_U,
         SPOTLIGHTDIRECTION_U,
         SPOTLIGHTCUTOFF_U,
-        SPOTLIGHTOUTERCUTOFF_U,
-        SPOTLIGHTAMBIENT_U,
-        SPOTLIGHTDIFFUSE_U,
-        SPOTLIGHTSPECULAR_U,
         SPOTLIGHTCONSTANT_U,
         SPOTLIGHTLINEAR_U,
-        SPOTLIGHTQUADRATIC_U,
-        
-        VIEWPOSITION_U,
+        SPOTLIGHTEXPONENT_U,
+        SPOTLIGHTRANGE_U,
         
         MATERIALNORMALSAMPLER_U,
         MATERIALDIFFUSESAMPLER_U,
@@ -108,9 +97,12 @@ private:
     
     void CreateDirectionalLightUniform(const std::string & uniformName);
     void CreatePointLightUniform(const std::string & uniformName);
+    void CreateSpotLightUniform(const std::string& uniformName);
     
     void SetDirectionalLightUniform(const std::string& uniformName, const DirectionalLight & directionalLight);
     void SetPointLightUniform(const std::string& uniformName, const PointLight& pointLight);
+    void SetSpotLightUniform(const std::string& uniformName, const SpotLight& spotLight);
+    
 };
 
 #endif /* Shader_h */

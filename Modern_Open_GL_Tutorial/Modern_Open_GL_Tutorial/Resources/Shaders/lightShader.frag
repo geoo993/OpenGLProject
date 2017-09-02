@@ -10,9 +10,6 @@ struct Material
     float shininess;
     float intensity;
     
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
 };
 
 struct BaseLight
@@ -97,9 +94,14 @@ vec4 CalcPointLight(PointLight pointLight, vec3 normal, vec3 worldPosition)
     
     vec4 color = CalcLight(pointLight.base, lightDirection, normal, worldPosition);
     
-    float attenuation = pointLight.atten.constant +
-    pointLight.atten.linear * distanceToPoint +
-    pointLight.atten.exponent * distanceToPoint * distanceToPoint +
+    // Attenuation
+    float attenuation = 
+    pointLight.atten.constant +
+    pointLight.atten.linear * 
+    distanceToPoint +
+    pointLight.atten.exponent * 
+    distanceToPoint * 
+    distanceToPoint +
     0.0001f;
     
     return color / attenuation;
@@ -108,14 +110,16 @@ vec4 CalcPointLight(PointLight pointLight, vec3 normal, vec3 worldPosition)
 vec4 CalcSpotLight(SpotLight spotLight, vec3 normal, vec3 worldPosition)
 {
     vec3 lightDirection = normalize(worldPosition - spotLight.pointLight.position);
+    
+    // Intensity
     float spotFactor = dot(lightDirection, spotLight.direction);
     
-    vec4 color = vec4(0,0,0,0);
+    vec4 color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
     
     if(spotFactor > spotLight.cutoff)
     {
         color = CalcPointLight(spotLight.pointLight, normal, worldPosition) *
-        (1.0 - (1.0 - spotFactor)/(1.0 - spotLight.cutoff));
+        (1.0f - (1.0f - spotFactor) / (1.0f - spotLight.cutoff));
     }
     
     return color;
@@ -127,16 +131,22 @@ vec4 CalcDirectionalLight(DirectionalLight directionalLight, vec3 normal, vec3 w
 }
 
 
+
 //vec4 CalcLightingEffect(vec3 normal, vec3 worldPosition)
 //{
 //    return CalcDirectionalLight(R_directionallight, normal, worldPosition);
 //}
+
 
 vec4 CalcLightingEffect(vec3 normal, vec3 worldPosition)
 {
     return CalcPointLight(R_pointlight, normal, worldPosition);
 }
 
+//vec4 CalcLightingEffect(vec3 normal, vec3 worldPosition)
+//{
+//    return CalcSpotLight(R_spotlight, normal, worldPosition);
+//}
 
 in vec3 vWorldPosition;
 in vec2 vTexCoord;
