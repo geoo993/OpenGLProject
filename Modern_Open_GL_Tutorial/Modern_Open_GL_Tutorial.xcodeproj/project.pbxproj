@@ -75,6 +75,8 @@
 		C7CCAB241F5238CE0048D12B /* lightingShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lightingShader.vert; sourceTree = "<group>"; };
 		C7CCAB251F523BEC0048D12B /* lampShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lampShader.frag; sourceTree = "<group>"; };
 		C7CCAB261F523BEC0048D12B /* lampShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lampShader.vert; sourceTree = "<group>"; };
+		C7ECC3501F5AC8AF004E1D17 /* lightShader.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lightShader.vert; sourceTree = "<group>"; };
+		C7ECC3511F5AC8AF004E1D17 /* lightShader.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lightShader.frag; sourceTree = "<group>"; };
 		C7FABAB21F544C3300618AA5 /* tree.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = tree.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -161,6 +163,8 @@
 		C700FB011F51650A00A9E4F3 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				C7ECC3511F5AC8AF004E1D17 /* lightShader.frag */,
+				C7ECC3501F5AC8AF004E1D17 /* lightShader.vert */,
 				C7CCAB251F523BEC0048D12B /* lampShader.frag */,
 				C7CCAB261F523BEC0048D12B /* lampShader.vert */,
 				C7CCAB231F5238CE0048D12B /* lightingShader.frag */,
