@@ -2,7 +2,7 @@
 // https://github.com/BennyQBD/3DGameEngineCpp_60/tree/master/3DEngineCpp/res/shaders
 // https://github.com/BennyQBD/3DGameEngineCpp_60/blob/master/3DEngineCpp/res/shaders/lighting.glh
 
-#define NUMBER_OF_DIRECTIONAL_LIGHTS 1
+#define NUMBER_OF_DIRECTIONAL_LIGHTS 4
 #define NUMBER_OF_POINT_LIGHTS 5
 
 
@@ -22,6 +22,9 @@ struct BaseLight
 {
     vec3 color;
     float intensity;
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
 };
 
 struct Attenuation
@@ -61,32 +64,50 @@ uniform SpotLight R_spotlight;
 uniform vec3 viewPosition;
 uniform bool bUseTexture;
 
+in vec3 vWorldPosition;
+in vec2 vTexCoord;
+in vec3 vLocalNormal;
+
 vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPosition)
 {
-    float diffuseFactor = dot(normal, -direction);
+    float diffuseFactor = dot(normal, -direction); //diff
     
     vec4 diffuseColor = vec4(0.0f,0.0f,0.0f,0.0f);
     vec4 specularColor = vec4(0.0f,0.0f,0.0f,0.0f);
-    
+    vec4 ambientColor = vec4(0.0f,0.0f,0.0f,0.0f);
+   
     if(diffuseFactor > 0.0f)
     {
-        diffuseColor = vec4(base.color, 1.0f) * base.intensity * diffuseFactor;
+        // Diffuse
+        diffuseColor = base.ambient * vec4(base.color, 1.0f) * base.intensity * diffuseFactor;
         
+        // Ambient
+        ambientColor = base.diffuse * diffuseColor;
+        
+        // Specular
         vec3 directionToEye = normalize(viewPosition - worldPosition); // viewDirection
         //vec3 reflectDirection = normalize(reflect(direction, normal));
         vec3 halfDirection = normalize(directionToEye - direction);
         
-        float specularFactor = dot(halfDirection, normal);
+        float specularFactor = dot(halfDirection, normal); // spec
         //float specularFactor = dot(directionToEye, reflectDirection);
         specularFactor = pow(specularFactor, material.shininess);
         
         if(specularFactor > 0.0f)
         {
-            specularColor = vec4(base.color, 1.0f) * material.intensity * specularFactor;
+            specularColor = base.specular * vec4(base.color, 1.0f) * material.intensity * specularFactor ;
         }
     }
     
-    return diffuseColor + specularColor;
+    if (bUseTexture) {
+        vec4 ambient = ambientColor * texture( material.diffuseSampler, vTexCoord ) ;
+        vec4 diffuse = diffuseColor *  texture( material.diffuseSampler, vTexCoord ) ;
+        vec4 specular = specularColor * texture( material.specularSampler, vTexCoord );
+        
+        return ambient + diffuse + specular;
+    }else{
+        return ambientColor + diffuseColor + specularColor;
+    }
 }
 
 vec4 CalcPointLight(PointLight pointLight, vec3 normal, vec3 worldPosition)
@@ -153,9 +174,6 @@ vec4 CalcDirectionalLight(DirectionalLight directionalLight, vec3 normal, vec3 w
 //        return CalcSpotLight(R_spotlight, normal, worldPosition);
 //}
 
-in vec3 vWorldPosition;
-in vec2 vTexCoord;
-in vec3 vLocalNormal;
 
 out vec4 fOutputColor;        // The output colour
 
@@ -189,5 +207,5 @@ void main() {
     vec4 spotL = CalcSpotLight(R_spotlight, normal, vWorldPosition);
     result += spotL;
     
-    fOutputColor = texColor * result;
+    fOutputColor = result;
 }

@@ -216,6 +216,7 @@ void Shader::SetDeclaredUniform(const bool & bUseTexture, const glm::vec3 & ligh
     SetUniform("bUseTexture", bUseTexture);
     SetUniform("viewPosition", m_camera->GetPosition());
     SetUniform("lightColor", lightColor);
+    
 }
 
 
@@ -245,12 +246,15 @@ void Shader::SetMaterialUniform(){
     
 }
 
-void Shader::SetDirectionalLightUniform(const std::string &uniformName, const DirectionalLight& directionalLight)
+void Shader::SetDirectionalLightUniform(const std::string &uniformName, const DirectionalLight& directionalLight, const glm::vec3& direction)
 {
     SetUniform((uniformName + ".base.color").c_str(), directionalLight.color);
     SetUniform((uniformName + ".base.intensity").c_str(), directionalLight.intensity);
-    SetUniform((uniformName + ".direction").c_str(), glm::vec3(3.2f, 3.0f, -0.3f));
-    
+    SetUniform((uniformName + ".base.ambient").c_str(), glm::vec4(0.05f, 0.05f, 0.05f, 1.0f));
+    SetUniform((uniformName + ".base.diffuse").c_str(), glm::vec4(0.8f, 0.9f, 0.9f, 1.0f));
+    SetUniform((uniformName + ".base.specular").c_str(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    SetUniform((uniformName + ".direction").c_str(), direction);
+
 }
  
 void Shader::SetPointLightUniform(const std::string &uniformName, const PointLight& pointLight, const glm::vec3& position)
@@ -258,6 +262,9 @@ void Shader::SetPointLightUniform(const std::string &uniformName, const PointLig
     // POINT LIGHT
     SetUniform((uniformName + ".base.color").c_str(), pointLight.color);
     SetUniform((uniformName + ".base.intensity").c_str(), pointLight.intensity);
+    SetUniform((uniformName + ".base.ambient").c_str(), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+    SetUniform((uniformName + ".base.diffuse").c_str(), glm::vec4(0.9f, 0.9f, 0.9f, 1.0f));
+    SetUniform((uniformName + ".base.specular").c_str(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     SetUniform((uniformName + ".atten.constant").c_str(), pointLight.atten.constant);
     SetUniform((uniformName + ".atten.linear").c_str(), pointLight.atten.linear);
     SetUniform((uniformName + ".atten.exponent").c_str(), pointLight.atten.exponent);
@@ -269,9 +276,11 @@ void Shader::SetPointLightUniform(const std::string &uniformName, const PointLig
 void Shader::SetSpotLightUniform(const std::string &uniformName, const SpotLight& spotLight)
 {
     // SPOT LIGHT
-
     SetUniform((uniformName + ".pointLight.base.color").c_str(), spotLight.color);
     SetUniform((uniformName + ".pointLight.base.intensity").c_str(), spotLight.intensity);
+    SetUniform((uniformName + ".pointLight.base.ambient").c_str(), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+    SetUniform((uniformName + ".pointLight.base.diffuse").c_str(), glm::vec4(0.9f, 0.9f, 0.9f, 1.0f));
+    SetUniform((uniformName + ".pointLight.base.specular").c_str(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     SetUniform((uniformName + ".pointLight.atten.constant").c_str(), spotLight.atten.constant);
     SetUniform((uniformName + ".pointLight.atten.linear").c_str(), spotLight.atten.linear);
     SetUniform((uniformName + ".pointLight.atten.exponent").c_str(), spotLight.atten.exponent);

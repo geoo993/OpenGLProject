@@ -34,13 +34,9 @@ private:
     std::string m_resources_path;
     
     Shader m_basicshader;
-    Shader m_screenshader;
-    Shader m_lightingshader;
     Shader m_lightshader;
     Shader m_lampshader;
     
-    
-    Mesh m_trianglemesh;
     Mesh m_pyramidmesh;
     Mesh m_cubemesh;
     Mesh m_lampmesh;
@@ -58,6 +54,13 @@ private:
         glm::vec3(4.0f, -1.0f, -2.0f),
         glm::vec3(9.0f, -5.0f, 3.0f),
         glm::vec3(-8.0f, 2.0f, 8.0f)
+    };
+    
+    vector<glm::vec3> m_directionalLightsDirections = {
+        //glm::vec3(3.2f, 3.0f, -0.3f),
+        //glm::vec3(  15.7f,  5.2f,  -6.0f      ),
+        glm::vec3(  -9.3f, -14.3f, -2.0f      ),
+        glm::vec3(  -24.0f,  9.0f, -15.0f    ),
     };
     
     GLuint m_pointLightPositionsIndex = 0;

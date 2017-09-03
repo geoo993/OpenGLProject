@@ -32,8 +32,15 @@ public:
     std::string LoadShader(const std::string& fileName);
     void CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const std::string& errorMessage);
     
-    void SetDirectionalLightUniform(const std::string &uniformName, const DirectionalLight & directionalLight);
-    void SetPointLightUniform(const std::string &uniformName, const PointLight& pointLight, const glm::vec3& position);
+    void SetDirectionalLightUniform(
+                                    const std::string &uniformName, 
+                                    const DirectionalLight & directionalLight, 
+                                    const glm::vec3& direction);
+    void SetPointLightUniform(
+                              const std::string &uniformName, 
+                              const PointLight& pointLight, 
+                              const glm::vec3& position);
+    
     void SetSpotLightUniform(const std::string &uniformName, const SpotLight& spotLight);
     
     // Setting vectors

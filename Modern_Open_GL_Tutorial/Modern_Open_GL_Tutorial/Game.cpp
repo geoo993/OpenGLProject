@@ -196,26 +196,6 @@ void Game::Initialise(){
                          pyramidVertices.size()
                          );
     
-    Vertex triangleVertices[] = {
-        //vertices positions                          //texture             //colors
-        Vertex( glm::vec3(0.0f,0.8f,0.0f), glm::vec2(0.5f,1.0f), glm::vec3(0.0f,1.0f,0.0f)   ),//top
-        Vertex( glm::vec3(-0.5f,-0.2f,0.0f), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f) ), //left
-        Vertex( glm::vec3(0.5f,-0.2f,0.0f), glm::vec2(1.0f,0.0f), glm::vec3(0.0f,0.0f,1.0f) )//right
-    };
-    
-    Vertex squareVertices[] = {
-        //vertices positions                          //texture             //colors
-        Vertex( glm::vec3(-0.5f,0.6f,0.0f), glm::vec2(0.0f,1.0f), glm::vec3(0.0f,1.0f,0.0f)   ),//tleft
-         Vertex( glm::vec3(-0.5f,-0.6f,0.0f), glm::vec2(0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f) ), //bleft
-        Vertex( glm::vec3(0.5f,-0.6f,0.0f), glm::vec2(1.0f,0.0f), glm::vec3(1.0f,1.0f,0.0f) ),//bright
-        Vertex( glm::vec3(-0.5f,0.6f,0.0f), glm::vec2(0.0f,1.0f), glm::vec3(0.0f,1.0f,0.0f)   ),//tleft
-        Vertex( glm::vec3(0.5f,-0.6f,0.0f), glm::vec2(1.0f,0.0f), glm::vec3(1.0f,1.0f,0.0f) ),//bright
-        Vertex( glm::vec3(0.5f,0.6f,0.0f), glm::vec2(1.0f,1.0f), glm::vec3(0.0f,1.0f,0.0f)   ),//tright
-    };
-    
-    m_trianglemesh.Create( squareVertices,
-                          sizeof(squareVertices)/sizeof(squareVertices[0])
-                          );
     
     /////6--------------/5
     ////  .           // |
@@ -304,8 +284,6 @@ void Game::LoadFromResources(const std::string &resourcepath){
     
     //load shader program
     m_basicshader.Create(resourcepath + "/Resources/Shaders/basicShader");
-    m_screenshader.Create(resourcepath + "/Resources/Shaders/screenShader");
-    m_lightingshader.Create(resourcepath + "/Resources/Shaders/lightingShader");
     m_lampshader.Create(resourcepath + "/Resources/Shaders/lampShader");
     m_lightshader.Create(resourcepath + "/Resources/Shaders/lightShader");
 }
@@ -314,28 +292,28 @@ void Game::LoadFromResources(const std::string &resourcepath){
 void Game::RenderPyramid(){
     
     // bind the shader program
-    m_basicshader.Bind();
+    m_lightshader.Bind();
     
     m_pyramidmesh.transform.SetPositions(glm::vec3(10.0f, 8.0f, 10.0f) );
     m_pyramidmesh.transform.SetScale(glm::vec3(3.0f));
     
     //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_basicshader.SetTransfromUniform(m_pyramidmesh.transform, m_camera);
-    m_basicshader.SetDeclaredUniform(false, m_lightColor);
-    m_basicshader.SetMaterialUniform();
+    m_lightshader.SetTransfromUniform(m_pyramidmesh.transform, m_camera);
+    m_lightshader.SetDeclaredUniform(true, m_lightColor);
+    m_lightshader.SetMaterialUniform();
     
     m_pyramidmesh.Draw(0);
     
     // unbind the shader program
-    m_basicshader.UnBind();
+    m_lightshader.UnBind();
 }
 
 void Game::RenderLamp(){
     
     
-    m_lightColor.r = sin( glfwGetTime() * 2.0f );
-    m_lightColor.g = sin( glfwGetTime() * 0.7f );
-    m_lightColor.b = sin( glfwGetTime() * 1.3f );
+    //m_lightColor.r = sin( glfwGetTime() * 2.0f );
+    //m_lightColor.g = sin( glfwGetTime() * 0.7f );
+    //m_lightColor.b = sin( glfwGetTime() * 1.3f );
     
     for ( GLuint i = 0; i < m_pointLightPositions.size(); ++i){
         
@@ -374,25 +352,28 @@ void Game::RenderCubes(){
         
         //update shader, including the tranform of our mesh, and the camera view of the mesh
         m_lightshader.SetTransfromUniform(m_cubemesh.transform, m_camera);
-        m_lightshader.SetDeclaredUniform(false, m_lightColor);
+        m_lightshader.SetDeclaredUniform(true, m_lightColor);
         m_lightshader.SetMaterialUniform();
         
         m_cubemesh.Draw(0);
         
     }
     
-    for ( GLuint i = 0; i < 1; ++i){
-        // Directional light
+    // Directional light
+    for ( GLuint i = 0; i < m_directionalLightsDirections.size(); ++i){
+        string uniformName = "R_directionallight[" + std::to_string(i) + "]";
         DirectionalLight dirLight(m_lightColor, 0.2f);
-        m_lightshader.SetDirectionalLightUniform("R_directionallight[0]",dirLight);
+        m_lightshader.SetDirectionalLightUniform(uniformName,dirLight, m_directionalLightsDirections[i]);
     }
     
+    // Point Light
     for ( GLuint i = 0; i < m_pointLightPositions.size(); ++i){
-        PointLight pointLight1(m_lightColor, 3.7f, Attenuation(1.0f, 0.09f, 0.32f));
         string uniformName = "R_pointlight[" + std::to_string(i) + "]";
+        PointLight pointLight1(m_lightColor, 3.7f, Attenuation(1.0f, 0.09f, 0.32f));
         m_lightshader.SetPointLightUniform(uniformName, pointLight1, m_pointLightPositions[i]);
     }
     
+    //Spot Light
     SpotLight spotLight(m_lightColor, 24.5f, Attenuation(1.0f, 0.09f, 0.32f), 0.6f, 0.85f);
     m_lightshader.SetSpotLightUniform("R_spotlight", spotLight);
     
@@ -427,8 +408,8 @@ void Game::Render(){
     
     //RenderPyramid();
     //RenderCube();
-    //RenderCubes();
-    //RenderLamp();
+    RenderCubes();
+    RenderLamp();
 }
 
 void Game::Update(){

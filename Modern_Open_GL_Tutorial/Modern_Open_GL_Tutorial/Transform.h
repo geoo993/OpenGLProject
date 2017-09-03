@@ -35,7 +35,7 @@ public:
         glm::mat4 rotationYmatrix = glm::rotate(m_rotation.y, glm::vec3(0,1,0));
         glm::mat4 rotationZmatrix = glm::rotate(m_rotation.z, glm::vec3(0,0,1));
         
-        //combining the rotation matrices into one rotion matrix, because of te way matrices are reepresented, you must write the multiplication in reverse order.
+        //combining the rotation matrices into one rotion matrix, because of the way matrices are reepresented, you must write the multiplication in reverse order.
         glm::mat4 m_rotationMatrix = rotationZmatrix * rotationYmatrix * rotationXmatrix;
         
         //this generates a 4x4 matrix with a scale vector
