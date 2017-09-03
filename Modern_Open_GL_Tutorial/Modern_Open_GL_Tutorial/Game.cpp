@@ -386,9 +386,12 @@ void Game::RenderCubes(){
     
     //for ( GLuint i = 0; i < m_pointLightPositions.size(); ++i){
         //m_lightColor
-        PointLight pointLight(m_lightColor, 3.7f, Attenuation(1.0f, 0.09f, 0.32f));
-        m_lightshader.SetPointLightUniform(pointLight, m_pointLightPositions[0]);
+        PointLight pointLight1(m_lightColor, 3.7f, Attenuation(1.0f, 0.09f, 0.32f));
+        m_lightshader.SetPointLight1Uniform(pointLight1, m_pointLightPositions[0]);
     //}
+    
+    PointLight pointLight2(m_lightColor, 3.7f, Attenuation(1.0f, 0.09f, 0.32f));
+    m_lightshader.SetPointLight2Uniform(pointLight2, m_pointLightPositions[1]);
     
     SpotLight spotLight(m_lightColor, 24.5f, Attenuation(1.0f, 0.09f, 0.32f), 0.6f, 0.85f);
     m_lightshader.SetSpotLightUniform( spotLight);

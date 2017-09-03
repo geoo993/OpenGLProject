@@ -55,7 +55,8 @@ struct SpotLight
 
 uniform Material material;
 uniform DirectionalLight R_directionallight[NUMBER_OF_DIRECTIONAL_LIGHTS];
-uniform PointLight R_pointlight;
+uniform PointLight R_pointlight1;
+uniform PointLight R_pointlight2;
 uniform SpotLight R_spotlight;
 
 uniform vec3 viewPosition;
@@ -176,8 +177,11 @@ void main() {
     }
     
     // Point lights
-    vec4 pointL = CalcPointLight(R_pointlight, normal, vWorldPosition);
-    result += pointL;
+    vec4 pointL1 = CalcPointLight(R_pointlight1, normal, vWorldPosition);
+    result += pointL1;
+    
+    vec4 pointL2 = CalcPointLight(R_pointlight2, normal, vWorldPosition);
+    result += pointL2;
     
 //    for (int i = 0; i < NUMBER_OF_POINT_LIGHTS; i++){
 //        vec4 pointL = CalcPointLight(R_pointlight[i], normal, vWorldPosition);

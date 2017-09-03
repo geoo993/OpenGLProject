@@ -39,7 +39,9 @@ public:
     void CreateSpotLights(const std::string &spotLightName, const GLuint & numberOfSpottLights );
         
     void SetDirectionalLightUniform(const DirectionalLight & directionalLight);
-    void SetPointLightUniform(const PointLight& pointLight, const glm::vec3& position);
+    void SetPointLight1Uniform(const PointLight& pointLight, const glm::vec3& position);
+    void SetPointLight2Uniform(const PointLight& pointLight, const glm::vec3& position);
+    
     void SetSpotLightUniform(const SpotLight& spotLight);
     
 private:
@@ -60,13 +62,21 @@ private:
         DIRECTIONALLIGHTINTENSITY_U,
         DIRECTIONALLIGHTDIRECTION_U,
         
-        POINTLIGHTCOLOR_U,
-        POINTLIGHTINTENSITY_U,
-        POINTLIGHTPOSITION_U,
-        POINTLIGHTCONSTANT_U,
-        POINTLIGHTLINEAR_U,
-        POINTLIGHTEXPONENT_U,
-        POINTLIGHTRANGE_U,
+        POINTLIGHTCOLOR_U1,
+        POINTLIGHTINTENSITY_U1,
+        POINTLIGHTPOSITION_U1,
+        POINTLIGHTCONSTANT_U1,
+        POINTLIGHTLINEAR_U1,
+        POINTLIGHTEXPONENT_U1,
+        POINTLIGHTRANGE_U1,
+        
+        POINTLIGHTCOLOR_U2,
+        POINTLIGHTINTENSITY_U2,
+        POINTLIGHTPOSITION_U2,
+        POINTLIGHTCONSTANT_U2,
+        POINTLIGHTLINEAR_U2,
+        POINTLIGHTEXPONENT_U2,
+        POINTLIGHTRANGE_U2,
         
         SPOTTLIGHTCOLOR_U,
         SPOTLIGHTINTENSITY_U,
@@ -103,7 +113,8 @@ private:
     glm::vec3 m_mainlightPosition;
     
     void CreateDirectionalLightUniform(const std::string & uniformName);
-    void CreatePointLightUniform(const std::string & uniformName);
+    void CreatePointLight1Uniform(const std::string & uniformName);
+    void CreatePointLight2Uniform(const std::string & uniformName);
     void CreateSpotLightUniform(const std::string& uniformName);
     
     
