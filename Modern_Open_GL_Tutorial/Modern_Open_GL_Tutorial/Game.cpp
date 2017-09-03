@@ -333,9 +333,9 @@ void Game::RenderPyramid(){
 void Game::RenderLamp(){
     
     
-    //m_lightColor.r = sin( glfwGetTime() * 2.0f );
-    //m_lightColor.g = sin( glfwGetTime() * 0.7f );
-    //m_lightColor.b = sin( glfwGetTime() * 1.3f );
+    m_lightColor.r = sin( glfwGetTime() * 2.0f );
+    m_lightColor.g = sin( glfwGetTime() * 0.7f );
+    m_lightColor.b = sin( glfwGetTime() * 1.3f );
     
     for ( GLuint i = 0; i < m_pointLightPositions.size(); ++i){
         
@@ -427,8 +427,8 @@ void Game::Render(){
     
     //RenderPyramid();
     //RenderCube();
-    RenderCubes();
-    RenderLamp();
+    //RenderCubes();
+    //RenderLamp();
 }
 
 void Game::Update(){
