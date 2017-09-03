@@ -307,7 +307,7 @@ void Game::LoadFromResources(const std::string &resourcepath){
     m_screenshader.Create(resourcepath + "/Resources/Shaders/screenShader");
     m_lightingshader.Create(resourcepath + "/Resources/Shaders/lightingShader");
     m_lampshader.Create(resourcepath + "/Resources/Shaders/lampShader");
-    m_lightshader.Create(resourcepath + "/Resources/Shaders/lightShader", 1, m_pointLightPositions.size(), 1);
+    m_lightshader.Create(resourcepath + "/Resources/Shaders/lightShader");
 }
 
 
@@ -321,7 +321,8 @@ void Game::RenderPyramid(){
     
     //update shader, including the tranform of our mesh, and the camera view of the mesh
     m_basicshader.SetTransfromUniform(m_pyramidmesh.transform, m_camera);
-    m_basicshader.SetMaterialUniform( true);
+    m_basicshader.SetDeclaredUniform(false);
+    m_basicshader.SetMaterialUniform();
     
     m_pyramidmesh.Draw(0);
     
@@ -346,7 +347,8 @@ void Game::RenderLamp(){
         
         //update shader, including the tranform of our mesh, and the camera view of the mesh
         m_lampshader.SetTransfromUniform(m_lampmesh.transform, m_camera);
-        m_lampshader.SetMaterialUniform( false);
+        //m_lampshader.SetDeclaredUniform(false);
+        //m_lampshader.SetMaterialUniform();
         
         m_lampmesh.Draw(0);
         
@@ -372,7 +374,8 @@ void Game::RenderCubes(){
         
         //update shader, including the tranform of our mesh, and the camera view of the mesh
         m_lightshader.SetTransfromUniform(m_cubemesh.transform, m_camera);
-        m_lightshader.SetMaterialUniform( false);
+        m_lightshader.SetDeclaredUniform(false);
+        m_lightshader.SetMaterialUniform();
         
         m_cubemesh.Draw(0);
         
@@ -413,7 +416,8 @@ void Game::RenderCube(){
     
     //update shader, including the tranform of our mesh, and the camera view of the mesh
     m_lightshader.SetTransfromUniform(m_cubemesh.transform, m_camera);
-    m_lightshader.SetMaterialUniform( false);
+    m_lightshader.SetDeclaredUniform(false);
+    m_lightshader.SetMaterialUniform();
     
     m_cubemesh.Draw(0);
     

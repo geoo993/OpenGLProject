@@ -7,10 +7,7 @@
 
 #include "Shader.h"
 
-void Shader::Create(const std::string &fileName, 
-                    const GLuint & numberOfDirectionalLights,
-                    const GLuint & numberOfPointLights,
-                    const GLuint & numberOfSpottLights){
+void Shader::Create(const std::string &fileName){
     //creating a new rogram, create some space in the gpu for our shader program, 
     //open gl will give us some number to refer to it by
     //to think of it, there are actually shader files that exist on the hard drive
@@ -40,59 +37,7 @@ void Shader::Create(const std::string &fileName,
     //validation, by checking shader program that it is still valid
     glValidateProgram(m_program);
     CheckShaderError(m_program, GL_VALIDATE_STATUS, true, "Error: Shader program is in-valid. ");
-    
-    //glGetUniformLocation takes two parameters, 
-    //first it gets the program we want to get the uniform from
-    //then the second is the uniform variable we want to get, it is the name of the unform variable
-    m_uniforms[MVP_U] = glGetUniformLocation(m_program, "MVP");
-    
-    m_uniforms[MODEL_U] = glGetUniformLocation(m_program, "model");
-    
-    m_uniforms[VIEW_U] = glGetUniformLocation(m_program, "view");
-    
-    m_uniforms[PROJECTION_U] = glGetUniformLocation(m_program, "projection");
-    
-    m_uniforms[USETEXTURE_U]  = glGetUniformLocation(m_program, "bUseTexture");
-    
-    m_uniforms[VIEWPOSITION_U] = glGetUniformLocation(m_program, "viewPosition");
-    
-    
-    // DIRECTIONAL LIGHT
-
-    CreateDirectionalLights("R_directionallight[0]", numberOfDirectionalLights);
-
-    // POINT LIGHT
-    //CreatePointLights("R_pointlight1", numberOfPointLights);
-    
-    // POINT LIGHT
-    //CreatePointLights("R_pointlight2", numberOfPointLights);
-    CreatePointLight1Uniform("R_pointlight1");
-    
-    CreatePointLight2Uniform("R_pointlight2");
-    
-    // SPOT LIGHT
-    CreateSpotLights("R_spotlight", numberOfSpottLights);
-    
-    
-    //Material
-    m_uniforms[SAMPLER_U] = glGetUniformLocation(m_program, "material.sampler");
-    
-    m_uniforms[MATERIALNORMALSAMPLER_U] = glGetUniformLocation(m_program, "material.normalSampler");
-    
-    m_uniforms[MATERIALDIFFUSESAMPLER_U] = glGetUniformLocation(m_program, "material.diffuseSampler");
-    
-    m_uniforms[MATERIALSPECULARSAMPLER_U] = glGetUniformLocation(m_program, "material.specularSampler");
-    
-    m_uniforms[MATERIALSHININESS_U] = glGetUniformLocation(m_program, "material.shininess");
-    
-    m_uniforms[MATERIALINTENSITY_U] = glGetUniformLocation(m_program, "material.intensity");
-    
-    m_uniforms[MATERIALAMBIENT_U] = glGetUniformLocation(m_program, "material.ambient");
-    
-    m_uniforms[MATERIALDIFFUSE_U] = glGetUniformLocation(m_program, "material.diffuse");
-    
-    m_uniforms[MATERIALSPECULAR_U] = glGetUniformLocation(m_program, "material.specular");
-    
+  
 }
 
 void Shader::CreateDirectionalLights(const std::string &directionalLightName, const GLuint & numberOfDirectionalLights ){
@@ -154,86 +99,6 @@ GLuint Shader::CreateShader (const std::string &text, GLenum shadertype)
     
     return shader;
 }
-
-
-void Shader::Bind(){
-    // bind to use the shader program
-    glUseProgram(m_program);
-}
-
-void Shader::UnBind(){
-    //unbind and stop using the shader program
-    glUseProgram(0);
-}
-
-void Shader::SetTransfromUniform(const Transform & transform,
-                         Camera * camera){
-    
-    //here we model the mvp, meaning the model, view, and projection matrices of the shader
-    
-    m_camera = camera;
-    
-    //getting the model matrix
-    glm::mat4 model =  transform.GetModel();
-    
-    //getting the projection and view matrix
-    glm::mat4 view = camera->GetViewMatrix();
-    
-    float aspect = (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT;
-    camera->SetPerspectiveProjectionMatrix(camera->GetZoom(),aspect, 0.1f, 1000.0f);
-    
-    glm::mat4 projection = camera->GetPerspectiveProjectionMatrix();
-    
-    glm::mat4 MVP = projection * view * model;
-    
-    //MVP = glm::mat4(1);//set to identity
-    //MVP = glm::translate( MVP, glm::vec3( 0.5f, -0.5f, 0.0f ) );
-    //MVP = glm::rotate( MVP, ( GLfloat)glfwGetTime( ) * -5.0f, glm::vec3( 0.0f, 0.0f, 1.0f ) );
-    
-    //openGL provides a function to update the uniform, this is called glUniform which has many types
-    //the first parameter is the uniform we want to update
-    //the next parameter is how many things we are sending in, which is one
-    //the next parameter is to tell whether we are interested in transposing our matrix, you you might actualy just want to transpose it in the order openGL expects, however glm already has it in the proper order so we can pass in GL_FALSE, but if you are writing your own matrix class and for some reason your having issues even when you know your maths is right, then you migh just need to transpos it
-    //the final variable is the actual data. here we are getting the address of the model matrix and accessing it as an array, which should provide the address of the first element in the model matrix
-    glUniformMatrix4fv(m_uniforms[MVP_U], 1, GL_FALSE, &MVP[0][0]);
-    
-    glUniformMatrix4fv(m_uniforms[MODEL_U], 1, GL_FALSE, &model[0][0]);
-    
-    glUniformMatrix4fv(m_uniforms[VIEW_U], 1, GL_FALSE, &view[0][0]);
-    
-    glUniformMatrix4fv(m_uniforms[PROJECTION_U], 1, GL_FALSE, &projection[0][0]);
-
-}
-
-void Shader::SetMaterialUniform(const bool & bUseTexture){
-
-    //one is true and zero is false
-    glUniform1i(m_uniforms[USETEXTURE_U], bUseTexture);
-    
-    // light 
-    glUniform3fv(m_uniforms[VIEWPOSITION_U], 1, glm::value_ptr(m_camera->GetPosition()));
-    
-    // Material
-    glUniform1i( m_uniforms[SAMPLER_U],  0 );
-    
-    glUniform1i( m_uniforms[MATERIALNORMALSAMPLER_U],  1 );
-    
-    glUniform1i( m_uniforms[MATERIALDIFFUSESAMPLER_U], 2 );
-    
-    glUniform1i( m_uniforms[MATERIALSPECULARSAMPLER_U], 3 );
-    
-    glUniform1f(m_uniforms[MATERIALSHININESS_U], 32.0f);
-    
-    glUniform1f(m_uniforms[MATERIALINTENSITY_U], 9.0f);
-    
-    glUniform3fv(m_uniforms[MATERIALAMBIENT_U], 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.31f)));
-    
-    glUniform3fv(m_uniforms[MATERIALDIFFUSE_U], 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.31f)));
-    
-    glUniform3fv(m_uniforms[MATERIALSPECULAR_U], 1, glm::value_ptr(glm::vec3(0.5f, 0.5f, 0.5f)));
-    
-}
-
 std::string Shader::LoadShader(const std::string& fileName)
 {
     std::ifstream file;
@@ -272,17 +137,90 @@ void Shader::CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const 
     if(success == GL_FALSE)
     {
         if(isProgram)
-            glGetProgramInfoLog(shader, sizeof(error), NULL, error);
+        glGetProgramInfoLog(shader, sizeof(error), NULL, error);
         else
-            glGetShaderInfoLog(shader, sizeof(error), NULL, error);
+        glGetShaderInfoLog(shader, sizeof(error), NULL, error);
         
         std::cerr << errorMessage << ": '" << error << "'" << std::endl;
     }
     
 }
 
+void Shader::Bind(){
+    // bind to use the shader program
+    glUseProgram(m_program);
+}
+
+void Shader::UnBind(){
+    //unbind and stop using the shader program
+    glUseProgram(0);
+}
+
+void Shader::CreateTransformUniform()
+{
+    //glGetUniformLocation takes two parameters,
+    //first it gets the program we want to get the uniform from
+    //then the second is the uniform variable we want to get, it is the name of the unform variable
+    m_uniforms[MVP_U] = glGetUniformLocation(m_program, "MVP");
+    
+    m_uniforms[MODEL_U] = glGetUniformLocation(m_program, "model");
+    
+    m_uniforms[VIEW_U] = glGetUniformLocation(m_program, "view");
+    
+    m_uniforms[PROJECTION_U] = glGetUniformLocation(m_program, "projection");
+    
+    //    // DIRECTIONAL LIGHT
+    //    CreateDirectionalLights("R_directionallight[0]", numberOfDirectionalLights);
+    //
+    //    // POINT LIGHT
+    //    //CreatePointLights("R_pointlight1", numberOfPointLights);
+    //
+    //    // POINT LIGHT
+    //    //CreatePointLights("R_pointlight2", numberOfPointLights);
+    //    CreatePointLight1Uniform("R_pointlight1");
+    //
+    //    CreatePointLight2Uniform("R_pointlight2");
+    //
+    //    // SPOT LIGHT
+    //    CreateSpotLights("R_spotlight", numberOfSpottLights);
+    //
+    
+}
+
+void Shader::CreateDeclaredUniform(){
+    
+    m_uniforms[USETEXTURE_U]  = glGetUniformLocation(m_program, "bUseTexture");
+    
+    m_uniforms[VIEWPOSITION_U] = glGetUniformLocation(m_program, "viewPosition");
+}
+
+
+void Shader::CreateMaterialUniform(const std::string & uniformName){
+    
+    //Material
+    m_uniforms[SAMPLER_U] = glGetUniformLocation(m_program, (uniformName + ".sampler").c_str());
+    
+    m_uniforms[MATERIALNORMALSAMPLER_U] = glGetUniformLocation(m_program, (uniformName + ".normalSampler").c_str());
+    
+    m_uniforms[MATERIALDIFFUSESAMPLER_U] = glGetUniformLocation(m_program, (uniformName + ".diffuseSampler").c_str());
+    
+    m_uniforms[MATERIALSPECULARSAMPLER_U] = glGetUniformLocation(m_program, (uniformName + ".specularSampler").c_str());
+    
+    m_uniforms[MATERIALSHININESS_U] = glGetUniformLocation(m_program, (uniformName + ".shininess").c_str());
+    
+    m_uniforms[MATERIALINTENSITY_U] = glGetUniformLocation(m_program, (uniformName + ".intensity").c_str());
+    
+    m_uniforms[MATERIALAMBIENT_U] = glGetUniformLocation(m_program, (uniformName + ".ambient").c_str());
+    
+    m_uniforms[MATERIALDIFFUSE_U] = glGetUniformLocation(m_program, (uniformName + ".diffuse").c_str());
+    
+    m_uniforms[MATERIALSPECULAR_U] = glGetUniformLocation(m_program, (uniformName + ".specular").c_str());
+    
+}
+
 void Shader::CreateDirectionalLightUniform(const std::string & uniformName)
 {
+    
     m_uniforms[DIRECTIONALLIGHTCOLOR_U] = glGetUniformLocation(m_program, (uniformName + ".base.color").c_str());
     
     m_uniforms[DIRECTIONALLIGHTINTENSITY_U] = glGetUniformLocation(m_program, (uniformName + ".base.intensity").c_str());
@@ -331,6 +269,7 @@ void Shader::CreatePointLight2Uniform(const std::string & uniformName)
 
 void Shader::CreateSpotLightUniform(const std::string& uniformName)
 {
+    
     m_uniforms[SPOTTLIGHTCOLOR_U] = glGetUniformLocation(m_program, (uniformName + ".pointLight.base.color").c_str());
     
     m_uniforms[SPOTLIGHTINTENSITY_U] = glGetUniformLocation(m_program, (uniformName + ".pointLight.base.intensity").c_str());
@@ -353,9 +292,90 @@ void Shader::CreateSpotLightUniform(const std::string& uniformName)
     
 }
 
+void Shader::SetTransfromUniform(const Transform & transform,
+                                 Camera * camera){
+    
+    CreateTransformUniform();
+    
+    //here we model the mvp, meaning the model, view, and projection matrices of the shader
+    m_camera = camera;
+    
+    //getting the model matrix
+    glm::mat4 model =  transform.GetModel();
+    
+    //getting the projection and view matrix
+    glm::mat4 view = camera->GetViewMatrix();
+    
+    float aspect = (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT;
+    camera->SetPerspectiveProjectionMatrix(camera->GetZoom(),aspect, 0.1f, 1000.0f);
+    
+    glm::mat4 projection = camera->GetPerspectiveProjectionMatrix();
+    
+    glm::mat4 MVP = projection * view * model;
+    
+    //MVP = glm::mat4(1);//set to identity
+    //MVP = glm::translate( MVP, glm::vec3( 0.5f, -0.5f, 0.0f ) );
+    //MVP = glm::rotate( MVP, ( GLfloat)glfwGetTime( ) * -5.0f, glm::vec3( 0.0f, 0.0f, 1.0f ) );
+    
+    //openGL provides a function to update the uniform, this is called glUniform which has many types
+    //the first parameter is the uniform we want to update
+    //the next parameter is how many things we are sending in, which is one
+    //the next parameter is to tell whether we are interested in transposing our matrix, you you might actualy just want to transpose it in the order openGL expects, however glm already has it in the proper order so we can pass in GL_FALSE, but if you are writing your own matrix class and for some reason your having issues even when you know your maths is right, then you migh just need to transpos it
+    //the final variable is the actual data. here we are getting the address of the model matrix and accessing it as an array, which should provide the address of the first element in the model matrix
+    glUniformMatrix4fv(m_uniforms[MVP_U], 1, GL_FALSE, &MVP[0][0]);
+    
+    glUniformMatrix4fv(m_uniforms[MODEL_U], 1, GL_FALSE, &model[0][0]);
+    
+    glUniformMatrix4fv(m_uniforms[VIEW_U], 1, GL_FALSE, &view[0][0]);
+    
+    glUniformMatrix4fv(m_uniforms[PROJECTION_U], 1, GL_FALSE, &projection[0][0]);
+
+}
+
+
+void Shader::SetDeclaredUniform(const bool & bUseTexture ){
+    
+    CreateDeclaredUniform();
+    
+    //one is true and zero is false
+    glUniform1i(m_uniforms[USETEXTURE_U], bUseTexture);
+    
+    // light
+    glUniform3fv(m_uniforms[VIEWPOSITION_U], 1, glm::value_ptr(m_camera->GetPosition()));
+}
+
+
+
+void Shader::SetMaterialUniform(){
+    
+    CreateMaterialUniform("material");
+    
+    // Material
+    glUniform1i( m_uniforms[SAMPLER_U],  0 );
+    
+    glUniform1i( m_uniforms[MATERIALNORMALSAMPLER_U],  1 );
+    
+    glUniform1i( m_uniforms[MATERIALDIFFUSESAMPLER_U], 2 );
+    
+    glUniform1i( m_uniforms[MATERIALSPECULARSAMPLER_U], 3 );
+    
+    glUniform1f(m_uniforms[MATERIALSHININESS_U], 32.0f);
+    
+    glUniform1f(m_uniforms[MATERIALINTENSITY_U], 9.0f);
+    
+    glUniform3fv(m_uniforms[MATERIALAMBIENT_U], 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.31f)));
+    
+    glUniform3fv(m_uniforms[MATERIALDIFFUSE_U], 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.31f)));
+    
+    glUniform3fv(m_uniforms[MATERIALSPECULAR_U], 1, glm::value_ptr(glm::vec3(0.5f, 0.5f, 0.5f)));
+    
+}
 
 void Shader::SetDirectionalLightUniform(const DirectionalLight& directionalLight)
 {
+    // DIRECTIONAL LIGHT
+    CreateDirectionalLightUniform("R_directionallight[0]");
+    
     glUniform3fv(m_uniforms[DIRECTIONALLIGHTCOLOR_U], 1, glm::value_ptr(directionalLight.color));
     
     glUniform1f(m_uniforms[DIRECTIONALLIGHTINTENSITY_U], directionalLight.intensity);
@@ -366,25 +386,39 @@ void Shader::SetDirectionalLightUniform(const DirectionalLight& directionalLight
  
 void Shader::SetPointLight1Uniform(const PointLight& pointLight, const glm::vec3& position)
 {
-
-    glUniform3fv(m_uniforms[POINTLIGHTCOLOR_U1], 1, glm::value_ptr(pointLight.color));
+    // POINT LIGHT
+//    CreatePointLight1Uniform("R_pointlight1");
+//    
+//    glUniform3fv(m_uniforms[POINTLIGHTCOLOR_U1], 1, glm::value_ptr(pointLight.color));
+//    
+//    glUniform1f(m_uniforms[POINTLIGHTINTENSITY_U1], pointLight.intensity);
+//    
+//    glUniform3fv(m_uniforms[POINTLIGHTPOSITION_U1], 1, glm::value_ptr( position) );
+//    
+//    glUniform1f(m_uniforms[POINTLIGHTCONSTANT_U1], pointLight.atten.constant);
+//    
+//    glUniform1f(m_uniforms[POINTLIGHTLINEAR_U1], pointLight.atten.linear);
+//    
+//    glUniform1f(m_uniforms[POINTLIGHTEXPONENT_U1], pointLight.atten.exponent);
+//    
+//    glUniform1f(m_uniforms[POINTLIGHTRANGE_U1], pointLight.range);
     
-    glUniform1f(m_uniforms[POINTLIGHTINTENSITY_U1], pointLight.intensity);
     
-    glUniform3fv(m_uniforms[POINTLIGHTPOSITION_U1], 1, glm::value_ptr( position) );
-    
-    glUniform1f(m_uniforms[POINTLIGHTCONSTANT_U1], pointLight.atten.constant);
-    
-    glUniform1f(m_uniforms[POINTLIGHTLINEAR_U1], pointLight.atten.linear);
-    
-    glUniform1f(m_uniforms[POINTLIGHTEXPONENT_U1], pointLight.atten.exponent);
-    
-    glUniform1f(m_uniforms[POINTLIGHTRANGE_U1], pointLight.range);
+    string uniformName = "R_pointlight1";
+    SetUniform((uniformName + ".base.color").c_str(), pointLight.color);
+    SetUniform((uniformName + ".base.intensity").c_str(), pointLight.intensity);
+    SetUniform((uniformName + ".atten.constant").c_str(), pointLight.atten.constant);
+    SetUniform((uniformName + ".atten.linear").c_str(), pointLight.atten.linear);
+    SetUniform((uniformName + ".atten.exponent").c_str(), pointLight.atten.exponent);
+    SetUniform((uniformName + ".position").c_str(), position);
+    SetUniform((uniformName + ".range").c_str(), pointLight.range);
     
 }
 
 void Shader::SetPointLight2Uniform(const PointLight& pointLight, const glm::vec3& position)
 {
+    // POINT LIGHT
+    CreatePointLight2Uniform("R_pointlight2");
     
     glUniform3fv(m_uniforms[POINTLIGHTCOLOR_U2], 1, glm::value_ptr(pointLight.color));
     
@@ -405,7 +439,9 @@ void Shader::SetPointLight2Uniform(const PointLight& pointLight, const glm::vec3
 
 void Shader::SetSpotLightUniform(const SpotLight& spotLight)
 {
-
+    // SPOT LIGHT
+    CreateSpotLightUniform("R_spotlight");
+    
     glUniform3fv(m_uniforms[SPOTTLIGHTCOLOR_U], 1, glm::value_ptr(spotLight.color));
     
     glUniform1f(m_uniforms[SPOTLIGHTINTENSITY_U], spotLight.intensity);
@@ -426,4 +462,103 @@ void Shader::SetSpotLightUniform(const SpotLight& spotLight)
     
     glUniform1f(m_uniforms[SPOTLIGHTOUTERCUTOFF_U], spotLight.outerCutoff);
     
+}
+
+
+// A collection of functions to set uniform variables inside shaders
+
+// Setting floats
+
+void Shader::SetUniform(std::string sName, float* fValues, int iCount)
+{
+    int iLoc = glGetUniformLocation(m_program, sName.c_str());
+    glUniform1fv(iLoc, iCount, fValues);
+}
+
+void Shader::SetUniform(std::string sName, const float fValue)
+{
+    int iLoc = glGetUniformLocation(m_program, sName.c_str());
+    glUniform1fv(iLoc, 1, &fValue);
+}
+
+// Setting vectors
+
+void Shader::SetUniform(std::string sName, glm::vec2* vVectors, int iCount)
+{
+    int iLoc = glGetUniformLocation(m_program, sName.c_str());
+    glUniform2fv(iLoc, iCount, (GLfloat*)vVectors);
+    
+}
+
+
+void Shader::SetUniform(std::string sName, const glm::vec2 vVector)
+{
+    int iLoc = glGetUniformLocation(m_program, sName.c_str());
+    glUniform2fv(iLoc, 1, (GLfloat*)&vVector);
+}
+
+void Shader::SetUniform(std::string sName, glm::vec3* vVectors, int iCount)
+{
+    int iLoc = glGetUniformLocation(m_program, sName.c_str());
+    glUniform3fv(iLoc, iCount, (GLfloat*)vVectors);
+}
+
+void Shader::SetUniform(std::string sName, const glm::vec3 vVector)
+{
+    int iLoc = glGetUniformLocation(m_program, sName.c_str());
+    glUniform3fv(iLoc, 1, (GLfloat*)&vVector);
+}
+
+void Shader::SetUniform(std::string sName, glm::vec4* vVectors, int iCount)
+{
+    int iLoc = glGetUniformLocation(m_program, sName.c_str());
+    glUniform4fv(iLoc, iCount, (GLfloat*)vVectors);
+}
+
+void Shader::SetUniform(std::string sName, const glm::vec4 vVector)
+{
+    int iLoc = glGetUniformLocation(m_program, sName.c_str());
+    glUniform4fv(iLoc, 1, (GLfloat*)&vVector);
+}
+
+// Setting 3x3 matrices
+
+void Shader::SetUniform(std::string sName, glm::mat3* mMatrices, int iCount)
+{
+    int iLoc = glGetUniformLocation(m_program, sName.c_str());
+    glUniformMatrix3fv(iLoc, iCount, false, (GLfloat*)mMatrices);
+}
+
+void Shader::SetUniform(std::string sName, const glm::mat3 mMatrix)
+{
+    int iLoc = glGetUniformLocation(m_program, sName.c_str());
+    glUniformMatrix3fv(iLoc, 1, false, (GLfloat*)&mMatrix);
+}
+
+// Setting 4x4 matrices
+
+void Shader::SetUniform(std::string sName, glm::mat4* mMatrices, int iCount)
+{
+    int iLoc = glGetUniformLocation(m_program, sName.c_str());
+    glUniformMatrix4fv(iLoc, iCount, false, (GLfloat*)mMatrices);
+}
+
+void Shader::SetUniform(std::string sName, const glm::mat4 mMatrix)
+{
+    int iLoc = glGetUniformLocation(m_program, sName.c_str());
+    glUniformMatrix4fv(iLoc, 1, false, (GLfloat*)&mMatrix);
+}
+
+// Setting integers
+
+void Shader::SetUniform(std::string sName, int* iValues, int iCount)
+{
+    int iLoc = glGetUniformLocation(m_program, sName.c_str());
+    glUniform1iv(iLoc, iCount, iValues);
+}
+
+void Shader::SetUniform(std::string sName, const int iValue)
+{
+    int iLoc = glGetUniformLocation(m_program, sName.c_str());
+    glUniform1i(iLoc, iValue);
 }

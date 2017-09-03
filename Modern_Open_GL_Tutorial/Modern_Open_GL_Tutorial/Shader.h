@@ -19,16 +19,14 @@ public:
     Shader(){}
     ~Shader();
     
-    void Create(const std::string &fileName,
-                const GLuint & numberOfDirectionalLights = 0,
-                const GLuint & numberOfPointLights = 0,
-                const GLuint & numberOfSpottLights = 0);
+    void Create(const std::string &fileName);
     void Bind();
     void UnBind();
     
     void SetTransfromUniform(const Transform & transform, 
                              Camera * camera);
-    void SetMaterialUniform(const bool & bUseTexture );
+    void SetMaterialUniform();
+    void SetDeclaredUniform(const bool & bUseTexture );
         
     GLuint CreateShader (const std::string &text, GLenum shadertype);
     std::string LoadShader(const std::string& fileName);
@@ -41,8 +39,31 @@ public:
     void SetDirectionalLightUniform(const DirectionalLight & directionalLight);
     void SetPointLight1Uniform(const PointLight& pointLight, const glm::vec3& position);
     void SetPointLight2Uniform(const PointLight& pointLight, const glm::vec3& position);
-    
     void SetSpotLightUniform(const SpotLight& spotLight);
+    
+    // Setting vectors
+    void SetUniform(std::string sName, glm::vec2* vVectors, int iCount = 1);
+    void SetUniform(std::string sName, const glm::vec2 vVector);
+    void SetUniform(std::string sName, glm::vec3* vVectors, int iCount = 1);
+    void SetUniform(std::string sName, const glm::vec3 vVector);
+    void SetUniform(std::string sName, glm::vec4* vVectors, int iCount = 1);
+    void SetUniform(std::string sName, const glm::vec4 vVector);
+    
+    // Setting floats
+    void SetUniform(std::string sName, float* fValues, int iCount = 1);
+    void SetUniform(std::string sName, const float fValue);
+    
+    // Setting 3x3 matrices
+    void SetUniform(std::string sName, glm::mat3* mMatrices, int iCount = 1);
+    void SetUniform(std::string sName, const glm::mat3 mMatrix);
+    
+    // Setting 4x4 matrices
+    void SetUniform(std::string sName, glm::mat4* mMatrices, int iCount = 1);
+    void SetUniform(std::string sName, const glm::mat4 mMatrix);
+    
+    // Setting integers
+    void SetUniform(std::string sName, int* iValues, int iCount = 1);
+    void SetUniform(std::string sName, const int iValue);
     
 private:
     Shader(const Shader &other){}
@@ -109,14 +130,21 @@ private:
     GLuint m_uniforms[NUM_UNIFORMS];
     
     Camera *m_camera;
-    glm::vec3 m_mainlightColor;
-    glm::vec3 m_mainlightPosition;
+    
+    void CreateTransformUniform();
+    void CreateDeclaredUniform();
+    void CreateMaterialUniform(const std::string & uniformName);
     
     void CreateDirectionalLightUniform(const std::string & uniformName);
     void CreatePointLight1Uniform(const std::string & uniformName);
     void CreatePointLight2Uniform(const std::string & uniformName);
     void CreateSpotLightUniform(const std::string& uniformName);
     
+    
+    //const GLuint & numberOfDirectionalLights,
+    //const GLuint & numberOfPointLights,
+    //const GLuint & numberOfSpottLights
+
     
 };
 
