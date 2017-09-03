@@ -40,31 +40,6 @@ void Shader::Create(const std::string &fileName){
   
 }
 
-void Shader::CreateDirectionalLights(const std::string &directionalLightName, const GLuint & numberOfDirectionalLights ){
-    
-    //for (unsigned int i = 0; i < numberOfDirectionalLights; ++i){
-        // DIRECTIONAL LIGHT
-        CreateDirectionalLightUniform(directionalLightName);
-    //}
-}
-
-
-void Shader::CreatePointLights(const std::string &pointLightName, const GLuint & numberOfPointLights ){
-    
-    //for (unsigned int i = 0; i < numberOfPointLights; i++){
-        // POINT LIGHT
-    //CreatePointLightUniform(pointLightName);
-    //}
-    
-}
-
-
-void Shader::CreateSpotLights(const std::string &spotLightName, const GLuint & numberOfSpottLights ){
-    
-    // SPOT LIGHT
-    CreateSpotLightUniform(spotLightName);
-}
-
 Shader::~Shader(){
     
     for (unsigned int i = 0; i < NUM_SHADERS; i++){
@@ -168,32 +143,8 @@ void Shader::CreateTransformUniform()
     m_uniforms[VIEW_U] = glGetUniformLocation(m_program, "view");
     
     m_uniforms[PROJECTION_U] = glGetUniformLocation(m_program, "projection");
-    
-    //    // DIRECTIONAL LIGHT
-    //    CreateDirectionalLights("R_directionallight[0]", numberOfDirectionalLights);
-    //
-    //    // POINT LIGHT
-    //    //CreatePointLights("R_pointlight1", numberOfPointLights);
-    //
-    //    // POINT LIGHT
-    //    //CreatePointLights("R_pointlight2", numberOfPointLights);
-    //    CreatePointLight1Uniform("R_pointlight1");
-    //
-    //    CreatePointLight2Uniform("R_pointlight2");
-    //
-    //    // SPOT LIGHT
-    //    CreateSpotLights("R_spotlight", numberOfSpottLights);
-    //
-    
-}
 
-void Shader::CreateDeclaredUniform(){
-    
-    m_uniforms[USETEXTURE_U]  = glGetUniformLocation(m_program, "bUseTexture");
-    
-    m_uniforms[VIEWPOSITION_U] = glGetUniformLocation(m_program, "viewPosition");
 }
-
 
 void Shader::CreateMaterialUniform(const std::string & uniformName){
     
@@ -218,79 +169,6 @@ void Shader::CreateMaterialUniform(const std::string & uniformName){
     
 }
 
-void Shader::CreateDirectionalLightUniform(const std::string & uniformName)
-{
-    
-    m_uniforms[DIRECTIONALLIGHTCOLOR_U] = glGetUniformLocation(m_program, (uniformName + ".base.color").c_str());
-    
-    m_uniforms[DIRECTIONALLIGHTINTENSITY_U] = glGetUniformLocation(m_program, (uniformName + ".base.intensity").c_str());
-    
-    m_uniforms[DIRECTIONALLIGHTDIRECTION_U] = glGetUniformLocation(m_program, (uniformName + ".direction").c_str());
-    
-}
-
-void Shader::CreatePointLight1Uniform(const std::string & uniformName)
-{
-    
-    m_uniforms[POINTLIGHTCOLOR_U1] = glGetUniformLocation(m_program, (uniformName + ".base.color").c_str());
-    
-    m_uniforms[POINTLIGHTINTENSITY_U1] = glGetUniformLocation(m_program, (uniformName + ".base.intensity").c_str());
-    
-    m_uniforms[POINTLIGHTCONSTANT_U1] = glGetUniformLocation(m_program, (uniformName + ".atten.constant").c_str());
-    
-    m_uniforms[POINTLIGHTLINEAR_U1] = glGetUniformLocation(m_program, (uniformName + ".atten.linear").c_str());
-    
-    m_uniforms[POINTLIGHTEXPONENT_U1] = glGetUniformLocation(m_program, (uniformName + ".atten.exponent").c_str());
-    
-    m_uniforms[POINTLIGHTPOSITION_U1] = glGetUniformLocation(m_program, (uniformName + ".position").c_str());
-    
-    m_uniforms[POINTLIGHTRANGE_U1] = glGetUniformLocation(m_program, (uniformName + ".range").c_str());
-    
-}
-
-void Shader::CreatePointLight2Uniform(const std::string & uniformName)
-{
-    
-    m_uniforms[POINTLIGHTCOLOR_U2] = glGetUniformLocation(m_program, (uniformName + ".base.color").c_str());
-    
-    m_uniforms[POINTLIGHTINTENSITY_U2] = glGetUniformLocation(m_program, (uniformName + ".base.intensity").c_str());
-    
-    m_uniforms[POINTLIGHTCONSTANT_U2] = glGetUniformLocation(m_program, (uniformName + ".atten.constant").c_str());
-    
-    m_uniforms[POINTLIGHTLINEAR_U2] = glGetUniformLocation(m_program, (uniformName + ".atten.linear").c_str());
-    
-    m_uniforms[POINTLIGHTEXPONENT_U2] = glGetUniformLocation(m_program, (uniformName + ".atten.exponent").c_str());
-    
-    m_uniforms[POINTLIGHTPOSITION_U2] = glGetUniformLocation(m_program, (uniformName + ".position").c_str());
-    
-    m_uniforms[POINTLIGHTRANGE_U2] = glGetUniformLocation(m_program, (uniformName + ".range").c_str());
-    
-}
-
-void Shader::CreateSpotLightUniform(const std::string& uniformName)
-{
-    
-    m_uniforms[SPOTTLIGHTCOLOR_U] = glGetUniformLocation(m_program, (uniformName + ".pointLight.base.color").c_str());
-    
-    m_uniforms[SPOTLIGHTINTENSITY_U] = glGetUniformLocation(m_program, (uniformName + ".pointLight.base.intensity").c_str());
-    
-    m_uniforms[SPOTLIGHTCONSTANT_U] = glGetUniformLocation(m_program, (uniformName + ".pointLight.atten.constant").c_str());
-    
-    m_uniforms[SPOTLIGHTLINEAR_U] = glGetUniformLocation(m_program, (uniformName + ".pointLight.atten.linear").c_str());
-    
-    m_uniforms[SPOTLIGHTEXPONENT_U] = glGetUniformLocation(m_program, (uniformName + ".pointLight.atten.exponent").c_str());
-    
-    m_uniforms[SPOTLIGHTPOSITION_U] = glGetUniformLocation(m_program, (uniformName + ".pointLight.position").c_str());
-    
-    m_uniforms[SPOTLIGHTRANGE_U] = glGetUniformLocation(m_program, (uniformName + ".pointLight.range").c_str());
-    
-    m_uniforms[SPOTLIGHTDIRECTION_U] = glGetUniformLocation(m_program, (uniformName + ".direction").c_str());
-    
-    m_uniforms[SPOTLIGHTCUTOFF_U] = glGetUniformLocation(m_program, (uniformName + ".cutoff").c_str());
-    
-    m_uniforms[SPOTLIGHTOUTERCUTOFF_U] = glGetUniformLocation(m_program, (uniformName + ".outerCutoff").c_str());
-    
-}
 
 void Shader::SetTransfromUniform(const Transform & transform,
                                  Camera * camera){
@@ -333,15 +211,11 @@ void Shader::SetTransfromUniform(const Transform & transform,
 }
 
 
-void Shader::SetDeclaredUniform(const bool & bUseTexture ){
+void Shader::SetDeclaredUniform(const bool & bUseTexture, const glm::vec3 & lightColor ){
     
-    CreateDeclaredUniform();
-    
-    //one is true and zero is false
-    glUniform1i(m_uniforms[USETEXTURE_U], bUseTexture);
-    
-    // light
-    glUniform3fv(m_uniforms[VIEWPOSITION_U], 1, glm::value_ptr(m_camera->GetPosition()));
+    SetUniform("bUseTexture", bUseTexture);
+    SetUniform("viewPosition", m_camera->GetPosition());
+    SetUniform("lightColor", lightColor);
 }
 
 
@@ -371,40 +245,17 @@ void Shader::SetMaterialUniform(){
     
 }
 
-void Shader::SetDirectionalLightUniform(const DirectionalLight& directionalLight)
+void Shader::SetDirectionalLightUniform(const std::string &uniformName, const DirectionalLight& directionalLight)
 {
-    // DIRECTIONAL LIGHT
-    CreateDirectionalLightUniform("R_directionallight[0]");
+    SetUniform((uniformName + ".base.color").c_str(), directionalLight.color);
+    SetUniform((uniformName + ".base.intensity").c_str(), directionalLight.intensity);
+    SetUniform((uniformName + ".direction").c_str(), glm::vec3(3.2f, 3.0f, -0.3f));
     
-    glUniform3fv(m_uniforms[DIRECTIONALLIGHTCOLOR_U], 1, glm::value_ptr(directionalLight.color));
-    
-    glUniform1f(m_uniforms[DIRECTIONALLIGHTINTENSITY_U], directionalLight.intensity);
-    
-    glUniform3f(m_uniforms[DIRECTIONALLIGHTDIRECTION_U], 3.2f, 3.0f, -0.3f); // for directional light
-    //glUniform3fv(m_uniforms[DIRECTIONALLIGHTDIRECTION_U], 1, glm::value_ptr( m_mainlightPosition) ); 
 }
  
-void Shader::SetPointLight1Uniform(const PointLight& pointLight, const glm::vec3& position)
+void Shader::SetPointLightUniform(const std::string &uniformName, const PointLight& pointLight, const glm::vec3& position)
 {
     // POINT LIGHT
-//    CreatePointLight1Uniform("R_pointlight1");
-//    
-//    glUniform3fv(m_uniforms[POINTLIGHTCOLOR_U1], 1, glm::value_ptr(pointLight.color));
-//    
-//    glUniform1f(m_uniforms[POINTLIGHTINTENSITY_U1], pointLight.intensity);
-//    
-//    glUniform3fv(m_uniforms[POINTLIGHTPOSITION_U1], 1, glm::value_ptr( position) );
-//    
-//    glUniform1f(m_uniforms[POINTLIGHTCONSTANT_U1], pointLight.atten.constant);
-//    
-//    glUniform1f(m_uniforms[POINTLIGHTLINEAR_U1], pointLight.atten.linear);
-//    
-//    glUniform1f(m_uniforms[POINTLIGHTEXPONENT_U1], pointLight.atten.exponent);
-//    
-//    glUniform1f(m_uniforms[POINTLIGHTRANGE_U1], pointLight.range);
-    
-    
-    string uniformName = "R_pointlight1";
     SetUniform((uniformName + ".base.color").c_str(), pointLight.color);
     SetUniform((uniformName + ".base.intensity").c_str(), pointLight.intensity);
     SetUniform((uniformName + ".atten.constant").c_str(), pointLight.atten.constant);
@@ -415,52 +266,20 @@ void Shader::SetPointLight1Uniform(const PointLight& pointLight, const glm::vec3
     
 }
 
-void Shader::SetPointLight2Uniform(const PointLight& pointLight, const glm::vec3& position)
-{
-    // POINT LIGHT
-    CreatePointLight2Uniform("R_pointlight2");
-    
-    glUniform3fv(m_uniforms[POINTLIGHTCOLOR_U2], 1, glm::value_ptr(pointLight.color));
-    
-    glUniform1f(m_uniforms[POINTLIGHTINTENSITY_U2], pointLight.intensity);
-    
-    glUniform3fv(m_uniforms[POINTLIGHTPOSITION_U2], 1, glm::value_ptr( position) );
-    
-    glUniform1f(m_uniforms[POINTLIGHTCONSTANT_U2], pointLight.atten.constant);
-    
-    glUniform1f(m_uniforms[POINTLIGHTLINEAR_U2], pointLight.atten.linear);
-    
-    glUniform1f(m_uniforms[POINTLIGHTEXPONENT_U2], pointLight.atten.exponent);
-    
-    glUniform1f(m_uniforms[POINTLIGHTRANGE_U2], pointLight.range);
-    
-}
-
-
-void Shader::SetSpotLightUniform(const SpotLight& spotLight)
+void Shader::SetSpotLightUniform(const std::string &uniformName, const SpotLight& spotLight)
 {
     // SPOT LIGHT
-    CreateSpotLightUniform("R_spotlight");
-    
-    glUniform3fv(m_uniforms[SPOTTLIGHTCOLOR_U], 1, glm::value_ptr(spotLight.color));
-    
-    glUniform1f(m_uniforms[SPOTLIGHTINTENSITY_U], spotLight.intensity);
-    
-    glUniform1f(m_uniforms[SPOTLIGHTCONSTANT_U], spotLight.atten.constant);
-    
-    glUniform1f(m_uniforms[SPOTLIGHTLINEAR_U], spotLight.atten.linear);
-    
-    glUniform1f(m_uniforms[SPOTLIGHTEXPONENT_U], spotLight.atten.exponent);
-    
-    glUniform3fv(m_uniforms[SPOTLIGHTPOSITION_U], 1, glm::value_ptr( m_camera->GetPosition()) );
-    
-    glUniform1f(m_uniforms[SPOTLIGHTRANGE_U], spotLight.range);
-    
-    glUniform3fv(m_uniforms[SPOTLIGHTDIRECTION_U], 1, glm::value_ptr(m_camera->GetForward()) );
-    
-    glUniform1f(m_uniforms[SPOTLIGHTCUTOFF_U], spotLight.cutoff);
-    
-    glUniform1f(m_uniforms[SPOTLIGHTOUTERCUTOFF_U], spotLight.outerCutoff);
+
+    SetUniform((uniformName + ".pointLight.base.color").c_str(), spotLight.color);
+    SetUniform((uniformName + ".pointLight.base.intensity").c_str(), spotLight.intensity);
+    SetUniform((uniformName + ".pointLight.atten.constant").c_str(), spotLight.atten.constant);
+    SetUniform((uniformName + ".pointLight.atten.linear").c_str(), spotLight.atten.linear);
+    SetUniform((uniformName + ".pointLight.atten.exponent").c_str(), spotLight.atten.exponent);
+    SetUniform((uniformName + ".pointLight.position").c_str(), m_camera->GetPosition() );
+    SetUniform((uniformName + ".pointLight.range").c_str(), spotLight.range);
+    SetUniform((uniformName + ".direction").c_str(), m_camera->GetForward() );
+    SetUniform((uniformName + ".cutoff").c_str(), spotLight.cutoff);
+    SetUniform((uniformName + ".outerCutoff").c_str(), spotLight.outerCutoff);
     
 }
 

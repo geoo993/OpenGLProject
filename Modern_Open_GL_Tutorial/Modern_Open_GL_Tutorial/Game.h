@@ -49,8 +49,6 @@ private:
     glm::vec3 m_lightColor;
     glm::vec3 m_viewPosition;
     
-    std::string m_dirLightsName, m_pointLightsName, m_spotLightsName;
-    
     vector<glm::vec3> m_cubesPosition = {
         glm::vec3(-1.0f, -4.0f, -1.0f),
         glm::vec3(-8.0f, 7.0f, 5.0f),
@@ -65,10 +63,10 @@ private:
     GLuint m_pointLightPositionsIndex = 0;
     vector<glm::vec3> m_pointLightPositions = {
         glm::vec3(  1.0f,  3.0f,  -2.0f      ),
-        glm::vec3(  -5.7f,  0.2f,  2.0f      )
-//        glm::vec3(  2.3f, -3.3f, -4.0f      ),
-//        glm::vec3(  -4.0f,  2.0f, -12.0f    ),
-//        glm::vec3(  0.0f,  0.0f, -3.0f      )
+        glm::vec3(  -5.7f,  0.2f,  2.0f      ),
+        glm::vec3(  2.3f, -3.3f, -4.0f      ),
+        glm::vec3(  -4.0f,  2.0f, -12.0f    ),
+        glm::vec3(  0.0f,  0.0f, -3.0f      )
     };
     
 

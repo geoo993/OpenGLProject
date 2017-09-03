@@ -1,9 +1,11 @@
 #version 410 core
 
-out vec4 fOutputColor;		// The output colour
+uniform vec3 lightColor;
+
+out vec4 fOutputColor;        // The output colour
 
 void main() {
     
-    fOutputColor = vec4(1.0f);
+    fOutputColor = vec4(lightColor, 1.0f);
     
 }

@@ -321,7 +321,7 @@ void Game::RenderPyramid(){
     
     //update shader, including the tranform of our mesh, and the camera view of the mesh
     m_basicshader.SetTransfromUniform(m_pyramidmesh.transform, m_camera);
-    m_basicshader.SetDeclaredUniform(false);
+    m_basicshader.SetDeclaredUniform(false, m_lightColor);
     m_basicshader.SetMaterialUniform();
     
     m_pyramidmesh.Draw(0);
@@ -347,7 +347,7 @@ void Game::RenderLamp(){
         
         //update shader, including the tranform of our mesh, and the camera view of the mesh
         m_lampshader.SetTransfromUniform(m_lampmesh.transform, m_camera);
-        //m_lampshader.SetDeclaredUniform(false);
+        m_lampshader.SetDeclaredUniform(false, m_lightColor);
         //m_lampshader.SetMaterialUniform();
         
         m_lampmesh.Draw(0);
@@ -374,7 +374,7 @@ void Game::RenderCubes(){
         
         //update shader, including the tranform of our mesh, and the camera view of the mesh
         m_lightshader.SetTransfromUniform(m_cubemesh.transform, m_camera);
-        m_lightshader.SetDeclaredUniform(false);
+        m_lightshader.SetDeclaredUniform(false, m_lightColor);
         m_lightshader.SetMaterialUniform();
         
         m_cubemesh.Draw(0);
@@ -384,20 +384,17 @@ void Game::RenderCubes(){
     for ( GLuint i = 0; i < 1; ++i){
         // Directional light
         DirectionalLight dirLight(m_lightColor, 0.2f);
-        m_lightshader.SetDirectionalLightUniform(dirLight);
+        m_lightshader.SetDirectionalLightUniform("R_directionallight[0]",dirLight);
     }
     
-    //for ( GLuint i = 0; i < m_pointLightPositions.size(); ++i){
-        //m_lightColor
+    for ( GLuint i = 0; i < m_pointLightPositions.size(); ++i){
         PointLight pointLight1(m_lightColor, 3.7f, Attenuation(1.0f, 0.09f, 0.32f));
-        m_lightshader.SetPointLight1Uniform(pointLight1, m_pointLightPositions[0]);
-    //}
-    
-    PointLight pointLight2(m_lightColor, 3.7f, Attenuation(1.0f, 0.09f, 0.32f));
-    m_lightshader.SetPointLight2Uniform(pointLight2, m_pointLightPositions[1]);
+        string uniformName = "R_pointlight[" + std::to_string(i) + "]";
+        m_lightshader.SetPointLightUniform(uniformName, pointLight1, m_pointLightPositions[i]);
+    }
     
     SpotLight spotLight(m_lightColor, 24.5f, Attenuation(1.0f, 0.09f, 0.32f), 0.6f, 0.85f);
-    m_lightshader.SetSpotLightUniform( spotLight);
+    m_lightshader.SetSpotLightUniform("R_spotlight", spotLight);
     
     // unbind the shader program
     m_lightshader.UnBind();
@@ -416,7 +413,7 @@ void Game::RenderCube(){
     
     //update shader, including the tranform of our mesh, and the camera view of the mesh
     m_lightshader.SetTransfromUniform(m_cubemesh.transform, m_camera);
-    m_lightshader.SetDeclaredUniform(false);
+    m_lightshader.SetDeclaredUniform(false, m_lightColor);
     m_lightshader.SetMaterialUniform();
     
     m_cubemesh.Draw(0);
@@ -429,7 +426,7 @@ void Game::RenderCube(){
 void Game::Render(){
     
     //RenderPyramid();
-    //RenderTriangle();
+    //RenderCube();
     RenderCubes();
     RenderLamp();
 }
@@ -479,11 +476,26 @@ void Game::DoKeysMovement(bool *selectedkeys){
     
     if( selectedkeys[GLFW_KEY_1])
     {
-        m_pointLightPositionsIndex += 1;
-        if (m_pointLightPositionsIndex > m_pointLightPositions.size() - 1) {
-            m_pointLightPositionsIndex = 0;
-        }
+        m_pointLightPositionsIndex = 0;
     }
+    
+    if( selectedkeys[GLFW_KEY_2])
+    {
+        m_pointLightPositionsIndex = 1;
+    }
+    if( selectedkeys[GLFW_KEY_3])
+    {
+        m_pointLightPositionsIndex = 2;
+    }
+    if( selectedkeys[GLFW_KEY_4])
+    {
+        m_pointLightPositionsIndex = 3;
+    }
+    if( selectedkeys[GLFW_KEY_5])
+    {
+        m_pointLightPositionsIndex = 4;
+    }
+    
    
     if( selectedkeys[GLFW_KEY_W])
     {

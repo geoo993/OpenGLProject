@@ -3,7 +3,7 @@
 // https://github.com/BennyQBD/3DGameEngineCpp_60/blob/master/3DEngineCpp/res/shaders/lighting.glh
 
 #define NUMBER_OF_DIRECTIONAL_LIGHTS 1
-#define NUMBER_OF_POINT_LIGHTS 2
+#define NUMBER_OF_POINT_LIGHTS 5
 
 
 struct Material
@@ -55,8 +55,7 @@ struct SpotLight
 
 uniform Material material;
 uniform DirectionalLight R_directionallight[NUMBER_OF_DIRECTIONAL_LIGHTS];
-uniform PointLight R_pointlight1;
-uniform PointLight R_pointlight2;
+uniform PointLight R_pointlight[NUMBER_OF_POINT_LIGHTS];
 uniform SpotLight R_spotlight;
 
 uniform vec3 viewPosition;
@@ -177,16 +176,13 @@ void main() {
     }
     
     // Point lights
-    vec4 pointL1 = CalcPointLight(R_pointlight1, normal, vWorldPosition);
-    result += pointL1;
+    //vec4 pointL = CalcPointLight(R_pointlight1, normal, vWorldPosition);
+    //result += pointL;
     
-    vec4 pointL2 = CalcPointLight(R_pointlight2, normal, vWorldPosition);
-    result += pointL2;
-    
-//    for (int i = 0; i < NUMBER_OF_POINT_LIGHTS; i++){
-//        vec4 pointL = CalcPointLight(R_pointlight[i], normal, vWorldPosition);
-//        result += pointL;
-//    }
+    for (int i = 0; i < NUMBER_OF_POINT_LIGHTS; i++){
+        vec4 pointL = CalcPointLight(R_pointlight[i], normal, vWorldPosition);
+        result += pointL;
+    }
 
     
     // Spot light
