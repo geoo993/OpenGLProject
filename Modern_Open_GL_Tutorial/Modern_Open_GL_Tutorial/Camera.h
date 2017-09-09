@@ -148,16 +148,18 @@ public:
         // Make sure that when pitch is out of bounds, screen doesn't get flipped
         if ( constrainPitch )
         {
-            if ( this->m_pitch >= 90.0f )
+   
+            if ( this->m_pitch > 89.0f )
             {
-                this->m_pitch = -90.0f;
+                this->m_pitch = 89.0f;
                 this->m_roll = 0;
             }
             
-            if ( this->m_pitch <= -90.0f )
+            if ( this->m_pitch < -89.0f )
             {
-                this->m_pitch = -90.0f;
+                this->m_pitch = -89.0f;
             }
+         
           
         }
         
