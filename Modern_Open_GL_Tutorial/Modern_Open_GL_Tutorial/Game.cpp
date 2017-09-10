@@ -369,12 +369,12 @@ void Game::RenderCubes(){
     // Point Light
     for ( GLuint i = 0; i < m_pointLightPositions.size(); ++i){
         string uniformName = "R_pointlight[" + std::to_string(i) + "]";
-        PointLight pointLight1(m_lightColor, 3.7f, Attenuation(1.0f, 0.09f, 0.32f));
+        PointLight pointLight1(m_lightColor, 0.7f, Attenuation(1.0f, 0.09f, 0.32f));
         m_lightshader.SetPointLightUniform(uniformName, pointLight1, m_pointLightPositions[i]);
     }
     
     //Spot Light
-    SpotLight spotLight(m_lightColor, 24.5f, Attenuation(1.0f, 0.09f, 0.32f), 0.6f, 0.85f);
+    SpotLight spotLight(m_lightColor, 4.5f, Attenuation(1.0f, 0.09f, 0.32f), 0.6f, 0.85f);
     m_lightshader.SetSpotLightUniform("R_spotlight", spotLight);
     
     // unbind the shader program

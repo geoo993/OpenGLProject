@@ -70,7 +70,8 @@ in vec3 vLocalNormal;
 
 vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPosition)
 {
-    float diffuseFactor = dot(normal, -direction); //diff
+    //float diffuseFactor = dot(normal, -direction); //diff
+    float diffuseFactor = max(dot(normal, -direction), 0.0f);
     
     vec4 diffuseColor = vec4(0.0f,0.0f,0.0f,0.0f);
     vec4 specularColor = vec4(0.0f,0.0f,0.0f,0.0f);
@@ -112,13 +113,11 @@ vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPosition)
 
 vec4 CalcPointLight(PointLight pointLight, vec3 normal, vec3 worldPosition)
 {
-    vec3 lightDirection = worldPosition - pointLight.position;
+    vec3 lightDirection = normalize(worldPosition - pointLight.position);
     float distanceToPoint = length(lightDirection);
     
     if(distanceToPoint > pointLight.range)
         return vec4(0.0f, 0.0f, 0.0f, 0.0f);
-    
-    lightDirection = normalize(lightDirection);
     
     vec4 color = CalcLight(pointLight.base, lightDirection, normal, worldPosition);
     
