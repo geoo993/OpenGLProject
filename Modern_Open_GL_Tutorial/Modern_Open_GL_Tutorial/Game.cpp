@@ -349,7 +349,7 @@ void Game::RenderLamp(){
 void Game::RenderCubes(){
     
     m_cubesColor.r = sin( glfwGetTime() * 0.1f );
-    m_cubesColor.g = sin( glfwGetTime() * 0.07f );
+    m_cubesColor.g = sin( glfwGetTime() * 0.06f );
     m_cubesColor.b = sin( glfwGetTime() * 0.03f );
     
     // bind the shader program
@@ -369,7 +369,6 @@ void Game::RenderCubes(){
         m_lightshader.SetMaterialUniform();
         
         m_cubemesh.Draw(0);
-        
     }
     
     m_cubesColor = glm::vec3(0.7f, 0.04f, 0.3f);;
