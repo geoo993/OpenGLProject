@@ -43,7 +43,14 @@ private:
     
     // Light
     glm::vec3 m_lightColor;
+    glm::vec3 m_cubesColor;
     glm::vec3 m_viewPosition;
+    
+    GLboolean m_useTexture;
+    GLboolean m_useDir;
+    GLboolean m_usePoint;
+    GLboolean m_useSpot;
+    
     
     vector<glm::vec3> m_cubesPosition = {
         glm::vec3(-1.0f, -4.0f, -1.0f),
@@ -72,7 +79,17 @@ private:
         glm::vec3(  0.0f,  0.0f, -3.0f      )
     };
     
+    std::vector<glm::vec3> m_pointlightsColours = {
+        glm::vec3(1.0f, 1.0f, 0.0f),
+        glm::vec3(0.4f, 0.6f, 0.7f),
+        glm::vec3(0.9f, 0.1f, 0.4f),
+        glm::vec3(0.6f, 0.2f, 0.25f),
+        glm::vec3(0.3f, 0.5f, 0.2f),
+    };
 
+    // inputs
+    double m_keyPressTime;
+    double m_lastKeyPressTime;
     
 public:
     Game();

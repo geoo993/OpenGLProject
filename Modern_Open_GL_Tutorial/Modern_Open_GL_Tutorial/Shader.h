@@ -26,7 +26,12 @@ public:
     void SetTransfromUniform(const Transform & transform, 
                              Camera * camera);
     void SetMaterialUniform();
-    void SetDeclaredUniform(const bool & bUseTexture, const glm::vec3 & lightColor );
+    void SetDeclaredUniform(const bool & bUseTexture, 
+                            const glm::vec3 & lightColor,
+                            const bool & bUseDirectionalLight = true, 
+                            const bool & bUsePointLight = true,
+                            const bool & bUseSpotlight = true,
+                            const glm::vec3 & objColor = glm::vec3(1.0f));
         
     GLuint CreateShader (const std::string &text, GLenum shadertype);
     std::string LoadShader(const std::string& fileName);

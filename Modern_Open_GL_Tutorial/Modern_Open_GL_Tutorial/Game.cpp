@@ -48,7 +48,6 @@ void OnKeyDown_callback( GLFWwindow* window, int key, int scancode, int action, 
         else if( action == GLFW_RELEASE )
         {
             keys[key] = false;
-            keyPressedCode = -1; 
             keyReleasedCode = key;
         }
     }
@@ -278,6 +277,16 @@ void Game::Initialise(){
     m_lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
     m_viewPosition = glm::vec3(10.0f, 10.0f, 22.0f);
     
+    m_cubesColor = glm::vec3(0.7f, 0.04f, 0.3f);;
+    
+    m_useTexture = false;
+    m_useDir = true;
+    m_usePoint = true;
+    m_useSpot = true;
+    
+    
+    m_keyPressTime = 0.0;
+    m_lastKeyPressTime = 0.0;
 }
 
 void Game::LoadFromResources(const std::string &resourcepath){
@@ -325,7 +334,7 @@ void Game::RenderLamp(){
         
         //update shader, including the tranform of our mesh, and the camera view of the mesh
         m_lampshader.SetTransfromUniform(m_lampmesh.transform, m_camera);
-        m_lampshader.SetDeclaredUniform(false, m_lightColor);
+        m_lampshader.SetDeclaredUniform(false, m_pointlightsColours[i]);
         //m_lampshader.SetMaterialUniform();
         
         m_lampmesh.Draw(0);
@@ -338,6 +347,10 @@ void Game::RenderLamp(){
 }
 
 void Game::RenderCubes(){
+    
+    m_cubesColor.r = sin( glfwGetTime() * 0.1f );
+    m_cubesColor.g = sin( glfwGetTime() * 0.07f );
+    m_cubesColor.b = sin( glfwGetTime() * 0.03f );
     
     // bind the shader program
     m_lightshader.Bind();
@@ -352,12 +365,15 @@ void Game::RenderCubes(){
         
         //update shader, including the tranform of our mesh, and the camera view of the mesh
         m_lightshader.SetTransfromUniform(m_cubemesh.transform, m_camera);
-        m_lightshader.SetDeclaredUniform(true, m_lightColor);
+        m_lightshader.SetDeclaredUniform(m_useTexture, m_lightColor, m_useDir, m_usePoint, m_useSpot, m_cubesColor);
         m_lightshader.SetMaterialUniform();
         
         m_cubemesh.Draw(0);
         
     }
+    
+    m_cubesColor = glm::vec3(0.7f, 0.04f, 0.3f);;
+    
     
     // Directional light
     for ( GLuint i = 0; i < m_directionalLightsDirections.size(); ++i){
@@ -369,7 +385,7 @@ void Game::RenderCubes(){
     // Point Light
     for ( GLuint i = 0; i < m_pointLightPositions.size(); ++i){
         string uniformName = "R_pointlight[" + std::to_string(i) + "]";
-        PointLight pointLight1(m_lightColor, 0.7f, Attenuation(1.0f, 0.09f, 0.32f));
+        PointLight pointLight1(m_pointlightsColours[i], 0.7f, Attenuation(1.0f, 0.09f, 0.32f));
         m_lightshader.SetPointLightUniform(uniformName, pointLight1, m_pointLightPositions[i]);
     }
     
@@ -434,107 +450,145 @@ void Game::GameTimer(){
 
 void Game::DoKeysMovement(bool *selectedkeys){
  
-    // Camera controls
-    if( selectedkeys[GLFW_KEY_UP] )
-    {
-        m_camera->ProcessKeyboard( FORWARD, m_deltaTime );
+    if (keyPressedAction == GLFW_RELEASE){
+        keyPressedCode = -1;
     }
-    
-    if( selectedkeys[GLFW_KEY_DOWN] )
-    {
-        m_camera->ProcessKeyboard( BACKWARD, m_deltaTime );
-    }
-    
-    if( selectedkeys[GLFW_KEY_LEFT] )
-    {
-        m_camera->ProcessKeyboard( LEFT, m_deltaTime );
-    }
-    
-    if( selectedkeys[GLFW_KEY_RIGHT] )
-    {
-        m_camera->ProcessKeyboard( RIGHT, m_deltaTime );
-    }
-    
-    if( selectedkeys[GLFW_KEY_1])
-    {
-        m_pointLightPositionsIndex = 0;
-    }
-    
-    if( selectedkeys[GLFW_KEY_2])
-    {
-        m_pointLightPositionsIndex = 1;
-    }
-    if( selectedkeys[GLFW_KEY_3])
-    {
-        m_pointLightPositionsIndex = 2;
-    }
-    if( selectedkeys[GLFW_KEY_4])
-    {
-        m_pointLightPositionsIndex = 3;
-    }
-    if( selectedkeys[GLFW_KEY_5])
-    {
-        m_pointLightPositionsIndex = 4;
-    }
-    
    
-    if( selectedkeys[GLFW_KEY_W])
-    {
-        glm::vec3 pos(
-                 m_pointLightPositions[m_pointLightPositionsIndex].x, 
-                 m_pointLightPositions[m_pointLightPositionsIndex].y + 0.1f, 
-                 m_pointLightPositions[m_pointLightPositionsIndex].z);
-        m_pointLightPositions[m_pointLightPositionsIndex] = pos;
+    if (keyPressedCode == -1){
+        m_keyPressTime = 0.0;
+        m_lastKeyPressTime = -1;
+        keyReleasedCode = -1;
     }
     
-    if( selectedkeys[GLFW_KEY_S] )
-    {
-        glm::vec3 pos(
-                      m_pointLightPositions[m_pointLightPositionsIndex].x,
-                      m_pointLightPositions[m_pointLightPositionsIndex].y - 0.1f,
-                      m_pointLightPositions[m_pointLightPositionsIndex].z);
-        m_pointLightPositions[m_pointLightPositionsIndex] = pos;
+    if (keyPressedCode != -1) {
+        m_keyPressTime += 0.06;
+      
+        //if ((int)m_lastKeyPressTime  == (int)m_keyPressTime){ return;}
         
-    }
-    
-    if( selectedkeys[GLFW_KEY_A] )
-    {
-        glm::vec3 pos(
-                      m_pointLightPositions[m_pointLightPositionsIndex].x - 0.1f,
-                      m_pointLightPositions[m_pointLightPositionsIndex].y,
-                      m_pointLightPositions[m_pointLightPositionsIndex].z);
-        m_pointLightPositions[m_pointLightPositionsIndex] = pos;
+        // Camera controls
+        if( selectedkeys[GLFW_KEY_UP] )
+        {
+            m_camera->ProcessKeyboard( FORWARD, m_deltaTime );
+        }
         
-    }
-    
-    if( selectedkeys[GLFW_KEY_D] )
-    {
-        glm::vec3 pos(
-                      m_pointLightPositions[m_pointLightPositionsIndex].x + 0.1f,
-                      m_pointLightPositions[m_pointLightPositionsIndex].y,
-                      m_pointLightPositions[m_pointLightPositionsIndex].z);
-        m_pointLightPositions[m_pointLightPositionsIndex] = pos;
+        if( selectedkeys[GLFW_KEY_DOWN] )
+        {
+            m_camera->ProcessKeyboard( BACKWARD, m_deltaTime );
+        }
         
+        if( selectedkeys[GLFW_KEY_LEFT] )
+        {
+            m_camera->ProcessKeyboard( LEFT, m_deltaTime );
+        }
+        
+        if( selectedkeys[GLFW_KEY_RIGHT] )
+        {
+            m_camera->ProcessKeyboard( RIGHT, m_deltaTime );
+        }
+        
+        if( selectedkeys[GLFW_KEY_1])
+        {
+            m_pointLightPositionsIndex = 0;
+        }
+        
+        if( selectedkeys[GLFW_KEY_2])
+        {
+            m_pointLightPositionsIndex = 1;
+        }
+        if( selectedkeys[GLFW_KEY_3])
+        {
+            m_pointLightPositionsIndex = 2;
+        }
+        if( selectedkeys[GLFW_KEY_4])
+        {
+            m_pointLightPositionsIndex = 3;
+        }
+        if( selectedkeys[GLFW_KEY_5])
+        {
+            m_pointLightPositionsIndex = 4;
+        }
+        if( selectedkeys[GLFW_KEY_6])
+        {
+            if ((int)m_lastKeyPressTime  == (int)m_keyPressTime){ return;}
+            m_useDir = !m_useDir;
+        }
+        if( selectedkeys[GLFW_KEY_7])
+        {
+            if ((int)m_lastKeyPressTime  == (int)m_keyPressTime){ return;}
+            m_usePoint = !m_usePoint;
+        }
+        if( selectedkeys[GLFW_KEY_8])
+        {
+            if ((int)m_lastKeyPressTime  == (int)m_keyPressTime){ return;}
+            m_useSpot = !m_useSpot;
+        }
+        if( selectedkeys[GLFW_KEY_9])
+        {
+            if ((int)m_lastKeyPressTime  == (int)m_keyPressTime){ return;}
+            m_useTexture = !m_useTexture;
+        }
+        
+       
+        if( selectedkeys[GLFW_KEY_W])
+        {
+            glm::vec3 pos(
+                     m_pointLightPositions[m_pointLightPositionsIndex].x,
+                     m_pointLightPositions[m_pointLightPositionsIndex].y + 0.1f,
+                     m_pointLightPositions[m_pointLightPositionsIndex].z);
+            m_pointLightPositions[m_pointLightPositionsIndex] = pos;
+        }
+        
+        if( selectedkeys[GLFW_KEY_S] )
+        {
+            glm::vec3 pos(
+                          m_pointLightPositions[m_pointLightPositionsIndex].x,
+                          m_pointLightPositions[m_pointLightPositionsIndex].y - 0.1f,
+                          m_pointLightPositions[m_pointLightPositionsIndex].z);
+            m_pointLightPositions[m_pointLightPositionsIndex] = pos;
+            
+        }
+        
+        if( selectedkeys[GLFW_KEY_A] )
+        {
+            glm::vec3 pos(
+                          m_pointLightPositions[m_pointLightPositionsIndex].x - 0.1f,
+                          m_pointLightPositions[m_pointLightPositionsIndex].y,
+                          m_pointLightPositions[m_pointLightPositionsIndex].z);
+            m_pointLightPositions[m_pointLightPositionsIndex] = pos;
+            
+        }
+        
+        if( selectedkeys[GLFW_KEY_D] )
+        {
+            glm::vec3 pos(
+                          m_pointLightPositions[m_pointLightPositionsIndex].x + 0.1f,
+                          m_pointLightPositions[m_pointLightPositionsIndex].y,
+                          m_pointLightPositions[m_pointLightPositionsIndex].z);
+            m_pointLightPositions[m_pointLightPositionsIndex] = pos;
+            
+        }
+        
+        if( selectedkeys[GLFW_KEY_Z] )
+        {
+            glm::vec3 pos(
+                          m_pointLightPositions[m_pointLightPositionsIndex].x,
+                          m_pointLightPositions[m_pointLightPositionsIndex].y,
+                          m_pointLightPositions[m_pointLightPositionsIndex].z + 0.1f);
+            m_pointLightPositions[m_pointLightPositionsIndex] = pos;
+        }
+        
+        if( selectedkeys[GLFW_KEY_X] )
+        {
+            glm::vec3 pos(
+                          m_pointLightPositions[m_pointLightPositionsIndex].x,
+                          m_pointLightPositions[m_pointLightPositionsIndex].y,
+                          m_pointLightPositions[m_pointLightPositionsIndex].z - 0.1f);
+            m_pointLightPositions[m_pointLightPositionsIndex] = pos;
+        }
+        
+        
+        m_lastKeyPressTime = m_keyPressTime;
     }
-    
-    if( selectedkeys[GLFW_KEY_Z] )
-    {
-        glm::vec3 pos(
-                      m_pointLightPositions[m_pointLightPositionsIndex].x,
-                      m_pointLightPositions[m_pointLightPositionsIndex].y,
-                      m_pointLightPositions[m_pointLightPositionsIndex].z + 0.1f);
-        m_pointLightPositions[m_pointLightPositionsIndex] = pos;
-    }
-    
-    if( selectedkeys[GLFW_KEY_X] )
-    {
-        glm::vec3 pos(
-                      m_pointLightPositions[m_pointLightPositionsIndex].x,
-                      m_pointLightPositions[m_pointLightPositionsIndex].y,
-                      m_pointLightPositions[m_pointLightPositionsIndex].z - 0.1f);
-        m_pointLightPositions[m_pointLightPositionsIndex] = pos;
-    }
-    
 }
 
 void Game::DoMouseMovement(const GLfloat &mouseX, const GLfloat &mouseY){

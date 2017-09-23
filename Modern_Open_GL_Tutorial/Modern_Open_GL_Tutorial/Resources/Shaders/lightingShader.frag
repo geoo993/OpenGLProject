@@ -73,6 +73,9 @@ uniform SpotLight spotlight;
 
 uniform vec3 viewPosition;
 uniform bool bUseTexture;
+uniform bool bUseDirectionalLight;
+uniform bool bUsePointLight;
+uniform bool bUseSpotlight;
 
 in vec3 worldPosition;
 in vec2 texCoord;

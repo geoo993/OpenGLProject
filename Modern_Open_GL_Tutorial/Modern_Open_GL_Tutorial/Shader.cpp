@@ -211,12 +211,21 @@ void Shader::SetTransfromUniform(const Transform & transform,
 }
 
 
-void Shader::SetDeclaredUniform(const bool & bUseTexture, const glm::vec3 & lightColor ){
+void Shader::SetDeclaredUniform(const bool & bUseTexture, 
+                                const glm::vec3 & lightColor, 
+                                const bool & bUseDirectionalLight, 
+                                const bool & bUsePointLight, 
+                                const bool & bUseSpotlight,
+                                const glm::vec3 & objColor){
+    
     
     SetUniform("bUseTexture", bUseTexture);
+    SetUniform("bUseDirectionalLight", bUseDirectionalLight);
+    SetUniform("bUsePointLight", bUsePointLight);
+    SetUniform("bUseSpotlight", bUseSpotlight);
     SetUniform("viewPosition", m_camera->GetPosition());
     SetUniform("lightColor", lightColor);
-    
+    SetUniform("objColor", objColor);
 }
 
 
@@ -242,7 +251,7 @@ void Shader::SetMaterialUniform(){
     
     glUniform3fv(m_uniforms[MATERIALDIFFUSE_U], 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.31f)));
     
-    glUniform3fv(m_uniforms[MATERIALSPECULAR_U], 1, glm::value_ptr(glm::vec3(0.5f, 0.5f, 0.5f)));
+    glUniform3fv(m_uniforms[MATERIALSPECULAR_U], 1, glm::value_ptr(glm::vec3(0.2f, 0.2f, 0.2f)));
     
 }
 

@@ -61,8 +61,12 @@ uniform DirectionalLight R_directionallight[NUMBER_OF_DIRECTIONAL_LIGHTS];
 uniform PointLight R_pointlight[NUMBER_OF_POINT_LIGHTS];
 uniform SpotLight R_spotlight;
 
+uniform vec3 objColor;
 uniform vec3 viewPosition;
 uniform bool bUseTexture;
+uniform bool bUseDirectionalLight;
+uniform bool bUsePointLight;
+uniform bool bUseSpotlight;
 
 in vec3 vWorldPosition;
 in vec2 vTexCoord;
@@ -186,25 +190,31 @@ void main() {
     vec3 normal = normalize(vLocalNormal);
     vec4 result = vec4(0.0f);
     
-    // Directional lighting
-    for (int i = 0; i < NUMBER_OF_DIRECTIONAL_LIGHTS; i++){
-        vec4 directionalLight = CalcDirectionalLight(R_directionallight[i], normal, vWorldPosition);
-        result += directionalLight;
+    if (bUseDirectionalLight){
+        // Directional lighting
+        for (int i = 0; i < NUMBER_OF_DIRECTIONAL_LIGHTS; i++){
+            vec4 directionalLight = CalcDirectionalLight(R_directionallight[i], normal, vWorldPosition);
+            result += directionalLight;
+        }
     }
     
-    // Point lights
-    //vec4 pointL = CalcPointLight(R_pointlight1, normal, vWorldPosition);
-    //result += pointL;
-    
-    for (int i = 0; i < NUMBER_OF_POINT_LIGHTS; i++){
-        vec4 pointL = CalcPointLight(R_pointlight[i], normal, vWorldPosition);
-        result += pointL;
+    if (bUsePointLight){
+        // Point lights
+        //vec4 pointL = CalcPointLight(R_pointlight1, normal, vWorldPosition);
+        //result += pointL;
+        
+        for (int i = 0; i < NUMBER_OF_POINT_LIGHTS; i++){
+            vec4 pointL = CalcPointLight(R_pointlight[i], normal, vWorldPosition);
+            result += pointL;
+        }
     }
 
+    if (bUseSpotlight){
+        // Spot light
+        vec4 spotL = CalcSpotLight(R_spotlight, normal, vWorldPosition);
+        result += spotL;
+    }
     
-    // Spot light
-    vec4 spotL = CalcSpotLight(R_spotlight, normal, vWorldPosition);
-    result += spotL;
-    
-    fOutputColor = result;
+ 
+    fOutputColor = bUseTexture ? result : result * vec4(objColor, 1.0f);
 }
