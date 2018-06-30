@@ -10,10 +10,7 @@
 		C700FAE31F5160DA00A9E4F3 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C700FAE21F5160DA00A9E4F3 /* main.cpp */; };
 		C700FAEE1F51618E00A9E4F3 /* libfreeimage.3.17.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C700FAEA1F51618E00A9E4F3 /* libfreeimage.3.17.0.dylib */; };
 		C700FAEF1F51618E00A9E4F3 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C700FAEB1F51618E00A9E4F3 /* libglfw.3.2.dylib */; };
-		C700FAF01F51618E00A9E4F3 /* libglib-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C700FAEC1F51618E00A9E4F3 /* libglib-2.0.0.dylib */; };
-		C700FAF11F51618E00A9E4F3 /* libGLEW.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C700FAED1F51618E00A9E4F3 /* libGLEW.2.0.0.dylib */; };
 		C700FAF21F5161B300A9E4F3 /* libfreeimage.3.17.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C700FAEA1F51618E00A9E4F3 /* libfreeimage.3.17.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		C700FAF31F5161B300A9E4F3 /* libGLEW.2.0.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C700FAED1F51618E00A9E4F3 /* libGLEW.2.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C700FAF41F5161B300A9E4F3 /* libglfw.3.2.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C700FAEB1F51618E00A9E4F3 /* libglfw.3.2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C700FAF51F5161B300A9E4F3 /* libglib-2.0.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C700FAEC1F51618E00A9E4F3 /* libglib-2.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C700FAFF1F5164C600A9E4F3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C700FAF71F51622C00A9E4F3 /* Cocoa.framework */; };
@@ -23,6 +20,8 @@
 		C700FB0D1F51734B00A9E4F3 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C700FAFC1F51631800A9E4F3 /* Texture.cpp */; };
 		C700FB121F51755C00A9E4F3 /* GameObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C700FB101F51754D00A9E4F3 /* GameObject.cpp */; };
 		C700FB131F51755F00A9E4F3 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C700FB0F1F51752E00A9E4F3 /* Mesh.cpp */; };
+		C756263F20E79C5900BB7F4B /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C756263E20E79C5900BB7F4B /* libGLEW.2.1.0.dylib */; };
+		C756264020E79C7500BB7F4B /* libGLEW.2.1.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C756263E20E79C5900BB7F4B /* libGLEW.2.1.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C7ECC3541F5ACD5D004E1D17 /* Lighting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7ECC3521F5ACD5D004E1D17 /* Lighting.cpp */; };
 /* End PBXBuildFile section */
 
@@ -33,8 +32,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 11;
 			files = (
+				C756264020E79C7500BB7F4B /* libGLEW.2.1.0.dylib in CopyFiles */,
 				C700FAF21F5161B300A9E4F3 /* libfreeimage.3.17.0.dylib in CopyFiles */,
-				C700FAF31F5161B300A9E4F3 /* libGLEW.2.0.0.dylib in CopyFiles */,
 				C700FAF41F5161B300A9E4F3 /* libglfw.3.2.dylib in CopyFiles */,
 				C700FAF51F5161B300A9E4F3 /* libglib-2.0.0.dylib in CopyFiles */,
 			);
@@ -48,7 +47,6 @@
 		C700FAEA1F51618E00A9E4F3 /* libfreeimage.3.17.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreeimage.3.17.0.dylib; path = ../../../../../../opt/local/lib/libfreeimage.3.17.0.dylib; sourceTree = "<group>"; };
 		C700FAEB1F51618E00A9E4F3 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../../../opt/local/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
 		C700FAEC1F51618E00A9E4F3 /* libglib-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.0.dylib"; path = "../../../../../../opt/local/lib/libglib-2.0.0.dylib"; sourceTree = "<group>"; };
-		C700FAED1F51618E00A9E4F3 /* libGLEW.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.0.0.dylib; path = ../../../../../../opt/local/lib/libGLEW.2.0.0.dylib; sourceTree = "<group>"; };
 		C700FAF61F51622C00A9E4F3 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		C700FAF71F51622C00A9E4F3 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C700FAF91F51631800A9E4F3 /* Common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
@@ -70,6 +68,7 @@
 		C74DB4F91F5189B9002938A8 /* screenShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = screenShader.frag; sourceTree = "<group>"; };
 		C74DB4FA1F5189B9002938A8 /* screenShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = screenShader.vert; sourceTree = "<group>"; };
 		C74DB4FB1F519D18002938A8 /* super-mario.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "super-mario.jpg"; sourceTree = "<group>"; };
+		C756263E20E79C5900BB7F4B /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = Frameworks/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
 		C77B4BE31F531AB200AE7B09 /* container_specular.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = container_specular.png; sourceTree = "<group>"; };
 		C77B4BE41F531AB200AE7B09 /* container.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = container.png; sourceTree = "<group>"; };
 		C7CCAB231F5238CE0048D12B /* lightingShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lightingShader.frag; sourceTree = "<group>"; };
@@ -88,12 +87,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C756263F20E79C5900BB7F4B /* libGLEW.2.1.0.dylib in Frameworks */,
 				C700FB001F5164D100A9E4F3 /* OpenGL.framework in Frameworks */,
 				C700FAFF1F5164C600A9E4F3 /* Cocoa.framework in Frameworks */,
 				C700FAEE1F51618E00A9E4F3 /* libfreeimage.3.17.0.dylib in Frameworks */,
 				C700FAEF1F51618E00A9E4F3 /* libglfw.3.2.dylib in Frameworks */,
-				C700FAF01F51618E00A9E4F3 /* libglib-2.0.0.dylib in Frameworks */,
-				C700FAF11F51618E00A9E4F3 /* libGLEW.2.0.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,10 +143,10 @@
 		C700FAE91F51618900A9E4F3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C756263E20E79C5900BB7F4B /* libGLEW.2.1.0.dylib */,
 				C700FAF71F51622C00A9E4F3 /* Cocoa.framework */,
 				C700FAF61F51622C00A9E4F3 /* OpenGL.framework */,
 				C700FAEA1F51618E00A9E4F3 /* libfreeimage.3.17.0.dylib */,
-				C700FAED1F51618E00A9E4F3 /* libGLEW.2.0.0.dylib */,
 				C700FAEB1F51618E00A9E4F3 /* libglfw.3.2.dylib */,
 				C700FAEC1F51618E00A9E4F3 /* libglib-2.0.0.dylib */,
 			);
@@ -375,6 +373,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/local/lib,
+					"$(PROJECT_DIR)/Frameworks",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -387,6 +386,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/local/lib,
+					"$(PROJECT_DIR)/Frameworks",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C737CD1E1E64DF1E00DD79A4 /* TorusKnotMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C737CD1C1E64DF1E00DD79A4 /* TorusKnotMesh.cpp */; };
 		C737CD221E64EFEA00DD79A4 /* TorusMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C737CD201E64EFEA00DD79A4 /* TorusMesh.cpp */; };
+		C76341C420E79EE900E41737 /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C76341C320E79EE900E41737 /* libGLEW.2.1.0.dylib */; };
 		C78CB5A51E67A4AD00521825 /* ConeMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C78CB5A31E67A4AD00521825 /* ConeMesh.cpp */; };
 		C7BA9BB21E680F6400F2B090 /* CylinderMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7BA9BB01E680F6400F2B090 /* CylinderMesh.cpp */; };
 		C7C3B91C1E619DD200DDB382 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C3B91A1E619DD200DDB382 /* libglfw.3.2.dylib */; };
@@ -19,8 +20,6 @@
 		C7C3B9231E61A6EE00DDB382 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C3B9141E619D9100DDB382 /* Cocoa.framework */; };
 		C7C3B9241E61A6EE00DDB382 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C3B9161E619D9100DDB382 /* OpenGL.framework */; };
 		C7C3B9451E61A98400DDB382 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7C3B9111E619CD600DDB382 /* main.cpp */; };
-		C7C3B9471E61A9C600DDB382 /* libGLEW.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C3B9461E61A9C600DDB382 /* libGLEW.2.0.0.dylib */; };
-		C7C3B9481E61A9CE00DDB382 /* libGLEW.2.0.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7C3B9461E61A9C600DDB382 /* libGLEW.2.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C7C3B94B1E61BC6000DDB382 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7C3B9491E61BC6000DDB382 /* Shader.cpp */; };
 		C7C3B94F1E61D3D700DDB382 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7C3B94D1E61D3D700DDB382 /* Mesh.cpp */; };
 		C7C3B9541E61EF6E00DDB382 /* GameObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7C3B9501E61EF6E00DDB382 /* GameObject.cpp */; };
@@ -37,7 +36,6 @@
 			dstSubfolderSpec = 11;
 			files = (
 				C7C3B95D1E61F61E00DDB382 /* libfreeimage.3.17.0.dylib in CopyFiles */,
-				C7C3B9481E61A9CE00DDB382 /* libGLEW.2.0.0.dylib in CopyFiles */,
 				C7C3B91E1E619DEE00DDB382 /* libglfw.3.2.dylib in CopyFiles */,
 				C7C3B91F1E619DEE00DDB382 /* libglib-2.0.0.dylib in CopyFiles */,
 			);
@@ -54,6 +52,7 @@
 		C737CD1F1E64DFF300DD79A4 /* Vertex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Vertex.h; sourceTree = "<group>"; };
 		C737CD201E64EFEA00DD79A4 /* TorusMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TorusMesh.cpp; sourceTree = "<group>"; };
 		C737CD211E64EFEA00DD79A4 /* TorusMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TorusMesh.h; sourceTree = "<group>"; };
+		C76341C320E79EE900E41737 /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
 		C7767B581E62DB2F00321D7D /* Transform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Transform.h; sourceTree = "<group>"; };
 		C7767B5B1E63116E00321D7D /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
 		C78CB5A31E67A4AD00521825 /* ConeMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConeMesh.cpp; sourceTree = "<group>"; };
@@ -67,7 +66,6 @@
 		C7C3B9161E619D9100DDB382 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		C7C3B91A1E619DD200DDB382 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../../../opt/local/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
 		C7C3B91B1E619DD200DDB382 /* libglib-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.0.dylib"; path = "../../../../../../opt/local/lib/libglib-2.0.0.dylib"; sourceTree = "<group>"; };
-		C7C3B9461E61A9C600DDB382 /* libGLEW.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.0.0.dylib; path = ../../../../../../opt/local/lib/libGLEW.2.0.0.dylib; sourceTree = "<group>"; };
 		C7C3B9491E61BC6000DDB382 /* Shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = "<group>"; };
 		C7C3B94A1E61BC6000DDB382 /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
 		C7C3B94C1E61CAEC00DDB382 /* res */ = {isa = PBXFileReference; lastKnownFileType = folder; path = res; sourceTree = "<group>"; };
@@ -87,9 +85,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7C3B95C1E61F61100DDB382 /* libfreeimage.3.17.0.dylib in Frameworks */,
-				C7C3B9471E61A9C600DDB382 /* libGLEW.2.0.0.dylib in Frameworks */,
 				C7C3B9231E61A6EE00DDB382 /* Cocoa.framework in Frameworks */,
 				C7C3B9241E61A6EE00DDB382 /* OpenGL.framework in Frameworks */,
+				C76341C420E79EE900E41737 /* libGLEW.2.1.0.dylib in Frameworks */,
 				C7C3B91C1E619DD200DDB382 /* libglfw.3.2.dylib in Frameworks */,
 				C7C3B91D1E619DD200DDB382 /* libglib-2.0.0.dylib in Frameworks */,
 			);
@@ -151,8 +149,8 @@
 		C7C3B9131E619D9100DDB382 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C76341C320E79EE900E41737 /* libGLEW.2.1.0.dylib */,
 				C7C3B95B1E61F61100DDB382 /* libfreeimage.3.17.0.dylib */,
-				C7C3B9461E61A9C600DDB382 /* libGLEW.2.0.0.dylib */,
 				C7C3B91A1E619DD200DDB382 /* libglfw.3.2.dylib */,
 				C7C3B91B1E619DD200DDB382 /* libglib-2.0.0.dylib */,
 				C7C3B9141E619D9100DDB382 /* Cocoa.framework */,
@@ -330,6 +328,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/local/lib,
+					"$(PROJECT_DIR)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -343,6 +342,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/local/lib,
+					"$(PROJECT_DIR)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
