@@ -9,6 +9,7 @@ struct Material
     sampler2D diffuseSampler;
     sampler2D specularSampler;
     float shininess;
+    float intensity;
     
     vec3 ambient;
     vec3 diffuse;
@@ -19,51 +20,42 @@ struct BaseLight
 {
     vec3 color;
     float intensity;
+
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+};
+
+struct Attenuation
+{
+    float constant;
+    float linear;
+    float exponent;
 };
 
 struct DirectionalLight
 {
     BaseLight base;
-    vec3 worldDirection;
-    
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+    vec3 direction;
     
 };
 
 struct PointLight
 {
     BaseLight base;
+    Attenuation atten;
     vec3 position;
-    
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-    
-    float constant;
-    float linear;
-    float quadratic;
+    float range;
 };
 
 
 struct SpotLight
 {
-    BaseLight base;
-    vec3 position;
+    PointLight pointLight;
     vec3 direction;
-    
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-    
-    float constant;
-    float linear;
-    float quadratic;
     
     float cutOff;
     float outerCutOff;
-    
 };
 
 uniform Material material;
@@ -71,7 +63,7 @@ uniform DirectionalLight directionallight;
 uniform PointLight pointlight;
 uniform SpotLight spotlight;
 
-uniform vec3 viewPosition;
+uniform vec3 cameraPosition;
 uniform bool bUseTexture;
 uniform bool bUseDirectionalLight;
 uniform bool bUsePointLight;
@@ -97,7 +89,7 @@ vec3 CalculateDirectionalLight( DirectionalLight light, vec3 normal, vec3 viewDi
     vec3 lightColor = light.base.color;
     
     // Diffuse shading
-    vec3 lightDirection = normalize(-light.worldDirection);
+    vec3 lightDirection = normalize(-light.direction);
     float diff = max( dot( normal, lightDirection ), 0.0f);
     
     // Specular shading
@@ -188,6 +180,7 @@ vec3 CalculateSpotLight( SpotLight light, vec3 normal, vec3 fragPosition, vec3 v
     float diff = max( dot( normal, lightDirection ), 0.0f);
     
     // Specular shading
+    // r or the reflection vector, is the normalised reflection vector
     vec3 reflectDirection = reflect(-lightDirection, normal);
     float spec = pow( max( dot( viewDirection, reflectDirection ), 0.0f), material.shininess);
     
@@ -234,7 +227,7 @@ void main() {
     
    
     vec3 normal = normalize(localNormal);
-    vec3 viewDirection = normalize(viewPosition - worldPosition);
+    vec3 viewDirection = normalize(cameraPosition - worldPosition);
     
     vec3 directionalL = CalculateDirectionalLight( directionallight, normal, viewDirection);
     

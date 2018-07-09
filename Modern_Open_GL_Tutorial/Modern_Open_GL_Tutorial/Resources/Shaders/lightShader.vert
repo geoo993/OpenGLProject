@@ -20,9 +20,8 @@ void main() {
     
     vTexCoord = inTexCoord;
     
-    vLocalNormal = vec3(model * vec4(inNormal, 0.0f));
+    //vLocalNormal = vec3(model * vec4(inNormal, 0.0f));
     //vLocalNormal = (model * vec4(inNormal, 0.0)).xyz;
     
-    //vLocalNormal = mat3(transpose(inverse(model))) * inNormal;
-    
+    vLocalNormal = mat3(transpose(inverse(model))) * inNormal;
 }

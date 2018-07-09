@@ -15,6 +15,10 @@ struct Material
     
     float shininess;
     float intensity;
+
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
     
 };
 
@@ -62,7 +66,7 @@ uniform PointLight R_pointlight[NUMBER_OF_POINT_LIGHTS];
 uniform SpotLight R_spotlight;
 
 uniform vec3 objColor;
-uniform vec3 viewPosition;
+uniform vec3 cameraPosition;
 uniform bool bUseTexture;
 uniform bool bUseDirectionalLight;
 uniform bool bUsePointLight;
@@ -90,7 +94,7 @@ vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPosition)
         ambientColor = base.diffuse * diffuseColor;
         
         // Specular
-        vec3 directionToEye = normalize(viewPosition - worldPosition); // viewDirection
+        vec3 directionToEye = normalize(cameraPosition - worldPosition); // viewDirection
         //vec3 reflectDirection = normalize(reflect(direction, normal));
         vec3 halfDirection = normalize(directionToEye - direction);
         
@@ -117,6 +121,8 @@ vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPosition)
 
 vec4 CalcPointLight(PointLight pointLight, vec3 normal, vec3 worldPosition)
 {
+    // lightDirection also known as s,
+    // is a normalised vector pointing to the light source
     vec3 lightDirection = normalize(worldPosition - pointLight.position);
     float distanceToPoint = length(lightDirection);
     
@@ -216,5 +222,5 @@ void main() {
     }
     
  
-    fOutputColor = bUseTexture ? result : result * vec4(objColor, 1.0f);
+    fOutputColor = result * vec4(objColor, 1.0f);
 }

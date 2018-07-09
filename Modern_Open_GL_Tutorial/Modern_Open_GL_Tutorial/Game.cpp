@@ -346,6 +346,29 @@ void Game::RenderLamp(){
     
 }
 
+void Game::RenderCube(){
+
+    // bind the shader program
+    m_lightshader.Bind();
+
+    glm::vec3 pos(-4.0f, 2.0f, 1.0f);
+
+    m_cubemesh.transform.SetPositions(pos );
+    //m_cubemesh.transform.SetScale(glm::vec3(2.0f));
+
+    //update shader, including the tranform of our mesh, and the camera view of the mesh
+    m_lightshader.SetTransfromUniform(m_cubemesh.transform, m_camera);
+    m_lightshader.SetDeclaredUniform(false, m_lightColor);
+    m_lightshader.SetMaterialUniform();
+
+    m_cubemesh.Draw(0);
+
+    // unbind the shader program
+    m_lightshader.UnBind();
+
+
+}
+
 void Game::RenderCubes(){
     
     m_cubesColor.r = sin( glfwGetTime() * 0.1f );
@@ -365,13 +388,13 @@ void Game::RenderCubes(){
         
         //update shader, including the tranform of our mesh, and the camera view of the mesh
         m_lightshader.SetTransfromUniform(m_cubemesh.transform, m_camera);
-        m_lightshader.SetDeclaredUniform(m_useTexture, m_lightColor, m_useDir, m_usePoint, m_useSpot, m_cubesColor);
+        m_lightshader.SetDeclaredUniform(m_useTexture, m_lightColor, m_useDir, m_usePoint, m_useSpot, m_camera->GetPosition(), m_cubesColor);
         m_lightshader.SetMaterialUniform();
         
         m_cubemesh.Draw(0);
     }
     
-    m_cubesColor = glm::vec3(0.7f, 0.04f, 0.3f);;
+    //m_cubesColor = glm::vec3(0.7f, 0.04f, 0.3f);;
     
     
     // Directional light
@@ -384,41 +407,22 @@ void Game::RenderCubes(){
     // Point Light
     for ( GLuint i = 0; i < m_pointLightPositions.size(); ++i){
         string uniformName = "R_pointlight[" + std::to_string(i) + "]";
-        PointLight pointLight1(m_pointlightsColours[i], 0.7f, Attenuation(1.0f, 0.09f, 0.32f));
-        m_lightshader.SetPointLightUniform(uniformName, pointLight1, m_pointLightPositions[i]);
+        glm::vec3 position = m_pointLightPositions[i];
+        glm::vec3 color = m_pointlightsColours[i];
+        PointLight pointLight1(color, 0.7f, Attenuation(1.0f, 0.09f, 0.32f), position, 40.0f);
+        m_lightshader.SetPointLightUniform(uniformName, pointLight1);
     }
     
     //Spot Light
-    SpotLight spotLight(m_lightColor, 4.5f, Attenuation(1.0f, 0.09f, 0.32f), 0.6f, 0.85f);
-    m_lightshader.SetSpotLightUniform("R_spotlight", spotLight);
+    SpotLight spotLight(m_lightColor, 4.5f, Attenuation(1.0f, 0.09f, 0.32f), m_camera->GetPosition(), 40.0f, 0.6f, 0.85f);
+    m_lightshader.SetSpotLightUniform("R_spotlight", spotLight, m_camera);
     
     // unbind the shader program
     m_lightshader.UnBind();
     
 }
 
-void Game::RenderCube(){
-    
-    // bind the shader program
-    m_lightshader.Bind();
-    
-    glm::vec3 pos(-4.0f, 2.0f, 1.0f);
-    
-    m_cubemesh.transform.SetPositions(pos );
-    //m_cubemesh.transform.SetScale(glm::vec3(2.0f));
-    
-    //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_lightshader.SetTransfromUniform(m_cubemesh.transform, m_camera);
-    m_lightshader.SetDeclaredUniform(false, m_lightColor);
-    m_lightshader.SetMaterialUniform();
-    
-    m_cubemesh.Draw(0);
-    
-    // unbind the shader program
-    m_lightshader.UnBind();
-    
-    
-}
+
 void Game::Render(){
     
     //RenderPyramid();

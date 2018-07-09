@@ -50,17 +50,23 @@ struct Attenuation
 struct PointLight : public BaseLight
 {
     Attenuation atten;
+    glm::vec3 position;
     float range;
     
-    PointLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0.0f, const Attenuation& atten = Attenuation());
+    PointLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0.0f,
+               const Attenuation& atten = Attenuation(), const glm::vec3 & position = glm::vec3(0.0f,0.0f,0.0f),
+               const float &range = 0.0f);
 };
 
 struct SpotLight : public PointLight
 {
     float cutoff;         // between 0 - 1
     float outerCutoff;    // between 0 - 1
-    
-    SpotLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0.0f, const Attenuation& atten = Attenuation(), float cutoff = 0.0f, float outerCutoff = 0.0f);
+    SpotLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0.0f, const Attenuation& atten = Attenuation(),
+              const glm::vec3 & position = glm::vec3(0.0f,0.0f,0.0f), const float &range = 0.0f,
+              float cutoff = 0.0f, float outerCutoff = 0.0f);
+
+
 };
 
 #endif /* Lighting_h */

@@ -31,6 +31,7 @@ public:
                             const bool & bUseDirectionalLight = true, 
                             const bool & bUsePointLight = true,
                             const bool & bUseSpotlight = true,
+                            const glm::vec3 & cameraPosition = glm::vec3(0.0f),
                             const glm::vec3 & objColor = glm::vec3(1.0f));
         
     GLuint CreateShader (const std::string &text, GLenum shadertype);
@@ -43,10 +44,9 @@ public:
                                     const glm::vec3& direction);
     void SetPointLightUniform(
                               const std::string &uniformName, 
-                              const PointLight& pointLight, 
-                              const glm::vec3& position);
+                              const PointLight& pointLight);
     
-    void SetSpotLightUniform(const std::string &uniformName, const SpotLight& spotLight);
+    void SetSpotLightUniform(const std::string &uniformName, const SpotLight& spotLight, Camera *camera);
     
     // Setting vectors
     void SetUniform(std::string sName, glm::vec2* vVectors, int iCount = 1);
@@ -104,9 +104,7 @@ private:
     GLuint m_program;
     GLuint m_shaders[NUM_SHADERS];
     GLuint m_uniforms[NUM_UNIFORMS];
-    
-    Camera *m_camera;
-    
+
     void CreateTransformUniform();
     void CreateDeclaredUniform();
     void CreateMaterialUniform(const std::string & uniformName);

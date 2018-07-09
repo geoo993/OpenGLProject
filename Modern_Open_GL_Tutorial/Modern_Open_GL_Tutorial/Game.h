@@ -64,8 +64,8 @@ private:
     };
     
     vector<glm::vec3> m_directionalLightsDirections = {
-        //glm::vec3(3.2f, 3.0f, -0.3f),
-        //glm::vec3(  15.7f,  5.2f,  -6.0f      ),
+        glm::vec3(3.2f, 3.0f, -0.3f),
+        glm::vec3(  15.7f,  5.2f,  -6.0f      ),
         glm::vec3(  -9.3f, -14.3f, -2.0f      ),
         glm::vec3(  -24.0f,  9.0f, -15.0f    ),
     };

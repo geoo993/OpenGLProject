@@ -21,9 +21,9 @@ BaseLight(color, intensity)
     //SetShader(new Shader("forward-directional"));
 }
 
-PointLight::PointLight(const glm::vec3 & color, float intensity, const Attenuation& atten) :
+PointLight::PointLight(const glm::vec3 & color, float intensity, const Attenuation& atten, const glm::vec3 & position, const float &range) :
 BaseLight(color, intensity),
-atten(atten)
+atten(atten), position(position), range(range)
 {
     vector<float> colorVec = {
         color.x,
@@ -41,8 +41,10 @@ atten(atten)
     //SetShader(new Shader("forward-point"));
 }
 
-SpotLight::SpotLight(const glm::vec3 & color, float intensity, const Attenuation& atten, float cutoff, float outerCutoff) :
-PointLight(color, intensity, atten),
+SpotLight::SpotLight(const glm::vec3 & color, float intensity, const Attenuation& atten,
+                     const glm::vec3 & position, const float & range,
+                     float cutoff, float outerCutoff) :
+PointLight(color, intensity, atten, position, range),
 cutoff(cutoff),
 outerCutoff(outerCutoff)
 {
