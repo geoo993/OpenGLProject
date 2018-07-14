@@ -60,8 +60,8 @@ struct SpotLight
 {
     PointLight pointLight;
     vec3 direction;
-    float cutoff;
-    float outerCutoff;
+    float cutOff;
+    float outerCutOff;
 };
 
 uniform Material material;
@@ -78,7 +78,7 @@ uniform bool bUseSpotlight;
 in vec3 vPosition;
 in vec2 vTexCoord;
 in vec3 vNormal;
-
+out vec4 fOutputColor;        // The output colour
 
 vec4 CalcLight(BaseLight base, vec3 lightDirection, vec3 viewDirection, vec3 normal)
 {
@@ -114,7 +114,7 @@ vec4 CalcLight(BaseLight base, vec3 lightDirection, vec3 viewDirection, vec3 nor
 
         return ambient + diffuse + specular;
     }else{
-        return ambientColor + diffuseColor + specularColor;
+        return (ambientColor + diffuseColor + specularColor) * vec4(material.color, 1.0f);
     }
 }
 
@@ -136,46 +136,53 @@ vec4 CalcPointLight(PointLight pointLight, vec3 vertexPosition, vec3 viewDirecti
     vec4 color = CalcLight(pointLight.base, normalize(lightDirection), viewDirection, normal);
 
     // Attenuation
+    ///*
     float attenuation = (
     pointLight.atten.constant +
     pointLight.atten.linear *
     distanceToPoint +
     pointLight.atten.exponent *
     (distanceToPoint * distanceToPoint) * 0.0001f);
-
     return color / attenuation;
+    //*/
+
+    /*
+    float attenuation =
+    1.0f / (pointLight.atten.constant +
+            pointLight.atten.linear *
+            distanceToPoint +
+            pointLight.atten.exponent *
+            (distanceToPoint * distanceToPoint));
+    return color * attenuation;
+     */
 }
-/*
+
 
 vec4 CalcSpotLight(SpotLight spotLight, vec3 vertexPosition, vec3 viewDirection, vec3 normal)
 {
-    vec3 lightDirection = normalize(vertexPosition - spotLight.pointLight.position);
-    
+    vec3 lightDirection = normalize(spotLight.pointLight.position - vertexPosition);
+
     // Intensity
-    float spotFactor = dot(lightDirection, spotLight.direction);
-    vec4 color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
-    
-    if(spotFactor > spotLight.cutoff)
+    //float spotFactor = dot(lightDirection, normalize(-spotLight.direction));
+    float spotFactor = max(dot(lightDirection, normalize(-spotLight.direction)), 0.0f); //// no difference
+    vec4 color = vec4( 0.0f, 0.0f, 0.0f, 0.0f);
+
+    if(spotFactor > spotLight.cutOff)
     {
-        //float epsilon = (1.0f - spotLight.cutoff);
-        //float intensity = (1.0f - (1.0f - spotFactor) / epsilon);
-        
-        float epsilon = (spotLight.cutoff - spotLight.outerCutoff );
-        float intensity = clamp( ( spotLight.outerCutoff - spotFactor ) / epsilon, 0.0f, 1.0f);
-        
-        color = CalcPointLight(spotLight.pointLight, lightDirection, viewDirection, normal) * intensity;
+        float epsilon = spotLight.cutOff - spotLight.outerCutOff;
+        float intensity = clamp((spotFactor - spotLight.outerCutOff) / epsilon, 0.0f, 1.0f);
+        //float intensity = (1.0f - (1.0f - spotFactor) / (1.0 - spotLight.cutOff));
+
+        color = CalcPointLight(spotLight.pointLight, vertexPosition, viewDirection, normal) * intensity;
     }
-    
+
     return color;
 }
- */
 
-out vec4 fOutputColor;        // The output colour
 
 void main() {
     
     //Combining Lights
-    
     // Properties
     vec4 texColor = texture(material.diffuseSampler, vTexCoord);
     vec3 normal = normalize(vNormal);
@@ -200,14 +207,11 @@ void main() {
         }
     }
 
-    /*
     if (bUseSpotlight){
         // Spot light
         vec4 spotL = CalcSpotLight(R_spotlight, vPosition, directionToEye, normal);
         result += spotL;
     }
-     */
-
  
     fOutputColor = result;// * vec4(material.color, 1.0f);
 }

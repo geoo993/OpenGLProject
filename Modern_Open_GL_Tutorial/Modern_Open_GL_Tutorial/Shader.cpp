@@ -324,8 +324,8 @@ void Shader::SetSpotLightUniform(const std::string &uniformName, const SpotLight
     SetUniform((uniformName + ".pointLight.position").c_str(), spotLight.position);
     SetUniform((uniformName + ".pointLight.range").c_str(), spotLight.range);
     SetUniform((uniformName + ".direction").c_str(), camera->GetForward() );
-    SetUniform((uniformName + ".cutoff").c_str(), spotLight.cutoff);
-    SetUniform((uniformName + ".outerCutoff").c_str(), spotLight.outerCutoff);
+    SetUniform((uniformName + ".cutOff").c_str(), spotLight.cutOff);
+    SetUniform((uniformName + ".outerCutOff").c_str(), spotLight.outerCutOff);
     
 }
 

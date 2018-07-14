@@ -229,8 +229,10 @@ void Game::Initialise(){
 
     // light
     m_lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    m_lightIntensity = 0;
-    m_lightPower = 0;
+    m_lightIntensity = 0.2;
+    m_lightPower = 1.0f;
+    m_lightCutOff = 11.0f;
+    m_lightOuterCutOff = 18.0f;
 
     m_useTexture = false;
     m_useDir = true;
@@ -324,23 +326,22 @@ void Game::RenderCubes(){
         m_lightshader.SetPointLightUniform(uniformName, pointLight1);
 
     }
-    
+
     //Spot Light
-    SpotLight spotLight(m_lightColor, m_lightIntensity, m_lightPower, Attenuation(1.0f, 0.09f, 0.32f), m_camera->GetPosition(), 0.6f, 0.85f);
+    GLfloat cutOff = glm::cos(glm::radians(m_lightCutOff));
+    GLfloat outerCutOff = glm::cos(glm::radians(m_lightOuterCutOff));
+    SpotLight spotLight(m_lightColor, m_lightIntensity, m_lightPower, Attenuation(1.0f, 0.09f, 0.32f), m_camera->GetPosition(), cutOff, outerCutOff);
     m_lightshader.SetSpotLightUniform("R_spotlight", spotLight, m_camera);
 
     // unbind the shader program
     m_lightshader.UnBind();
 
-//    std::cout
-//    << "spot range " << spotLight.range
-//    << std::endl;
-
-
     std::cout
     << "light intensity " << m_lightIntensity
     << ", light power " << m_lightPower
     << ", materail shininess " << m_materialShininess
+    << ", cutOff " << cutOff
+    << ", outerCutOff " << outerCutOff
     << std::endl;
 
 }
@@ -437,6 +438,9 @@ void Game::DoKeysMovement(bool *selectedkeys){
         if( selectedkeys[GLFW_KEY_5])
         {
             m_lightIntensity -= 0.2f;
+            if (m_lightIntensity < 0.0f) {
+                m_lightIntensity = 0.0f;
+            }
         }
 
         if( selectedkeys[GLFW_KEY_6])
@@ -447,6 +451,9 @@ void Game::DoKeysMovement(bool *selectedkeys){
         if( selectedkeys[GLFW_KEY_7])
         {
             m_lightPower -= 1.0f;
+            if (m_lightPower < 0.0f) {
+                m_lightPower = 0.0f;
+            }
         }
 
         if( selectedkeys[GLFW_KEY_8])
@@ -456,19 +463,41 @@ void Game::DoKeysMovement(bool *selectedkeys){
 
         if( selectedkeys[GLFW_KEY_9])
         {
+            m_lightCutOff -= 1.0f;
+        }
+
+        if( selectedkeys[GLFW_KEY_0])
+        {
+            m_lightCutOff += 1.0f;
+        }
+
+        if( selectedkeys[GLFW_KEY_MINUS])
+        {
+            m_lightOuterCutOff -= 1.0f;
+        }
+
+        if( selectedkeys[GLFW_KEY_EQUAL])
+        {
+            m_lightOuterCutOff += 1.0f;
+        }
+
+
+        if( selectedkeys[GLFW_KEY_LEFT_BRACKET])
+        {
             m_materialShininess -= 1.0f;
             if (m_materialShininess < 0.0f) {
                 m_materialShininess = 0.0f;
             }
         }
 
-        if( selectedkeys[GLFW_KEY_0])
+        if( selectedkeys[GLFW_KEY_RIGHT_BRACKET])
         {
             m_materialShininess += 1.0f;
             if (m_materialShininess > 128.0f) {
                 m_materialShininess = 128.0f;
             }
         }
+        
 
         if( selectedkeys[GLFW_KEY_Q])
         {

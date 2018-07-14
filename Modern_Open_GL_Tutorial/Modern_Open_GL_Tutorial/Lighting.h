@@ -61,13 +61,13 @@ struct PointLight : public BaseLight
 
 struct SpotLight : public PointLight
 {
-    float cutoff;         // between 0 - 1
-    float outerCutoff;    // between 0 - 1
+    float cutOff;         // between 0 - 1
+    float outerCutOff;    // between 0 - 1
     SpotLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f),
               float intensity = 0.0f, float power = 0.0f,
               const Attenuation& atten = Attenuation(),
               const glm::vec3 & position = glm::vec3(0.0f,0.0f,0.0f),
-              float cutoff = 0.0f, float outerCutoff = 0.0f);
+              float cutOff = 0.0f, float outerCutOff = 0.0f);
 
 
 };

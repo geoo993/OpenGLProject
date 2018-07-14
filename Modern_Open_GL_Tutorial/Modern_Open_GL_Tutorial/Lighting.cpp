@@ -43,10 +43,10 @@ atten(atten), position(position), range(0)
 
 SpotLight::SpotLight(const glm::vec3 & color, float intensity, float power, const Attenuation& atten,
                      const glm::vec3 & position,
-                     float cutoff, float outerCutoff) :
+                     float cutOff, float outerCutOff) :
 PointLight(color, intensity, power, atten, position),
-cutoff(cutoff),
-outerCutoff(outerCutoff)
+cutOff(cutOff),
+outerCutOff(outerCutOff)
 {
     //SetShader(new Shader("forward-spot"));
 }

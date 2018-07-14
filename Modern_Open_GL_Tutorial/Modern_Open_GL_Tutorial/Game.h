@@ -46,6 +46,8 @@ private:
     glm::vec3 m_lightColor;
     GLfloat m_lightIntensity;
     GLfloat m_lightPower;
+    GLfloat m_lightCutOff;
+    GLfloat m_lightOuterCutOff;
 
     GLboolean m_useTexture;
     GLboolean m_useDir;
