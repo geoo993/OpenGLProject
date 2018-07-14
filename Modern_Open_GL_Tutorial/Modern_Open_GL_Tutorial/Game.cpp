@@ -147,55 +147,7 @@ Game::~Game()
 void Game::Initialise(){
 
     float size = 1.0f;
-    
-    //////////////////////////////////////////////////////////////////////////
-    ///////////////////////////PYRAMID MODEL/////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////
-    /////---- 4-------
-    ////    . . .  .
-    //    .  .   .  .
-    //   .  .     .   .
-    //  .  .       .    .
-    // .   2......... |  /3
-    //.              . //
-    //0--------------/1
-    vector<Vertex> pyramidVertices = {
-        //vertices positions                          //texture             //colors
-        //bottom 0,2,3  3,1,0
-        Vertex( glm::vec3(  -size,-size,size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 0
-        Vertex( glm::vec3( -size, -size, -size ), glm::vec2(1.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 1
-        Vertex( glm::vec3( size, -size, -size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 2
-        Vertex( glm::vec3(  size, -size, -size ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 3
-        Vertex( glm::vec3( size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 4
-        Vertex( glm::vec3( -size, -size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 5
-        
-        //front   4,0,1
-        Vertex( glm::vec3( 0.0f, size, 0.0f ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 6
-        Vertex( glm::vec3( -size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 7
-        Vertex( glm::vec3(  size, -size,size ), glm::vec2(1.0f,0.0f), glm::vec3(1.0f, 1.0f, 1.0f ) ), // 8
-        
-        //back    4,3,2
-        Vertex( glm::vec3( 0.0f, size, 0.0f ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f) ), // 9
-        Vertex( glm::vec3( size, -size, -size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 10
-        Vertex( glm::vec3( -size, -size, -size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 11
-        
-        //left   4,2,0
-        Vertex( glm::vec3( 0.0f, size, 0.0f ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f) ), // 9
-        Vertex( glm::vec3( -size, -size, -size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 10
-        Vertex( glm::vec3( -size, -size, size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 11
-        
-        //right  4,1,3
-        Vertex( glm::vec3( 0.0f, size, 0.0f ), glm::vec2(0.0f,1.0f), glm::vec3( 1.0f, 1.0f, 1.0f) ), // 9
-        Vertex( glm::vec3( size, -size, size ), glm::vec2(0.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 10
-        Vertex( glm::vec3( size, -size, -size ), glm::vec2(1.0f,0.0f), glm::vec3( 1.0f, 1.0f, 1.0f ) ), // 11
-        
-    };
-    
-    m_pyramidmesh.Create( pyramidVertices.data(),
-                         pyramidVertices.size()
-                         );
-    
-    
+
     /////6--------------/5
     ////  .           // |
     //2--------------1   |
@@ -262,29 +214,30 @@ void Game::Initialise(){
     };
     
     
-    m_cubemesh.Create( cubeVertices.data(), 
-                             cubeVertices.size()
-                             );
-    m_lampmesh.Create( cubeVertices.data(), 
-                      cubeVertices.size()
-                      );
+    m_cubemesh.Create( cubeVertices.data(), cubeVertices.size());
+    m_lampmesh.Create( cubeVertices.data(), cubeVertices.size());
     
     //setup camera
     m_camera = new Camera();
     m_camera->Create(glm::vec3(0.0f, 0.0f,10.0f), glm::vec3(0.0f, 1.0f,0.0f), PITCH, YAW, ROLL, 45.0f, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
-    
-    // setup light
+
+    // cubes
+    m_cubesColor = glm::vec3(0.7f, 0.04f, 0.3f);
+
+    // material
+    m_materialShininess = 32.0f;
+
+    // light
     m_lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    m_viewPosition = glm::vec3(10.0f, 10.0f, 22.0f);
-    
-    m_cubesColor = glm::vec3(0.7f, 0.04f, 0.3f);;
-    
+    m_lightIntensity = 0;
+    m_lightPower = 0;
+
     m_useTexture = false;
     m_useDir = true;
     m_usePoint = true;
     m_useSpot = true;
-    
-    
+
+    //inputs
     m_keyPressTime = 0.0;
     m_lastKeyPressTime = 0.0;
 }
@@ -292,29 +245,8 @@ void Game::Initialise(){
 void Game::LoadFromResources(const std::string &resourcepath){
     
     //load shader program
-    m_basicshader.Create(resourcepath + "/Resources/Shaders/basicShader");
     m_lampshader.Create(resourcepath + "/Resources/Shaders/lampShader");
     m_lightshader.Create(resourcepath + "/Resources/Shaders/lightShader");
-}
-
-
-void Game::RenderPyramid(){
-    
-    // bind the shader program
-    m_lightshader.Bind();
-    
-    m_pyramidmesh.transform.SetPositions(glm::vec3(10.0f, 8.0f, 10.0f) );
-    m_pyramidmesh.transform.SetScale(glm::vec3(3.0f));
-    
-    //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_lightshader.SetTransfromUniform(m_pyramidmesh.transform, m_camera);
-    m_lightshader.SetDeclaredUniform(true, m_lightColor);
-    m_lightshader.SetMaterialUniform();
-    
-    m_pyramidmesh.Draw(0);
-    
-    // unbind the shader program
-    m_lightshader.UnBind();
 }
 
 void Game::RenderLamp(){
@@ -333,10 +265,12 @@ void Game::RenderLamp(){
         m_lampmesh.transform.SetScale(glm::vec3(0.4f));
         
         //update shader, including the tranform of our mesh, and the camera view of the mesh
+        glm::vec3 color = m_pointlightsColours[i];
         m_lampshader.SetTransfromUniform(m_lampmesh.transform, m_camera);
-        m_lampshader.SetDeclaredUniform(false, m_pointlightsColours[i]);
-        //m_lampshader.SetMaterialUniform();
-        
+        m_lampshader.SetDeclaredUniform(false);
+        BaseLight light(color, m_lightIntensity, m_lightPower);
+        m_lampshader.SetBaseLightUniform("light", light);
+
         m_lampmesh.Draw(0);
         
         // unbind the shader program
@@ -346,61 +280,38 @@ void Game::RenderLamp(){
     
 }
 
-void Game::RenderCube(){
-
-    // bind the shader program
-    m_lightshader.Bind();
-
-    glm::vec3 pos(-4.0f, 2.0f, 1.0f);
-
-    m_cubemesh.transform.SetPositions(pos );
-    //m_cubemesh.transform.SetScale(glm::vec3(2.0f));
-
-    //update shader, including the tranform of our mesh, and the camera view of the mesh
-    m_lightshader.SetTransfromUniform(m_cubemesh.transform, m_camera);
-    m_lightshader.SetDeclaredUniform(false, m_lightColor);
-    m_lightshader.SetMaterialUniform();
-
-    m_cubemesh.Draw(0);
-
-    // unbind the shader program
-    m_lightshader.UnBind();
-
-
-}
-
 void Game::RenderCubes(){
+
     
     m_cubesColor.r = sin( glfwGetTime() * 0.1f );
     m_cubesColor.g = sin( glfwGetTime() * 0.06f );
     m_cubesColor.b = sin( glfwGetTime() * 0.03f );
-    
+    //m_cubesColor = glm::vec3(0.7f, 0.04f, 0.3f);;
+
     // bind the shader program
     m_lightshader.Bind();
-    
+
     for ( GLuint i = 0; i < m_cubesPosition.size(); ++i){
-        
+
         GLfloat angle = 20.0f * (GLfloat)i;
-        
+
         m_cubemesh.transform.SetPositions(m_cubesPosition[i] );
         m_cubemesh.transform.SetRotation(glm::vec3(1.0f, angle, 1.0f));
         m_cubemesh.transform.SetScale(glm::vec3(2.0f));
-        
+
         //update shader, including the tranform of our mesh, and the camera view of the mesh
         m_lightshader.SetTransfromUniform(m_cubemesh.transform, m_camera);
-        m_lightshader.SetDeclaredUniform(m_useTexture, m_lightColor, m_useDir, m_usePoint, m_useSpot, m_camera->GetPosition(), m_cubesColor);
-        m_lightshader.SetMaterialUniform();
-        
+        m_lightshader.SetCameraUniform("camera", m_camera);
+        m_lightshader.SetMaterialUniform("material", m_cubesColor, m_materialShininess);
+        m_lightshader.SetDeclaredUniform(m_useTexture, m_useDir, m_usePoint, m_useSpot);
+
         m_cubemesh.Draw(0);
     }
-    
-    //m_cubesColor = glm::vec3(0.7f, 0.04f, 0.3f);;
-    
-    
+
     // Directional light
     for ( GLuint i = 0; i < m_directionalLightsDirections.size(); ++i){
         string uniformName = "R_directionallight[" + std::to_string(i) + "]";
-        DirectionalLight dirLight(m_lightColor, 0.2f);
+        DirectionalLight dirLight(m_lightColor, m_lightIntensity, m_lightPower);
         m_lightshader.SetDirectionalLightUniform(uniformName,dirLight, m_directionalLightsDirections[i]);
     }
     
@@ -409,24 +320,34 @@ void Game::RenderCubes(){
         string uniformName = "R_pointlight[" + std::to_string(i) + "]";
         glm::vec3 position = m_pointLightPositions[i];
         glm::vec3 color = m_pointlightsColours[i];
-        PointLight pointLight1(color, 0.7f, Attenuation(1.0f, 0.09f, 0.32f), position, 40.0f);
+        PointLight pointLight1(color, m_lightIntensity, m_lightPower, Attenuation(1.0f, 0.09f, 0.32f), position);
         m_lightshader.SetPointLightUniform(uniformName, pointLight1);
+
     }
     
     //Spot Light
-    SpotLight spotLight(m_lightColor, 4.5f, Attenuation(1.0f, 0.09f, 0.32f), m_camera->GetPosition(), 40.0f, 0.6f, 0.85f);
+    SpotLight spotLight(m_lightColor, m_lightIntensity, m_lightPower, Attenuation(1.0f, 0.09f, 0.32f), m_camera->GetPosition(), 0.6f, 0.85f);
     m_lightshader.SetSpotLightUniform("R_spotlight", spotLight, m_camera);
-    
+
     // unbind the shader program
     m_lightshader.UnBind();
-    
+
+//    std::cout
+//    << "spot range " << spotLight.range
+//    << std::endl;
+
+
+    std::cout
+    << "light intensity " << m_lightIntensity
+    << ", light power " << m_lightPower
+    << ", materail shininess " << m_materialShininess
+    << std::endl;
+
 }
 
 
 void Game::Render(){
     
-    //RenderPyramid();
-    //RenderCube();
     RenderCubes();
     RenderLamp();
 }
@@ -491,47 +412,69 @@ void Game::DoKeysMovement(bool *selectedkeys){
         
         if( selectedkeys[GLFW_KEY_1])
         {
-            m_pointLightPositionsIndex = 0;
+            if ((int)m_lastKeyPressTime  == (int)m_keyPressTime){ return;}
+            m_useTexture = !m_useTexture;
+
         }
-        
+
         if( selectedkeys[GLFW_KEY_2])
-        {
-            m_pointLightPositionsIndex = 1;
-        }
-        if( selectedkeys[GLFW_KEY_3])
-        {
-            m_pointLightPositionsIndex = 2;
-        }
-        if( selectedkeys[GLFW_KEY_4])
-        {
-            m_pointLightPositionsIndex = 3;
-        }
-        if( selectedkeys[GLFW_KEY_5])
-        {
-            m_pointLightPositionsIndex = 4;
-        }
-        if( selectedkeys[GLFW_KEY_6])
         {
             if ((int)m_lastKeyPressTime  == (int)m_keyPressTime){ return;}
             m_useDir = !m_useDir;
         }
-        if( selectedkeys[GLFW_KEY_7])
+        if( selectedkeys[GLFW_KEY_3])
         {
             if ((int)m_lastKeyPressTime  == (int)m_keyPressTime){ return;}
             m_usePoint = !m_usePoint;
         }
-        if( selectedkeys[GLFW_KEY_8])
+
+        if( selectedkeys[GLFW_KEY_4])
         {
             if ((int)m_lastKeyPressTime  == (int)m_keyPressTime){ return;}
             m_useSpot = !m_useSpot;
         }
+
+        if( selectedkeys[GLFW_KEY_5])
+        {
+            m_lightIntensity -= 0.2f;
+        }
+
+        if( selectedkeys[GLFW_KEY_6])
+        {
+            m_lightIntensity += 0.2f;
+        }
+
+        if( selectedkeys[GLFW_KEY_7])
+        {
+            m_lightPower -= 1.0f;
+        }
+
+        if( selectedkeys[GLFW_KEY_8])
+        {
+            m_lightPower += 1.0f;
+        }
+
         if( selectedkeys[GLFW_KEY_9])
         {
-            if ((int)m_lastKeyPressTime  == (int)m_keyPressTime){ return;}
-            m_useTexture = !m_useTexture;
+            m_materialShininess -= 1.0f;
+            if (m_materialShininess < 0.0f) {
+                m_materialShininess = 0.0f;
+            }
         }
-        
-       
+
+        if( selectedkeys[GLFW_KEY_0])
+        {
+            m_materialShininess += 1.0f;
+            if (m_materialShininess > 128.0f) {
+                m_materialShininess = 128.0f;
+            }
+        }
+
+        if( selectedkeys[GLFW_KEY_Q])
+        {
+            m_pointLightPositionsIndex = (m_pointLightPositionsIndex + 1) % m_pointLightPositions.size();
+        }
+
         if( selectedkeys[GLFW_KEY_W])
         {
             glm::vec3 pos(

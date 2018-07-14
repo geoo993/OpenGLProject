@@ -25,19 +25,22 @@ public:
     
     void SetTransfromUniform(const Transform & transform, 
                              Camera * camera);
-    void SetMaterialUniform();
-    void SetDeclaredUniform(const bool & bUseTexture, 
-                            const glm::vec3 & lightColor,
+    void SetCameraUniform(const std::string &uniformName, Camera * camera);
+    void SetMaterialUniform(const std::string &uniformName,
+                            const glm::vec3 &color = glm::vec3(1.0f),
+                            const GLfloat & shininess = 32.0f);
+    void SetDeclaredUniform(const bool & bUseTexture,
                             const bool & bUseDirectionalLight = true, 
                             const bool & bUsePointLight = true,
-                            const bool & bUseSpotlight = true,
-                            const glm::vec3 & cameraPosition = glm::vec3(0.0f),
-                            const glm::vec3 & objColor = glm::vec3(1.0f));
+                            const bool & bUseSpotlight = true);
         
     GLuint CreateShader (const std::string &text, GLenum shadertype);
     std::string LoadShader(const std::string& fileName);
     void CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const std::string& errorMessage);
-    
+
+    void SetBaseLightUniform(const std::string &uniformName,
+                                    const BaseLight & baseLight);
+
     void SetDirectionalLightUniform(
                                     const std::string &uniformName, 
                                     const DirectionalLight & directionalLight, 
@@ -84,16 +87,18 @@ private:
         PROJECTION_U,
         SAMPLER_U,
         USETEXTURE_U,
-        VIEWPOSITION_U,
-        
+
+        CAMERAPOSITION_U,
+        CAMERAFRONT_U,
+
         MATERIALNORMALSAMPLER_U,
         MATERIALDIFFUSESAMPLER_U,
         MATERIALSPECULARSAMPLER_U,
         MATERIALSHININESS_U,
-        MATERIALINTENSITY_U,
-        MATERIALAMBIENT_U,
-        MATERIALDIFFUSE_U,
-        MATERIALSPECULAR_U,
+        MATERIALCOLOR_U,
+//        MATERIALAMBIENT_U,
+//        MATERIALDIFFUSE_U,
+//        MATERIALSPECULAR_U,
         
         NUM_UNIFORMS
     };
@@ -107,6 +112,7 @@ private:
 
     void CreateTransformUniform();
     void CreateDeclaredUniform();
+    void CreateCameraUniform(const std::string & uniformName);
     void CreateMaterialUniform(const std::string & uniformName);
     
 };

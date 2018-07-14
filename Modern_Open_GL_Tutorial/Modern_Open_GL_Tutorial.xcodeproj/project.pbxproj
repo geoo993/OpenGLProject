@@ -57,22 +57,16 @@
 		C700FAFE1F51631800A9E4F3 /* Vertex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Vertex.h; sourceTree = "<group>"; };
 		C700FB041F51667000A9E4F3 /* Game.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Game.cpp; sourceTree = "<group>"; };
 		C700FB051F51667000A9E4F3 /* Game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
-		C700FB071F5170A700A9E4F3 /* basicShader.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = basicShader.frag; sourceTree = "<group>"; };
-		C700FB081F5170A700A9E4F3 /* basicShader.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = basicShader.vert; sourceTree = "<group>"; };
 		C700FB0A1F5171E600A9E4F3 /* Transform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Transform.h; sourceTree = "<group>"; };
 		C700FB0B1F51722200A9E4F3 /* Camera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
 		C700FB0E1F51752E00A9E4F3 /* Mesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mesh.h; sourceTree = "<group>"; };
 		C700FB0F1F51752E00A9E4F3 /* Mesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mesh.cpp; sourceTree = "<group>"; };
 		C700FB101F51754D00A9E4F3 /* GameObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameObject.cpp; sourceTree = "<group>"; };
 		C700FB111F51754D00A9E4F3 /* GameObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameObject.h; sourceTree = "<group>"; };
-		C74DB4F91F5189B9002938A8 /* screenShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = screenShader.frag; sourceTree = "<group>"; };
-		C74DB4FA1F5189B9002938A8 /* screenShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = screenShader.vert; sourceTree = "<group>"; };
 		C74DB4FB1F519D18002938A8 /* super-mario.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "super-mario.jpg"; sourceTree = "<group>"; };
 		C756263E20E79C5900BB7F4B /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = Frameworks/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
 		C77B4BE31F531AB200AE7B09 /* container_specular.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = container_specular.png; sourceTree = "<group>"; };
 		C77B4BE41F531AB200AE7B09 /* container.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = container.png; sourceTree = "<group>"; };
-		C7CCAB231F5238CE0048D12B /* lightingShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lightingShader.frag; sourceTree = "<group>"; };
-		C7CCAB241F5238CE0048D12B /* lightingShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lightingShader.vert; sourceTree = "<group>"; };
 		C7CCAB251F523BEC0048D12B /* lampShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lampShader.frag; sourceTree = "<group>"; };
 		C7CCAB261F523BEC0048D12B /* lampShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lampShader.vert; sourceTree = "<group>"; };
 		C7ECC3501F5AC8AF004E1D17 /* lightShader.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lightShader.vert; sourceTree = "<group>"; };
@@ -125,7 +119,6 @@
 				C7ECC3531F5ACD5D004E1D17 /* Lighting.h */,
 				C700FB0F1F51752E00A9E4F3 /* Mesh.cpp */,
 				C700FB0E1F51752E00A9E4F3 /* Mesh.h */,
-				C700FAF91F51631800A9E4F3 /* Common.h */,
 				C700FAFA1F51631800A9E4F3 /* Shader.cpp */,
 				C700FAFD1F51631800A9E4F3 /* Shader.h */,
 				C700FAFC1F51631800A9E4F3 /* Texture.cpp */,
@@ -136,6 +129,7 @@
 				C700FB041F51667000A9E4F3 /* Game.cpp */,
 				C700FB051F51667000A9E4F3 /* Game.h */,
 				C700FAE21F5160DA00A9E4F3 /* main.cpp */,
+				C700FAF91F51631800A9E4F3 /* Common.h */,
 			);
 			path = Modern_Open_GL_Tutorial;
 			sourceTree = "<group>";
@@ -170,12 +164,6 @@
 				C7ECC3501F5AC8AF004E1D17 /* lightShader.vert */,
 				C7CCAB251F523BEC0048D12B /* lampShader.frag */,
 				C7CCAB261F523BEC0048D12B /* lampShader.vert */,
-				C7CCAB231F5238CE0048D12B /* lightingShader.frag */,
-				C7CCAB241F5238CE0048D12B /* lightingShader.vert */,
-				C74DB4F91F5189B9002938A8 /* screenShader.frag */,
-				C74DB4FA1F5189B9002938A8 /* screenShader.vert */,
-				C700FB071F5170A700A9E4F3 /* basicShader.frag */,
-				C700FB081F5170A700A9E4F3 /* basicShader.vert */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";

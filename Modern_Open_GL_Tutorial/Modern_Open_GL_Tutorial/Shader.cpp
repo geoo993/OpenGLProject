@@ -145,6 +145,13 @@ void Shader::CreateTransformUniform()
 
 }
 
+void Shader::CreateCameraUniform(const std::string & uniformName){
+
+    m_uniforms[CAMERAPOSITION_U] = glGetUniformLocation(m_program, (uniformName + ".position").c_str());
+
+    m_uniforms[CAMERAFRONT_U] = glGetUniformLocation(m_program, (uniformName + ".front").c_str());
+}
+
 void Shader::CreateMaterialUniform(const std::string & uniformName){
     
     //Material
@@ -157,14 +164,14 @@ void Shader::CreateMaterialUniform(const std::string & uniformName){
     m_uniforms[MATERIALSPECULARSAMPLER_U] = glGetUniformLocation(m_program, (uniformName + ".specularSampler").c_str());
     
     m_uniforms[MATERIALSHININESS_U] = glGetUniformLocation(m_program, (uniformName + ".shininess").c_str());
+
+    m_uniforms[MATERIALCOLOR_U] = glGetUniformLocation(m_program, (uniformName + ".color").c_str());
     
-    m_uniforms[MATERIALINTENSITY_U] = glGetUniformLocation(m_program, (uniformName + ".intensity").c_str());
-    
-    m_uniforms[MATERIALAMBIENT_U] = glGetUniformLocation(m_program, (uniformName + ".ambient").c_str());
-    
-    m_uniforms[MATERIALDIFFUSE_U] = glGetUniformLocation(m_program, (uniformName + ".diffuse").c_str());
-    
-    m_uniforms[MATERIALSPECULAR_U] = glGetUniformLocation(m_program, (uniformName + ".specular").c_str());
+//    m_uniforms[MATERIALAMBIENT_U] = glGetUniformLocation(m_program, (uniformName + ".ambient").c_str());
+//    
+//    m_uniforms[MATERIALDIFFUSE_U] = glGetUniformLocation(m_program, (uniformName + ".diffuse").c_str());
+//    
+//    m_uniforms[MATERIALSPECULAR_U] = glGetUniformLocation(m_program, (uniformName + ".specular").c_str());
     
 }
 
@@ -209,29 +216,33 @@ void Shader::SetTransfromUniform(const Transform & transform,
 }
 
 
-void Shader::SetDeclaredUniform(const bool & bUseTexture, 
-                                const glm::vec3 & lightColor, 
+void Shader::SetDeclaredUniform(const bool & bUseTexture,
                                 const bool & bUseDirectionalLight, 
                                 const bool & bUsePointLight, 
-                                const bool & bUseSpotlight,
-                                const glm::vec3 & cameraPosition,
-                                const glm::vec3 & objColor){
+                                const bool & bUseSpotlight){
     
     
     SetUniform("bUseTexture", bUseTexture);
     SetUniform("bUseDirectionalLight", bUseDirectionalLight);
     SetUniform("bUsePointLight", bUsePointLight);
     SetUniform("bUseSpotlight", bUseSpotlight);
-    SetUniform("cameraPosition", cameraPosition);
-    SetUniform("lightColor", lightColor);
-    SetUniform("objColor", objColor);
 }
 
+void Shader::SetCameraUniform(const std::string &uniformName, Camera * camera){
 
+    CreateCameraUniform(uniformName);
 
-void Shader::SetMaterialUniform(){
+    // Camera
+    glUniform3fv(m_uniforms[CAMERAPOSITION_U], 1, glm::value_ptr(camera->GetPosition()));
+
+    glUniform3fv(m_uniforms[CAMERAFRONT_U], 1, glm::value_ptr(camera->GetForward()));
+
+}
+
+void Shader::SetMaterialUniform(const std::string &uniformName, const glm::vec3 &color,
+                                const GLfloat & shininess){
     
-    CreateMaterialUniform("material");
+    CreateMaterialUniform(uniformName);
     
     // Material
     glUniform1i( m_uniforms[SAMPLER_U],  0 );
@@ -242,25 +253,36 @@ void Shader::SetMaterialUniform(){
     
     glUniform1i( m_uniforms[MATERIALSPECULARSAMPLER_U], 3 );
     
-    glUniform1f(m_uniforms[MATERIALSHININESS_U], 22.0f);
+    glUniform1f(m_uniforms[MATERIALSHININESS_U], shininess);
     
-    glUniform1f(m_uniforms[MATERIALINTENSITY_U], 5.0f);
+    glUniform3fv(m_uniforms[MATERIALCOLOR_U], 1, glm::value_ptr(color));
     
-    glUniform3fv(m_uniforms[MATERIALAMBIENT_U], 1, glm::value_ptr(glm::vec3(0.4f, 0.4f, 0.4f)));
-    
-    glUniform3fv(m_uniforms[MATERIALDIFFUSE_U], 1, glm::value_ptr(glm::vec3(0.8f, 0.8f, 0.81f)));
-    
-    glUniform3fv(m_uniforms[MATERIALSPECULAR_U], 1, glm::value_ptr(glm::vec3(0.98f, 0.98f, 0.98f)));
-    
+//    glUniform3fv(m_uniforms[MATERIALAMBIENT_U], 1, glm::value_ptr(glm::vec3(0.4f, 0.4f, 0.4f)));
+//
+//    glUniform3fv(m_uniforms[MATERIALDIFFUSE_U], 1, glm::value_ptr(glm::vec3(0.8f, 0.8f, 0.81f)));
+//
+//    glUniform3fv(m_uniforms[MATERIALSPECULAR_U], 1, glm::value_ptr(glm::vec3(0.98f, 0.98f, 0.98f)));
+
+}
+
+void Shader::SetBaseLightUniform(const std::string &uniformName,
+                         const BaseLight & baseLight) {
+    SetUniform((uniformName + ".color").c_str(), baseLight.color);
+    SetUniform((uniformName + ".intensity").c_str(), baseLight.intensity);
+    SetUniform((uniformName + ".power").c_str(), baseLight.power);
+
 }
 
 void Shader::SetDirectionalLightUniform(const std::string &uniformName, const DirectionalLight& directionalLight, const glm::vec3& direction)
 {
     SetUniform((uniformName + ".base.color").c_str(), directionalLight.color);
     SetUniform((uniformName + ".base.intensity").c_str(), directionalLight.intensity);
+    SetUniform((uniformName + ".base.power").c_str(), directionalLight.power);
+
+
     SetUniform((uniformName + ".base.ambient").c_str(), glm::vec4(0.05f, 0.05f, 0.05f, 1.0f));
-    SetUniform((uniformName + ".base.diffuse").c_str(), glm::vec4(0.8f, 0.9f, 0.9f, 1.0f));
-    SetUniform((uniformName + ".base.specular").c_str(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    SetUniform((uniformName + ".base.diffuse").c_str(), glm::vec4(0.4f, 0.4f, 0.4f, 1.0f));
+    SetUniform((uniformName + ".base.specular").c_str(), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
     SetUniform((uniformName + ".direction").c_str(), direction);
 
 }
@@ -268,16 +290,21 @@ void Shader::SetDirectionalLightUniform(const std::string &uniformName, const Di
 void Shader::SetPointLightUniform(const std::string &uniformName, const PointLight& pointLight)
 {
     // POINT LIGHT
+    SetUniform((uniformName + ".position").c_str(), pointLight.position);
+    SetUniform((uniformName + ".range").c_str(), pointLight.range);
+
     SetUniform((uniformName + ".base.color").c_str(), pointLight.color);
     SetUniform((uniformName + ".base.intensity").c_str(), pointLight.intensity);
+    SetUniform((uniformName + ".base.power").c_str(), pointLight.power);
+
     SetUniform((uniformName + ".base.ambient").c_str(), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
-    SetUniform((uniformName + ".base.diffuse").c_str(), glm::vec4(0.9f, 0.9f, 0.9f, 1.0f));
+    SetUniform((uniformName + ".base.diffuse").c_str(), glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
     SetUniform((uniformName + ".base.specular").c_str(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
     SetUniform((uniformName + ".atten.constant").c_str(), pointLight.atten.constant);
     SetUniform((uniformName + ".atten.linear").c_str(), pointLight.atten.linear);
     SetUniform((uniformName + ".atten.exponent").c_str(), pointLight.atten.exponent);
-    SetUniform((uniformName + ".position").c_str(), pointLight.position);
-    SetUniform((uniformName + ".range").c_str(), pointLight.range);
+
     
 }
 
@@ -286,8 +313,10 @@ void Shader::SetSpotLightUniform(const std::string &uniformName, const SpotLight
     // SPOT LIGHT
     SetUniform((uniformName + ".pointLight.base.color").c_str(), spotLight.color);
     SetUniform((uniformName + ".pointLight.base.intensity").c_str(), spotLight.intensity);
-    SetUniform((uniformName + ".pointLight.base.ambient").c_str(), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
-    SetUniform((uniformName + ".pointLight.base.diffuse").c_str(), glm::vec4(0.9f, 0.9f, 0.9f, 1.0f));
+    SetUniform((uniformName + ".pointLight.base.power").c_str(), spotLight.power);
+
+    SetUniform((uniformName + ".pointLight.base.ambient").c_str(), glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
+    SetUniform((uniformName + ".pointLight.base.diffuse").c_str(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     SetUniform((uniformName + ".pointLight.base.specular").c_str(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     SetUniform((uniformName + ".pointLight.atten.constant").c_str(), spotLight.atten.constant);
     SetUniform((uniformName + ".pointLight.atten.linear").c_str(), spotLight.atten.linear);

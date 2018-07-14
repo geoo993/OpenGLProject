@@ -17,10 +17,10 @@ class BaseLight
 public:
     glm::vec3 color;
     float intensity;
+    float power;
     
-    BaseLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0.0f) :
-    color(color),
-    intensity(intensity) {}
+    BaseLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0.0f, float power = 0.0f) :
+    color(color), intensity(intensity), power(power) {}
     
     virtual ~BaseLight();
     
@@ -32,7 +32,7 @@ private:
 
 struct DirectionalLight : public BaseLight
 {
-    DirectionalLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0.0f);
+    DirectionalLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0.0f, float power = 0.0f);
 };
 
 struct Attenuation
@@ -53,17 +53,20 @@ struct PointLight : public BaseLight
     glm::vec3 position;
     float range;
     
-    PointLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0.0f,
-               const Attenuation& atten = Attenuation(), const glm::vec3 & position = glm::vec3(0.0f,0.0f,0.0f),
-               const float &range = 0.0f);
+    PointLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f),
+               float intensity = 0.0f, float power = 0.0f,
+               const Attenuation& atten = Attenuation(),
+               const glm::vec3 & position = glm::vec3(0.0f,0.0f,0.0f));
 };
 
 struct SpotLight : public PointLight
 {
     float cutoff;         // between 0 - 1
     float outerCutoff;    // between 0 - 1
-    SpotLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f), float intensity = 0.0f, const Attenuation& atten = Attenuation(),
-              const glm::vec3 & position = glm::vec3(0.0f,0.0f,0.0f), const float &range = 0.0f,
+    SpotLight(const glm::vec3 & color = glm::vec3(0.0f,0.0f,0.0f),
+              float intensity = 0.0f, float power = 0.0f,
+              const Attenuation& atten = Attenuation(),
+              const glm::vec3 & position = glm::vec3(0.0f,0.0f,0.0f),
               float cutoff = 0.0f, float outerCutoff = 0.0f);
 
 
