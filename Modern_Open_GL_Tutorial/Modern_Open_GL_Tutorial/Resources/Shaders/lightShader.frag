@@ -142,7 +142,7 @@ vec4 CalcPointLight(PointLight pointLight, vec3 vertexPosition, vec3 viewDirecti
     pointLight.atten.linear *
     distanceToPoint +
     pointLight.atten.exponent *
-    (distanceToPoint * distanceToPoint) * 0.0001f);
+    (distanceToPoint * distanceToPoint) + 0.0001f);
     return color / attenuation;
     //*/
 
@@ -184,11 +184,10 @@ void main() {
     
     //Combining Lights
     // Properties
-    vec4 texColor = texture(material.diffuseSampler, vTexCoord);
     vec3 normal = normalize(vNormal);
-    vec4 result = vec4(0.0f);
     vec3 view =  camera.position + camera.front;
     vec3 directionToEye = normalize(view - vPosition); // viewDirection
+    vec4 result = vec4(0.0f);
 
 
     if (bUseDirectionalLight){
@@ -213,5 +212,5 @@ void main() {
         result += spotL;
     }
  
-    fOutputColor = result;// * vec4(material.color, 1.0f);
+    fOutputColor = result;
 }

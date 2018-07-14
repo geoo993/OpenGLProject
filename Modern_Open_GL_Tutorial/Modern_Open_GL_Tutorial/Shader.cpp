@@ -279,7 +279,6 @@ void Shader::SetDirectionalLightUniform(const std::string &uniformName, const Di
     SetUniform((uniformName + ".base.intensity").c_str(), directionalLight.intensity);
     SetUniform((uniformName + ".base.power").c_str(), directionalLight.power);
 
-
     SetUniform((uniformName + ".base.ambient").c_str(), glm::vec4(0.05f, 0.05f, 0.05f, 1.0f));
     SetUniform((uniformName + ".base.diffuse").c_str(), glm::vec4(0.4f, 0.4f, 0.4f, 1.0f));
     SetUniform((uniformName + ".base.specular").c_str(), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
