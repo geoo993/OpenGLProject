@@ -10,7 +10,6 @@
 		C7B202B81E509109007CEE38 /* QuickTrianglesGube.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7B202B61E509109007CEE38 /* QuickTrianglesGube.cpp */; };
 		C7C4977F1E4F39F50059BAB9 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7C4977E1E4F39F50059BAB9 /* main.cpp */; };
 		C7C497871E4F3A500059BAB9 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C497861E4F3A500059BAB9 /* OpenGL.framework */; };
-		C7C4978C1E4F3AA60059BAB9 /* libGLEW.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C497881E4F3AA60059BAB9 /* libGLEW.2.0.0.dylib */; };
 		C7C4978D1E4F3AA60059BAB9 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C497891E4F3AA60059BAB9 /* libglfw.3.2.dylib */; };
 		C7C4978E1E4F3AA60059BAB9 /* libglib-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C4978A1E4F3AA60059BAB9 /* libglib-2.0.0.dylib */; };
 		C7C4978F1E4F3AA60059BAB9 /* libglut.3.10.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C4978B1E4F3AA60059BAB9 /* libglut.3.10.0.dylib */; };
@@ -18,17 +17,26 @@
 		C7C497961E4F6D290059BAB9 /* QuickSquare.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7C497941E4F6D290059BAB9 /* QuickSquare.cpp */; };
 		C7C497991E4FCC7F0059BAB9 /* QuickCube.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7C497971E4FCC7F0059BAB9 /* QuickCube.cpp */; };
 		C7C4979C1E4FEBC40059BAB9 /* QuickTetrahedron.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7C4979A1E4FEBC40059BAB9 /* QuickTetrahedron.cpp */; };
+		C7C8F2D021FF622300AB865A /* libglfw.3.2.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7C497891E4F3AA60059BAB9 /* libglfw.3.2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		C7C8F2D121FF622300AB865A /* libglib-2.0.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7C4978A1E4F3AA60059BAB9 /* libglib-2.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		C7C8F2D221FF622300AB865A /* libglut.3.10.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7C4978B1E4F3AA60059BAB9 /* libglut.3.10.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		C7C8F2D421FF624D00AB865A /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C8F2D321FF624D00AB865A /* libGLEW.2.1.0.dylib */; };
+		C7C8F2D521FF625400AB865A /* libGLEW.2.1.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7C8F2D321FF624D00AB865A /* libGLEW.2.1.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		C7C497791E4F39F50059BAB9 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 11;
 			files = (
+				C7C8F2D521FF625400AB865A /* libGLEW.2.1.0.dylib in CopyFiles */,
+				C7C8F2D021FF622300AB865A /* libglfw.3.2.dylib in CopyFiles */,
+				C7C8F2D121FF622300AB865A /* libglib-2.0.0.dylib in CopyFiles */,
+				C7C8F2D221FF622300AB865A /* libglut.3.10.0.dylib in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -38,7 +46,6 @@
 		C7C4977B1E4F39F50059BAB9 /* OpenGL_Project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OpenGL_Project; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7C4977E1E4F39F50059BAB9 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C7C497861E4F3A500059BAB9 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		C7C497881E4F3AA60059BAB9 /* libGLEW.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.0.0.dylib; path = ../../../../../../opt/local/lib/libGLEW.2.0.0.dylib; sourceTree = "<group>"; };
 		C7C497891E4F3AA60059BAB9 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../../../opt/local/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
 		C7C4978A1E4F3AA60059BAB9 /* libglib-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.0.dylib"; path = "../../../../../../opt/local/lib/libglib-2.0.0.dylib"; sourceTree = "<group>"; };
 		C7C4978B1E4F3AA60059BAB9 /* libglut.3.10.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglut.3.10.0.dylib; path = ../../../../../../opt/local/lib/libglut.3.10.0.dylib; sourceTree = "<group>"; };
@@ -51,6 +58,7 @@
 		C7C497981E4FCC7F0059BAB9 /* QuickCube.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuickCube.hpp; sourceTree = "<group>"; };
 		C7C4979A1E4FEBC40059BAB9 /* QuickTetrahedron.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuickTetrahedron.cpp; sourceTree = "<group>"; };
 		C7C4979B1E4FEBC40059BAB9 /* QuickTetrahedron.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = QuickTetrahedron.hpp; sourceTree = "<group>"; };
+		C7C8F2D321FF624D00AB865A /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = ../../../../../../opt/local/lib/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7C4978C1E4F3AA60059BAB9 /* libGLEW.2.0.0.dylib in Frameworks */,
+				C7C8F2D421FF624D00AB865A /* libGLEW.2.1.0.dylib in Frameworks */,
 				C7C4978D1E4F3AA60059BAB9 /* libglfw.3.2.dylib in Frameworks */,
 				C7C4978E1E4F3AA60059BAB9 /* libglib-2.0.0.dylib in Frameworks */,
 				C7C4978F1E4F3AA60059BAB9 /* libglut.3.10.0.dylib in Frameworks */,
@@ -108,7 +116,7 @@
 		C7C497851E4F3A500059BAB9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C7C497881E4F3AA60059BAB9 /* libGLEW.2.0.0.dylib */,
+				C7C8F2D321FF624D00AB865A /* libGLEW.2.1.0.dylib */,
 				C7C497891E4F3AA60059BAB9 /* libglfw.3.2.dylib */,
 				C7C4978A1E4F3AA60059BAB9 /* libglib-2.0.0.dylib */,
 				C7C4978B1E4F3AA60059BAB9 /* libglut.3.10.0.dylib */,

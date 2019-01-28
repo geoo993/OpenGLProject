@@ -1,0 +1,37 @@
+[Vertex shader]
+
+uniform vec3 camPos;
+
+varying vec3 vVec;
+varying vec3 norm;
+
+void main(){
+	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+
+	vVec = gl_Vertex.xyz - camPos;
+	norm = gl_Normal;
+}
+
+
+[Fragment shader]
+
+uniform samplerCube Env;
+
+varying vec3 vVec;
+varying vec3 norm;
+
+#define ETA 1.12
+
+void main(){
+	vec3 viewVec = normalize(vVec);
+	vec3 normal = normalize(norm);
+
+	vec4 refl = textureCube(Env, reflect(viewVec, normal));
+
+	float d = ETA * dot(viewVec, normal);
+	float k = saturate(d * d + 1.0 - ETA * ETA);
+
+	vec4 refr = textureCube(Env, ETA * viewVec - (d + sqrt(k)) * normal);
+
+	gl_FragColor = lerp(refl, refr, k);
+}

@@ -9,14 +9,14 @@
 /* Begin PBXBuildFile section */
 		C7BDA6F21E54768500883194 /* libfreeimage.3.17.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BDA6F11E54768500883194 /* libfreeimage.3.17.0.dylib */; };
 		C7BDA6F31E54768E00883194 /* libfreeimage.3.17.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7BDA6F11E54768500883194 /* libfreeimage.3.17.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		C7C8F2CE21FF61CA00AB865A /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C8F2CD21FF61CA00AB865A /* libGLEW.2.1.0.dylib */; };
+		C7C8F2CF21FF61D600AB865A /* libGLEW.2.1.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7C8F2CD21FF61CA00AB865A /* libGLEW.2.1.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C7EE03841E5440A200ED906C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7EE03831E5440A200ED906C /* main.cpp */; };
 		C7EE038E1E5440C300ED906C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7EE038B1E5440C300ED906C /* Cocoa.framework */; };
 		C7EE038F1E5440C300ED906C /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7EE038C1E5440C300ED906C /* GLUT.framework */; };
 		C7EE03901E5440C300ED906C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7EE038D1E5440C300ED906C /* OpenGL.framework */; };
-		C7EE03941E5440EE00ED906C /* libGLEW.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7EE03911E5440EE00ED906C /* libGLEW.2.0.0.dylib */; };
 		C7EE03951E5440EE00ED906C /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7EE03921E5440EE00ED906C /* libglfw.3.2.dylib */; };
 		C7EE03961E5440EE00ED906C /* libglib-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C7EE03931E5440EE00ED906C /* libglib-2.0.0.dylib */; };
-		C7EE03971E5440FB00ED906C /* libGLEW.2.0.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7EE03911E5440EE00ED906C /* libGLEW.2.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C7EE03981E5440FB00ED906C /* libglfw.3.2.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7EE03921E5440EE00ED906C /* libglfw.3.2.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C7EE03991E5440FB00ED906C /* libglib-2.0.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7EE03931E5440EE00ED906C /* libglib-2.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C7EE03A81E544F1A00ED906C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7EE03A71E544F1A00ED906C /* QuartzCore.framework */; };
@@ -30,8 +30,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 11;
 			files = (
+				C7C8F2CF21FF61D600AB865A /* libGLEW.2.1.0.dylib in CopyFiles */,
 				C7BDA6F31E54768E00883194 /* libfreeimage.3.17.0.dylib in CopyFiles */,
-				C7EE03971E5440FB00ED906C /* libGLEW.2.0.0.dylib in CopyFiles */,
 				C7EE03981E5440FB00ED906C /* libglfw.3.2.dylib in CopyFiles */,
 				C7EE03991E5440FB00ED906C /* libglib-2.0.0.dylib in CopyFiles */,
 			);
@@ -45,12 +45,12 @@
 		C788938D1EBE11BD00D3493C /* screen-fragment-shader.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "screen-fragment-shader.txt"; sourceTree = "<group>"; };
 		C7B0887A1EBE6A48006B00BE /* crate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = crate.jpg; sourceTree = "<group>"; };
 		C7BDA6F11E54768500883194 /* libfreeimage.3.17.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreeimage.3.17.0.dylib; path = ../../../../../../opt/local/lib/libfreeimage.3.17.0.dylib; sourceTree = "<group>"; };
+		C7C8F2CD21FF61CA00AB865A /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = ../../../../../../opt/local/lib/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
 		C7EE03801E5440A200ED906C /* OpenGL_Essentials */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OpenGL_Essentials; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7EE03831E5440A200ED906C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C7EE038B1E5440C300ED906C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C7EE038C1E5440C300ED906C /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		C7EE038D1E5440C300ED906C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		C7EE03911E5440EE00ED906C /* libGLEW.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.0.0.dylib; path = ../../../../../../opt/local/lib/libGLEW.2.0.0.dylib; sourceTree = "<group>"; };
 		C7EE03921E5440EE00ED906C /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../../../opt/local/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
 		C7EE03931E5440EE00ED906C /* libglib-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.0.dylib"; path = "../../../../../../opt/local/lib/libglib-2.0.0.dylib"; sourceTree = "<group>"; };
 		C7EE039E1E5445FE00ED906C /* vertex-shader.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = "vertex-shader.txt"; path = "../vertex-shader.txt"; sourceTree = "<group>"; };
@@ -65,10 +65,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7C8F2CE21FF61CA00AB865A /* libGLEW.2.1.0.dylib in Frameworks */,
 				C7BDA6F21E54768500883194 /* libfreeimage.3.17.0.dylib in Frameworks */,
 				C7EE03AA1E544F2400ED906C /* IOKit.framework in Frameworks */,
 				C7EE03A81E544F1A00ED906C /* QuartzCore.framework in Frameworks */,
-				C7EE03941E5440EE00ED906C /* libGLEW.2.0.0.dylib in Frameworks */,
 				C7EE03951E5440EE00ED906C /* libglfw.3.2.dylib in Frameworks */,
 				C7EE03961E5440EE00ED906C /* libglib-2.0.0.dylib in Frameworks */,
 				C7EE038E1E5440C300ED906C /* Cocoa.framework in Frameworks */,
@@ -110,10 +110,10 @@
 		C7EE038A1E5440C300ED906C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C7C8F2CD21FF61CA00AB865A /* libGLEW.2.1.0.dylib */,
 				C7BDA6F11E54768500883194 /* libfreeimage.3.17.0.dylib */,
 				C7EE03A91E544F2400ED906C /* IOKit.framework */,
 				C7EE03A71E544F1A00ED906C /* QuartzCore.framework */,
-				C7EE03911E5440EE00ED906C /* libGLEW.2.0.0.dylib */,
 				C7EE03921E5440EE00ED906C /* libglfw.3.2.dylib */,
 				C7EE03931E5440EE00ED906C /* libglib-2.0.0.dylib */,
 				C7EE038B1E5440C300ED906C /* Cocoa.framework */,
