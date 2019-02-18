@@ -121,7 +121,7 @@ vec4 CalcLight(BaseLight base, vec3 lightDirection, vec3 viewDirection, vec3 nor
 
 vec4 CalcDirectionalLight(DirectionalLight directionalLight, vec3 viewDirection, vec3 normal)
 {
-    return CalcLight(directionalLight.base, -directionalLight.direction, viewDirection, normal);
+    return CalcLight(directionalLight.base, -normalize(directionalLight.direction), viewDirection, normal);
 }
 
 vec4 CalcPointLight(PointLight pointLight, vec3 vertexPosition, vec3 viewDirection, vec3 normal)
